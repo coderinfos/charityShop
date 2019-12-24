@@ -2,6 +2,7 @@
 - charityShop公益项目
 - 支持MySQL数据库
 - 访问地址：http://localhost:8080/charityShop/swagger-ui.html 
+- api接口代码，在org.greencode.modules.app这个目录下写，已经写了一个分店管理的例子
 
 <br>
  

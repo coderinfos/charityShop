@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.greencode.modules.app.dao.DonateDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="org.greencode.modules.app.entity.DonateEntity" id="donateMap">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="shopId" column="shop_id"/>
+        <result property="donateName" column="donate_name"/>
+        <result property="donateType" column="donate_type"/>
+        <result property="donateImage" column="donate_image"/>
+        <result property="donatePrice" column="donate_price"/>
+        <result property="donateSubmitTime" column="donate_submit_time"/>
+        <result property="donateRegisterTime" column="donate_register_time"/>
+        <result property="donateSaleTime" column="donate_sale_time"/>
+        <result property="operator" column="operator"/>
+        <result property="operationTime" column="operation_time"/>
+        <result property="operatorIp" column="operator_ip"/>
+        <result property="memo" column="memo"/>
+    </resultMap>
+
+
+</mapper>

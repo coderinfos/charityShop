@@ -8,19 +8,19 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.greencode.common.utils.PageUtils;
 import org.greencode.common.utils.Query;
 
-import org.greencode.modules.app.dao.UserDao;
-import org.greencode.modules.app.entity.UserEntity;
-import org.greencode.modules.app.service.UserService;
+import org.greencode.modules.app.dao.DonateDao;
+import org.greencode.modules.app.entity.DonateEntity;
+import org.greencode.modules.app.service.DonateService;
 
 
-@Service("userService")
-public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements UserService {
+@Service("donateService")
+public class DonateServiceImpl extends ServiceImpl<DonateDao, DonateEntity> implements DonateService {
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
-        IPage<UserEntity> page = this.page(
-                new Query<UserEntity>().getPage(params),
-                new QueryWrapper<UserEntity>()
+        IPage<DonateEntity> page = this.page(
+                new Query<DonateEntity>().getPage(params),
+                new QueryWrapper<DonateEntity>()
         );
 
         return new PageUtils(page);

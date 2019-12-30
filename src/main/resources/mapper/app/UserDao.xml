@@ -3,5 +3,34 @@
 
 <mapper namespace="org.greencode.modules.app.dao.UserDao">
 
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="org.greencode.modules.app.entity.UserEntity" id="userMap">
+        <result property="id" column="id"/>
+        <result property="userName" column="user_name"/>
+        <result property="passWord" column="pass_word"/>
+        <result property="face" column="face"/>
+        <result property="faceOpen" column="face_open"/>
+        <result property="nickName" column="nick_name"/>
+        <result property="nickNameOpen" column="nick_name_open"/>
+        <result property="realName" column="real_name"/>
+        <result property="realNameOpen" column="real_name_open"/>
+        <result property="sex" column="sex"/>
+        <result property="sexOpen" column="sex_open"/>
+        <result property="age" column="age"/>
+        <result property="ageOpen" column="age_open"/>
+        <result property="mobilePhone" column="mobile_phone"/>
+        <result property="mobilePhoneOpen" column="mobile_phone_open"/>
+        <result property="signatureLine" column="signature_line"/>
+        <result property="signatureLineOpen" column="signature_line_open"/>
+        <result property="wechatId" column="wechat_id"/>
+        <result property="verificationCode" column="verification_code"/>
+        <result property="regTime" column="reg_time"/>
+        <result property="preLoginTime" column="pre_login_time"/>
+        <result property="preLoginIp" column="pre_login_ip"/>
+        <result property="lastLoginTime" column="last_login_time"/>
+        <result property="lastLoginIp" column="last_login_ip"/>
+        <result property="memo" column="memo"/>
+    </resultMap>
+
 
 </mapper>

@@ -8,15 +8,15 @@ import java.util.Date;
 import lombok.Data;
 
 /**
- * 分店管理
+ * 店长排班表
  * 
  * @author 
  * @email 
  * @date 2019-12-30 09:41:22
  */
 @Data
-@TableName("ba_shop")
-public class ShopEntity implements Serializable {
+@TableName("ba_boss")
+public class BossEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -25,17 +25,33 @@ public class ShopEntity implements Serializable {
 	@TableId
 	private Long id;
 	/**
-	 * 
+	 * 捐赠人id
 	 */
-	private String shopName;
+	private Long userId;
+	/**
+	 * 报名分店id
+	 */
+	private Long shopId;
+	/**
+	 * 值班日期
+	 */
+	private Date dutyDate;
+	/**
+	 * 1早班2晚班
+	 */
+	private Integer dutyType;
+	/**
+	 * 0为false,1为true审核通过(默认自动
+	 */
+	private Integer dutyStatus;
 	/**
 	 * 
 	 */
-	private String address;
+	private Date dutySubmitTime;
 	/**
 	 * 
 	 */
-	private Integer operator;
+	private String operator;
 	/**
 	 * 
 	 */

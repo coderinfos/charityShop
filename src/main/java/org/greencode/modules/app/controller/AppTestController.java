@@ -35,39 +35,45 @@ public class AppTestController {
     UserService userService;
 
 
-    @Login
-    @GetMapping("userInfo")
-    @ApiOperation("获取用户信息")
-    public R userInfo(@LoginUser UserEntity user){
-        return R.ok().put("user", user);
-    }
-
-    @Login
-    @GetMapping("userId")
-    @ApiOperation("获取用户ID")
-    public R userInfo(@RequestAttribute("userId") Integer userId){
-        return R.ok().put("userId", userId);
-    }
-
-    @GetMapping("notToken")
-    @ApiOperation("忽略Token验证测试")
-    public R notToken(){
-        return R.ok().put("msg", "无需token也能访问。。。");
-    }
-
+//    @Login
+//    @GetMapping("userInfo")
+//    @ApiOperation("获取用户信息")
+//    public R userInfo(@LoginUser UserEntity user){
+//        return R.ok().put("user", user);
+//    }
+//
+//    @Login
+//    @GetMapping("userId")
+//    @ApiOperation("获取用户ID")
+//    public R userInfo(@RequestAttribute("userId") Integer userId){
+//        return R.ok().put("userId", userId);
+//    }
+//
+//    @GetMapping("notToken")
+//    @ApiOperation("忽略Token验证测试")
+//    public R notToken(){
+//        return R.ok().put("msg", "无需token也能访问。。。");
+//    }
+//
 
 
     @GetMapping("testInterface")
     @ApiOperation("测试接口")
-    public R testInterface(@LoginUser UserEntity user){
-
+    public R testInterface(){
         return R.ok().put("测试接口", "接口测试成功");
     }
 
 
+//    @GetMapping("testQuery")
+//    @ApiOperation("测试查询")
+//    public R testQuery(@LoginUser UserEntity user){
+//        UserEntity one = userService.getOne(null);
+//        return R.ok().put("entity", one);
+//    }
+
     @GetMapping("testQuery")
     @ApiOperation("测试查询")
-    public R testQuery(@LoginUser UserEntity user){
+    public R testQuery(){
         UserEntity one = userService.getOne(null);
         return R.ok().put("entity", one);
     }

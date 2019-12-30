@@ -9,26 +9,26 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import org.greencode.modules.app.entity.ShopEntity;
-import org.greencode.modules.app.service.ShopService;
+import org.greencode.modules.app.entity.BossEntity;
+import org.greencode.modules.app.service.BossService;
 import org.greencode.common.utils.PageUtils;
 import org.greencode.common.utils.R;
 
 
 
 /**
- * 分店管理
+ * 店长排班表
  *
  * @author 
  * @email 
  * @date 2019-12-30 09:58:37
  */
 @RestController
-@RequestMapping("app/shop")
-@Api(tags = "分店管理")
-public class ShopController {
+@RequestMapping("app/boss")
+@Api(tags = "店长排班表")
+public class BossController {
     @Autowired
-    private ShopService shopService;
+    private BossService bossService;
 
     /**
      * 列表
@@ -36,7 +36,7 @@ public class ShopController {
     @GetMapping("/list")
     @ApiOperation("列表")
     public R list(@RequestParam Map<String, Object> params){
-        PageUtils page = shopService.queryPage(params);
+        PageUtils page = bossService.queryPage(params);
 
         return R.ok().put("page", page);
     }
@@ -48,9 +48,9 @@ public class ShopController {
     @GetMapping("/info/{id}")
     @ApiOperation("列表")
     public R info(@PathVariable("id") Long id){
-		ShopEntity shop = shopService.getById(id);
+		BossEntity boss = bossService.getById(id);
 
-        return R.ok().put("shop", shop);
+        return R.ok().put("boss", boss);
     }
 
     /**
@@ -58,8 +58,8 @@ public class ShopController {
      */
     @PostMapping("/save")
     @ApiOperation("保存")
-    public R save(@RequestBody ShopEntity shop){
-		shopService.save(shop);
+    public R save(@RequestBody BossEntity boss){
+		bossService.save(boss);
 
         return R.ok();
     }
@@ -69,8 +69,8 @@ public class ShopController {
      */
     @PostMapping("/update")
     @ApiOperation("修改")
-    public R update(@RequestBody ShopEntity shop){
-		shopService.updateById(shop);
+    public R update(@RequestBody BossEntity boss){
+		bossService.updateById(boss);
 
         return R.ok();
     }
@@ -81,7 +81,7 @@ public class ShopController {
     @PostMapping("/delete")
     @ApiOperation("删除")
         public R delete(@RequestBody Long[] ids){
-		shopService.removeByIds(Arrays.asList(ids));
+		bossService.removeByIds(Arrays.asList(ids));
 
         return R.ok();
     }

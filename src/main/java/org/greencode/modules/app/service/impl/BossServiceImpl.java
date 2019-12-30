@@ -8,19 +8,19 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.greencode.common.utils.PageUtils;
 import org.greencode.common.utils.Query;
 
-import org.greencode.modules.app.dao.UserDao;
-import org.greencode.modules.app.entity.UserEntity;
-import org.greencode.modules.app.service.UserService;
+import org.greencode.modules.app.dao.BossDao;
+import org.greencode.modules.app.entity.BossEntity;
+import org.greencode.modules.app.service.BossService;
 
 
-@Service("userService")
-public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements UserService {
+@Service("bossService")
+public class BossServiceImpl extends ServiceImpl<BossDao, BossEntity> implements BossService {
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
-        IPage<UserEntity> page = this.page(
-                new Query<UserEntity>().getPage(params),
-                new QueryWrapper<UserEntity>()
+        IPage<BossEntity> page = this.page(
+                new Query<BossEntity>().getPage(params),
+                new QueryWrapper<BossEntity>()
         );
 
         return new PageUtils(page);

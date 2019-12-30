@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="org.greencode.modules.app.dao.ShopDao">
+<mapper namespace="org.greencode.modules.app.dao.OperationlLogDao">
 
 	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="org.greencode.modules.app.entity.ShopEntity" id="shopMap">
+    <resultMap type="org.greencode.modules.app.entity.OperationlLogEntity" id="operationlLogMap">
         <result property="id" column="id"/>
-        <result property="shopName" column="shop_name"/>
-        <result property="address" column="address"/>
         <result property="operator" column="operator"/>
+        <result property="operationType" column="operation_type"/>
+        <result property="content" column="content"/>
+        <result property="userId" column="user_id"/>
         <result property="operationTime" column="operation_time"/>
         <result property="operatorIp" column="operator_ip"/>
         <result property="memo" column="memo"/>

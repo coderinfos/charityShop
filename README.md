@@ -50,7 +50,7 @@ charityShop
 - 通过git下载源码
 - idea、eclipse需安装lombok插件，不然会提示找不到entity的get set方法
 - 创建数据库charityShop，数据库编码为UTF-8
-- 执行db/mysql.sql文件，初始化数据
+- 执行db/bbalt.sql文件，初始化数据
 - 修改application-dev.yml，更新MySQL账号和密码
 - Eclipse、IDEA运行charityShopApplication.java，则可启动项目
 - Swagger文档路径：http://localhost:8080/charityShop/swagger/index.html

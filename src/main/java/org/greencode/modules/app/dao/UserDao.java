@@ -1,23 +1,17 @@
-/**
- *
- *
- * https://shop.charityShop.org
- *
- * 版权所有，侵权必究！
- */
-
 package org.greencode.modules.app.dao;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.greencode.modules.app.entity.UserEntity;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
- * 用户
- *
- * @author
+ * 基本用户信息表
+ * 
+ * @author 
+ * @email 
+ * @date 2019-12-30 09:41:22
  */
 @Mapper
 public interface UserDao extends BaseMapper<UserEntity> {
-
+	
 }

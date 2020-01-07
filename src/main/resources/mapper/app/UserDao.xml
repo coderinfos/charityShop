@@ -32,5 +32,8 @@
         <result property="memo" column="memo"/>
     </resultMap>
 
+    <select id="selectByMobilePhone" resultType="org.greencode.modules.app.entity.UserEntity" >
+        select id,user_name,nick_name,sex,age from ba_user where mobile_phone=#{mobilePhone}
+    </select>
 
 </mapper>

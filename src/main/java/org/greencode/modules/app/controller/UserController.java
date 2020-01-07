@@ -3,8 +3,11 @@ package org.greencode.modules.app.controller;
 import java.util.Arrays;
 import java.util.Map;
 
+import com.sun.org.apache.bcel.internal.generic.RETURN;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpStatus;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -86,4 +89,23 @@ public class UserController {
         return R.ok();
     }
 
+
+    /**
+     * 通过手机来查询用户
+     * @param mobilePhone
+     * @return
+     */
+    @GetMapping("/selectUserByMobilePhone/{mobilePhone}")
+    @ApiOperation("列表")
+    public R selectUserByMobilePhone(@PathVariable("mobilePhone") Long mobilePhone){
+        if(mobilePhone==null){
+            return R.error(HttpStatus.SC_BAD_REQUEST,"信息不完整");
+        }
+        UserEntity user = userService.getByMobilePhone(mobilePhone);
+        if(user==null){
+            return R.error(HttpStatus.SC_NOT_FOUND,"没有找到该用户");
+        }else {
+            return R.ok().put("user", user);
+        }
+    }
 }

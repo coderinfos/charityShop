@@ -18,5 +18,21 @@
         <result property="memo" column="memo"/>
     </resultMap>
 
+    <sql id="Base_Column_List">
+        id,shop_id,shop_id,duty_date,duty_type,duty_status,duty_submit_time
+    </sql>
 
+    <select id="selectByDutyDate" resultType="org.greencode.modules.app.entity.BossEntity">
+        select id,shop_id,shop_id,duty_date,duty_type from ba_boss
+        where date_format(duty_date,'%Y-%m-%d')=date_format(#{dutyDate},'%Y-%m-%d')
+        and duty_type=#{dutyType}
+        and duty_status=1
+    </select>
+
+    <select id="findNextThreeDay" resultMap="bossMap">
+        select <include refid="Base_Column_List" />
+        from ba_boss
+        WHERE duty_date between now()+1 and ADDDATE(now()+1,INTERVAL 3 DAY)
+        and duty_status=1;
+    </select>
 </mapper>

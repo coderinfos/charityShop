@@ -1,5 +1,6 @@
 package org.greencode.modules.app.service.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -15,6 +16,13 @@ import org.greencode.modules.app.service.UserService;
 
 @Service("userService")
 public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements UserService {
+    @Autowired
+    UserDao userDao;
+
+    @Override
+    public UserEntity getByMobilePhone(Long mobilePhone) {
+        return userDao.selectByMobilePhone(mobilePhone);
+    }
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {

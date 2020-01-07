@@ -5,7 +5,11 @@ import java.util.Map;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpStatus;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.greencode.modules.app.entity.UserEntity;
+import org.greencode.modules.app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,10 +30,12 @@ import org.greencode.common.utils.R;
 @RestController
 @RequestMapping("app/donate")
 @Api(tags = "捐赠表")
+@Slf4j
 public class DonateController {
     @Autowired
     private DonateService donateService;
-
+    @Autowired
+    private UserService userService;
     /**
      * 列表
      */
@@ -54,13 +60,18 @@ public class DonateController {
     }
 
     /**
-     * 保存
+     * 捐赠物品，传入userId，donate_submit_time
      */
     @PostMapping("/save")
-    @ApiOperation("保存")
+    @ApiOperation("捐赠物品，传入userId，donate_submit_time")
     public R save(@RequestBody DonateEntity donate){
-		donateService.save(donate);
-
+        if(donate.getUserId()==null || donate.getDonateSubmitTime()==null){
+            return R.error(HttpStatus.SC_BAD_REQUEST,"信息不完整");
+        }
+        DonateEntity donateEntity = new DonateEntity();
+        donateEntity.setUserId(donate.getUserId());
+        donateEntity.setDonateSubmitTime(donate.getDonateSubmitTime());
+		donateService.save(donateEntity);
         return R.ok();
     }
 
@@ -85,5 +96,9 @@ public class DonateController {
 
         return R.ok();
     }
+
+
+
+
 
 }

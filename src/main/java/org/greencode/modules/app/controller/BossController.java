@@ -1,15 +1,14 @@
 package org.greencode.modules.app.controller;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.greencode.modules.app.entity.DonateEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -59,6 +58,107 @@ public class BossController {
     }
 
     /**
+     * 通过用户id来查询排班表
+     * @param userId
+     * @return
+     */
+    @GetMapping("/myBoss/{userId}")
+    @ApiOperation("通过用户id来查询排班表，duty_status为0则是取消")
+    public R myBoss(@PathVariable("userId") Long userId){
+        if(userId==null){
+            return R.error(1,"信息不完整");
+        }
+        List<BossEntity> donate = bossService.getByUserId(userId);
+        if(donate.isEmpty()){
+            return R.error(1,"没有找到该条记录");
+        }else {
+            return R.ok().put("data",donate);
+        }
+    }
+
+    /**
+     * 通过用户id来查询排班表，筛选未开始且未取消的排班
+     * @param userId
+     * @return
+     */
+    @GetMapping("/notStart/{userId}")
+    @ApiOperation("通过用户id来查询排班表，筛选未开始且未取消的排班")
+    public R notStart (@PathVariable("userId") Long userId){
+        if(userId==null){
+            return R.error(1,"信息不完整");
+        }
+        List<BossEntity> donate = bossService.getNotStart(userId);
+        if(donate.isEmpty()){
+            return R.error(1,"没有找到该条记录");
+        }else {
+
+            return R.ok().put("data",donate);
+        }
+
+    }
+
+//    /**
+//     * 通过用户id来查询排班表，筛选已完成且未取消的排班
+//     * @param userId
+//     * @return
+//     */
+//    @GetMapping("/Completed/{userId}")
+//    @ApiOperation("通过用户id来查询排班表，筛选已完成且未取消的排班")
+//    public R Completed (@PathVariable("userId") Long userId) {
+//        if (userId == null) {
+//            return R.error(1, "信息不完整");
+//        }
+//        List<BossEntity> donate = bossService.getNotStart(userId);
+//        if (donate.isEmpty()) {
+//            return R.error(1, "没有找到该条记录");
+//        } else {
+//
+//         List<BossEntity> donates=new ArrayList<BossEntity>();
+//        long longDate = System.currentTimeMillis();
+//        Date start = new Date(longDate);
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+//        Date end = new Date();
+//        String time1=""
+//        if(donate.isEmpty()){
+//            return R.error(1,"没有找到该条记录");
+//        }else {
+//            for(BossEntity d : donate){
+//                end=d.getDutyDate();
+//                long cha = end.getTime() - start.getTime();
+//                if(cha>0){
+//                    donates.add(d);
+//                }
+//            }
+//            return R.ok().put("data",donates);
+//        }
+//        }
+//    }
+
+    /**
+     * 通过id来查询是否在24小时内
+     * @param id
+     * @return
+     */
+    @GetMapping("/cancel/{id}")
+    @ApiOperation("取消时间查询，判断是否在24h外，如果是返回成功，不是则返回code=1")
+    public R cancelTime(@PathVariable("id") Long id){
+        BossEntity boss = bossService.getById(id);
+        //获取当前系统时间
+        long longDate = System.currentTimeMillis();
+        Date start = new Date(longDate);
+        Date end = boss.getDutyDate();
+        long cha = end.getTime() - start.getTime();
+        if(cha<0){
+            return R.error(2,"已经过期");
+        }
+        double result = cha * 1.0 / (1000 * 60 * 60);
+        if(result<=24){
+            return R.error(1,"24h以内");
+        }else{
+            return R.ok();
+        }
+    }
+    /**
      * 未来三天申请店长列表
      * @return
      */
@@ -66,16 +166,16 @@ public class BossController {
     @ApiOperation("未来三天申请店长列表")
     public R appointmentList (){
         List<BossEntity> nextThreeDay = bossService.findNextThreeDay();
-        return R.ok().put("appointmentList",nextThreeDay);
+        return R.ok().put("data",nextThreeDay);
     }
     /**
      * 店长申请，信息保存
      */
     @PostMapping("/save")
-    @ApiOperation("店长申请，信息保存传入UserId，ShopId，DutyType，DutyDate")
+    @ApiOperation("店长申请，信息保存传入UserId，ShopId，DutyType，DutyDate预约的日期(如果type为1则传当天9点，2020-01-09 09:00:00，为2下午，则2020-01-09 14:30:00)")
     public R save(@RequestBody BossEntity boss){
         if(boss.getUserId()==null||boss.getShopId()==null||boss.getDutyType()==null||boss.getDutyDate()==null){
-            return R.error(HttpStatus.SC_BAD_REQUEST,"信息不完整");
+            return R.error(1,"信息不完整");
         }
         boolean find=bossService.getAppointment(boss.getDutyDate(),boss.getDutyType());
         if(find){
@@ -106,12 +206,12 @@ public class BossController {
     public R cancel(@RequestBody Long id){
         if(id==null){
             log.info("id not is null");
-            return R.error(HttpStatus.SC_BAD_REQUEST,"信息不完整");
+            return R.error(1,"信息不完整");
         }
 
         BossEntity boss = bossService.getById(id);
         if(boss==null){
-            return R.error(HttpStatus.SC_NOT_FOUND,"没有找到该用户");
+            return R.error(1,"没有找到该用户");
         }
         boss.setDutyStatus(0);
         boolean code = bossService.updateById(boss);

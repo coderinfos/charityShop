@@ -1,6 +1,9 @@
 package org.greencode.modules.app.service.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -16,6 +19,9 @@ import org.greencode.modules.app.service.DonateService;
 @Service("donateService")
 public class DonateServiceImpl extends ServiceImpl<DonateDao, DonateEntity> implements DonateService {
 
+    @Autowired
+    private DonateDao donateDao;
+
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
         IPage<DonateEntity> page = this.page(
@@ -24,6 +30,12 @@ public class DonateServiceImpl extends ServiceImpl<DonateDao, DonateEntity> impl
         );
 
         return new PageUtils(page);
+    }
+
+    @Override
+    public List<DonateEntity> getByUserId(Long userId) {
+
+        return donateDao.selectDonateByUserId(userId);
     }
 
 }

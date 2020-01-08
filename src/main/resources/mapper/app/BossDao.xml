@@ -35,4 +35,17 @@
         WHERE duty_date between now()+1 and ADDDATE(now()+1,INTERVAL 3 DAY)
         and duty_status=1;
     </select>
+
+    <select id="selectByUserId" resultMap="bossMap">
+        select <include refid="Base_Column_List" />
+        from ba_boss
+        WHERE user_id=#{userId}
+    </select>
+
+    <select id="selectNotStart" resultMap="bossMap">
+        select <include refid="Base_Column_List" />
+        from ba_boss
+        WHERE user_id=#{userId} and duty_status=1
+        and TIMESTAMPDIFF(MINUTE,NOW() ,duty_date)>0;
+    </select>
 </mapper>

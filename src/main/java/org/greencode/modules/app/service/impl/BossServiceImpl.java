@@ -49,4 +49,14 @@ public class BossServiceImpl extends ServiceImpl<BossDao, BossEntity> implements
         return bossDao.findNextThreeDay();
     }
 
+    @Override
+    public List<BossEntity> getByUserId(Long userId) {
+        return bossDao.selectByUserId(userId);
+    }
+
+    @Override
+    public List<BossEntity> getNotStart(Long userId) {
+        return bossDao.selectNotStart(userId);
+    }
+
 }

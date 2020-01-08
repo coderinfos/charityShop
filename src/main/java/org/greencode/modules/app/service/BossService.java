@@ -32,5 +32,18 @@ public interface BossService extends IService<BossEntity> {
      * @return
      */
     List<BossEntity> findNextThreeDay();
+    /**
+     * 通过用户id来查询排班表
+     * @param userId
+     * @return
+     */
+    List<BossEntity> getByUserId(Long userId);
+
+    /**
+     * 通过用户id来查询排班表，筛选未开始且未取消的排班
+     * @param userId
+     * @return
+     */
+    List<BossEntity> getNotStart(Long userId);
 }
 

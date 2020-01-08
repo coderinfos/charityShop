@@ -49,32 +49,62 @@ public class UserController {
      * 信息
      */
     @GetMapping("/info/{id}")
-    @ApiOperation("列表")
+    @ApiOperation("通过id来查询用户")
     public R info(@PathVariable("id") Long id){
 		UserEntity user = userService.getById(id);
 
         return R.ok().put("user", user);
     }
 
+
+    @GetMapping("/foxMessage/{id}")
+    @ApiOperation("判断个人信息是否完整")
+    public R foxMessage(@PathVariable("id") Long id){
+        UserEntity user = userService.getById(id);
+        if(user==null){
+            return R.error(1,"没有找到该用户");
+        }
+        if(user.getNickName()==null||user.getRealName()==null||user.getSex()==null||user.getAge()==null||user.getMobilePhone()==null){
+            return R.error(1,"信息不完整");
+        }else {
+            return R.ok().put("user", user);
+        }
+
+    }
+
+
     /**
-     * 保存
+     * 注册
      */
     @PostMapping("/save")
-    @ApiOperation("保存")
+    @ApiOperation("注册")
     public R save(@RequestBody UserEntity user){
-		userService.save(user);
+        //注册的时候判断账号和密码的正则，个人信息不需要填写，进入后再填写
+
+
+
+        UserEntity userEntity = new UserEntity();
+        userEntity.setUserName(user.getUserName());
+        userEntity.setPassWord(user.getPassWord());
+		userService.save(userEntity);
 
         return R.ok();
     }
 
     /**
-     * 修改
+     * 填写个人信息
      */
     @PostMapping("/update")
-    @ApiOperation("修改")
+    @ApiOperation("填写个人信息")
     public R update(@RequestBody UserEntity user){
-		userService.updateById(user);
+        //填写个人信息的时候加上各种正则判断
 
+
+
+
+
+
+		userService.updateById(user);
         return R.ok();
     }
 
@@ -96,14 +126,14 @@ public class UserController {
      * @return
      */
     @GetMapping("/selectUserByMobilePhone/{mobilePhone}")
-    @ApiOperation("列表")
+    @ApiOperation("通过手机来查询用户")
     public R selectUserByMobilePhone(@PathVariable("mobilePhone") Long mobilePhone){
         if(mobilePhone==null){
-            return R.error(HttpStatus.SC_BAD_REQUEST,"信息不完整");
+            return R.error(1,"信息不完整");
         }
         UserEntity user = userService.getByMobilePhone(mobilePhone);
         if(user==null){
-            return R.error(HttpStatus.SC_NOT_FOUND,"没有找到该用户");
+            return R.error(1,"没有找到该用户");
         }else {
             return R.ok().put("user", user);
         }

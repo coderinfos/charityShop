@@ -1,16 +1,18 @@
 package org.greencode.modules.app.controller;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.greencode.modules.app.entity.UserEntity;
+
 import org.greencode.modules.app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.web.bind.annotation.*;
 
 import org.greencode.modules.app.entity.DonateEntity;
@@ -55,24 +57,65 @@ public class DonateController {
     @ApiOperation("列表")
     public R info(@PathVariable("id") Long id){
 		DonateEntity donate = donateService.getById(id);
-
         return R.ok().put("donate", donate);
+    }
+
+    /**
+     * 通过用户id来查询捐赠表，（有捐物登记时间认为是有效捐物）
+     * @param userId
+     * @return
+     */
+    @GetMapping("/myDonate/{userId}")
+    @ApiOperation("通过用户ID来查询捐赠表，可以通过donatePrice这个字段判断是否售出，未售出为null")
+    public R myDonate(@PathVariable("userId") Long userId){
+        if(userId==null){
+            return R.error(1,"信息不完整");
+        }
+        List<DonateEntity> donate = donateService.getByUserId(userId);
+        if(donate.isEmpty()){
+            return R.error(1,"没有找到该条记录");
+        }else {
+            return R.ok().put("data",donate);
+        }
+
+
     }
 
     /**
      * 捐赠物品，传入userId，donate_submit_time
      */
     @PostMapping("/save")
-    @ApiOperation("捐赠物品，传入userId，donate_submit_time")
+    @ApiOperation("捐赠物品，传入userId，donateSubmitTime，所有需要传入时间的以2020-01-07 09:41:03格式")
     public R save(@RequestBody DonateEntity donate){
         if(donate.getUserId()==null || donate.getDonateSubmitTime()==null){
-            return R.error(HttpStatus.SC_BAD_REQUEST,"信息不完整");
+            return R.error(1,"信息不完整");
         }
         DonateEntity donateEntity = new DonateEntity();
         donateEntity.setUserId(donate.getUserId());
         donateEntity.setDonateSubmitTime(donate.getDonateSubmitTime());
 		donateService.save(donateEntity);
         return R.ok();
+    }
+
+    /**
+     * 售出登记
+     * @param donate
+     * @return
+     */
+    @PostMapping("/sold")
+    @ApiOperation("售出登记，传入id，donateSaleTime，donatePrice，所有需要传入时间的以2020-01-07 09:41:03格式")
+    public R sold(@RequestBody DonateEntity donate){
+        if(donate.getDonatePrice()==null||donate.getDonateSaleTime()==null||donate.getId()==null){
+            return R.error(1,"信息不完整");
+        }
+        DonateEntity donateEntity = donateService.getById(donate.getId());
+        if(donateEntity==null){
+            return R.error(1,"没有找到该条记录");
+        }
+        donateEntity.setDonatePrice(donate.getDonatePrice());
+        donateEntity.setDonateSaleTime(donate.getDonateSaleTime());
+        boolean code = donateService.save(donateEntity);
+        return common(code);
     }
 
     /**
@@ -98,7 +141,13 @@ public class DonateController {
     }
 
 
-
+    public R common(boolean code){
+        if(code){
+            return R.ok();
+        }else {
+            return R.error();
+        }
+    }
 
 
 }

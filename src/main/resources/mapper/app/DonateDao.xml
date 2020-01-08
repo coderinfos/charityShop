@@ -20,6 +20,14 @@
         <result property="operatorIp" column="operator_ip"/>
         <result property="memo" column="memo"/>
     </resultMap>
+    <sql id="Base_Column_List">
+       id,user_id,shop_id,donate_name,donate_type,donate_image,donate_price,donate_submit_time,donate_register_time,donate_sale_time,operator,operation_time,operator_ip,memo
+    </sql>
 
-
+    <select id="selectDonateByUserId" resultMap="donateMap">
+        select <include refid="Base_Column_List" />
+        from ba_donate
+        WHERE donate_register_time is not null
+        and user_id=#{userId}
+    </select>
 </mapper>

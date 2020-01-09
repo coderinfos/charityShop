@@ -41,4 +41,21 @@ public interface BossDao extends BaseMapper<BossEntity> {
      * @return
      */
     List<BossEntity> selectNotStart(Long userId);
+    /**
+     * 通过用户id来查询排班表，筛选已经完成且未取消的排班
+     * @param userId
+     * @return
+     */
+    List<BossEntity> selectCompleted(Long userId);
+
+    /**
+     * 查询当天排班
+     */
+    BossEntity selectTheDay (Long userId);
+    /**
+     * 通过用户id来查询已经取消排班表
+     * @param userId
+     * @return
+     */
+    List<BossEntity> selectCancelBoss(Long userId);
 }

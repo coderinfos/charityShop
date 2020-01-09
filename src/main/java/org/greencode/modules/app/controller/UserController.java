@@ -17,6 +17,8 @@ import org.greencode.modules.app.service.UserService;
 import org.greencode.common.utils.PageUtils;
 import org.greencode.common.utils.R;
 
+import static org.greencode.common.utils.ClientConstants.*;
+import static org.greencode.common.utils.ClientConstants.NOT_FIND_ERROR_MSG;
 
 
 /**
@@ -62,10 +64,10 @@ public class UserController {
     public R foxMessage(@PathVariable("id") Long id){
         UserEntity user = userService.getById(id);
         if(user==null){
-            return R.error(1,"没有找到该用户");
+            return R.error(NOT_FIND_ERROR_CODE,NOT_FIND_ERROR_MSG);
         }
         if(user.getNickName()==null||user.getRealName()==null||user.getSex()==null||user.getAge()==null||user.getMobilePhone()==null){
-            return R.error(1,"信息不完整");
+            return R.error(PARAM_ERROR_CODE,PARAM_ERROR_MSG);
         }else {
             return R.ok().put("user", user);
         }
@@ -119,7 +121,48 @@ public class UserController {
         return R.ok();
     }
 
-
+//    @PostMapping("register")
+//    public Response register(String phone, String password, String confirm, String code, Integer role, String inviteCode) {
+//        log.info("phone:{},password:{},confirm:{},code:{},role:{}", phone, password, confirm, code, role);
+//        if (StrUtil.hasEmpty(phone, password, confirm, code) || role == null) {
+//            log.info("params is null");
+//            return new Response(PARAM_ERROR_CODE, PARAM_ERROR_MSG);
+//        } else {
+//            log.info("params is not null");
+//            boolean isTelephone = Pattern.matches(REGEX_MOBILE, phone);
+//            if (!isTelephone) {
+//                log.info("phone format error");
+//                return new Response(PHONE_ERROR_CODE, PHONE_ERROR_MSG);
+//            }
+//            boolean isPassword = Pattern.matches(REGEX_PASSWORD, password);
+//            if (!isPassword) {
+//                log.info("password format error");
+//                return new Response(PWD_ERROR_CODE, PWD_ERROR_MSG);
+//            }
+//            if (!confirm.equals(password)) {
+//                log.info("password do not match");
+//                return new Response(PWD_MATCH_CODE, PWD_MATCH_MSG);
+//            }
+//            String redisCode = (String) redisTemplate.opsForValue().get(phone);
+//            if (StrUtil.isEmpty(redisCode)) {
+//                log.info("Validation code is invalid");
+//                return new Response(CODE_INVALID_CODE, CODE_INVALID_MSG);
+//            }
+//            if (!code.equals(redisCode)) {
+//                log.info("Validation code is error");
+//                return new Response(CODE_ERROR_CODE, CODE_ERROR_MSG);
+//            }
+//            if (role == 0) {
+//                log.info("student register");
+//                return userService.studentRegister(phone, password, inviteCode);
+//            } else if (role == 1) {
+//                log.info("teacher register");
+//                return userService.teacherRegister(phone, password);
+//            } else {
+//                return new Response(ROLE_ERROR_CODE, ROLE_ERROR_MSG);
+//            }
+//        }
+//    }
     /**
      * 通过手机来查询用户
      * @param mobilePhone
@@ -129,11 +172,11 @@ public class UserController {
     @ApiOperation("通过手机来查询用户")
     public R selectUserByMobilePhone(@PathVariable("mobilePhone") Long mobilePhone){
         if(mobilePhone==null){
-            return R.error(1,"信息不完整");
+            return R.error(PARAM_ERROR_CODE,PARAM_ERROR_MSG);
         }
         UserEntity user = userService.getByMobilePhone(mobilePhone);
         if(user==null){
-            return R.error(1,"没有找到该用户");
+            return R.error(NOT_FIND_ERROR_CODE,NOT_FIND_ERROR_MSG);
         }else {
             return R.ok().put("user", user);
         }

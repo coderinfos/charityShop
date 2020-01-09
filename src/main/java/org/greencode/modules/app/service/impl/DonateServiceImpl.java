@@ -38,4 +38,9 @@ public class DonateServiceImpl extends ServiceImpl<DonateDao, DonateEntity> impl
         return donateDao.selectDonateByUserId(userId);
     }
 
+    @Override
+    public List<DonateEntity> getSoldByUserId(Long userId) {
+        return donateDao.selectDonateSoldByUserId(userId);
+    }
+
 }

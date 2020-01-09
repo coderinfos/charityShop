@@ -24,5 +24,12 @@ public interface DonateService extends IService<DonateEntity> {
      * @return
      */
     List<DonateEntity> getByUserId(Long userId);
+
+    /**
+     * 通过用户ID来查询已经售出的捐赠记录,通过donatePrice这个字段判断是否售出，未售出为null
+     * @param userId
+     * @return
+     */
+    List<DonateEntity> getSoldByUserId(Long userId);
 }
 

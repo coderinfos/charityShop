@@ -20,6 +20,8 @@ import org.greencode.modules.app.service.DonateService;
 import org.greencode.common.utils.PageUtils;
 import org.greencode.common.utils.R;
 
+import static org.greencode.common.utils.ClientConstants.*;
+import static org.greencode.common.utils.ClientConstants.NOT_FIND_ERROR_MSG;
 
 
 /**
@@ -66,14 +68,35 @@ public class DonateController {
      * @return
      */
     @GetMapping("/myDonate/{userId}")
-    @ApiOperation("通过用户ID来查询捐赠表，可以通过donatePrice这个字段判断是否售出，未售出为null")
+    @ApiOperation("通过用户ID来查询捐赠表")
     public R myDonate(@PathVariable("userId") Long userId){
         if(userId==null){
-            return R.error(1,"信息不完整");
+            return R.error(PARAM_ERROR_CODE,PARAM_ERROR_MSG);
         }
         List<DonateEntity> donate = donateService.getByUserId(userId);
         if(donate.isEmpty()){
-            return R.error(1,"没有找到该条记录");
+            return R.error(NOT_FIND_ERROR_CODE,NOT_FIND_ERROR_MSG);
+        }else {
+            return R.ok().put("data",donate);
+        }
+
+
+    }
+
+    /**
+     * 通过用户ID来查询已经售出的捐赠记录,通过donatePrice这个字段判断是否售出，未售出为null
+     * @param userId
+     * @return
+     */
+    @GetMapping("/myDonateSold/{userId}")
+    @ApiOperation("通过用户ID来查询已经售出的捐赠记录")
+    public R myDonateSold(@PathVariable("userId") Long userId){
+        if(userId==null){
+            return R.error(PARAM_ERROR_CODE,PARAM_ERROR_MSG);
+        }
+        List<DonateEntity> donate = donateService.getSoldByUserId(userId);
+        if(donate.isEmpty()){
+            return R.error(NOT_FIND_ERROR_CODE,NOT_FIND_ERROR_MSG);
         }else {
             return R.ok().put("data",donate);
         }
@@ -106,11 +129,11 @@ public class DonateController {
     @ApiOperation("售出登记，传入id，donateSaleTime，donatePrice，所有需要传入时间的以2020-01-07 09:41:03格式")
     public R sold(@RequestBody DonateEntity donate){
         if(donate.getDonatePrice()==null||donate.getDonateSaleTime()==null||donate.getId()==null){
-            return R.error(1,"信息不完整");
+            return R.error(PARAM_ERROR_CODE,PARAM_ERROR_MSG);
         }
         DonateEntity donateEntity = donateService.getById(donate.getId());
         if(donateEntity==null){
-            return R.error(1,"没有找到该条记录");
+            return R.error(NOT_FIND_ERROR_CODE,NOT_FIND_ERROR_MSG);
         }
         donateEntity.setDonatePrice(donate.getDonatePrice());
         donateEntity.setDonateSaleTime(donate.getDonateSaleTime());

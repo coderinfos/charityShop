@@ -19,11 +19,11 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,shop_id,shop_id,duty_date,duty_type,duty_status,duty_submit_time
+        id,shop_id,user_id,duty_date,duty_type,duty_status,duty_submit_time
     </sql>
 
-    <select id="selectByDutyDate" resultType="org.greencode.modules.app.entity.BossEntity">
-        select id,shop_id,shop_id,duty_date,duty_type from ba_boss
+    <select id="selectByDutyDate" resultMap="bossMap">
+        select id,user_id,shop_id,duty_date,duty_type from ba_boss
         where date_format(duty_date,'%Y-%m-%d')=date_format(#{dutyDate},'%Y-%m-%d')
         and duty_type=#{dutyType}
         and duty_status=1
@@ -40,6 +40,7 @@
         select <include refid="Base_Column_List" />
         from ba_boss
         WHERE user_id=#{userId}
+        order by duty_date desc
     </select>
 
     <select id="selectNotStart" resultMap="bossMap">
@@ -47,5 +48,25 @@
         from ba_boss
         WHERE user_id=#{userId} and duty_status=1
         and TIMESTAMPDIFF(MINUTE,NOW() ,duty_date)>0;
+    </select>
+
+    <select id="selectCompleted" resultMap="bossMap">
+        SELECT  <include refid="Base_Column_List" /> FROM ba_boss
+        WHERE TO_DAYS( NOW( ) ) - TO_DAYS(duty_date) >0
+        and user_id =11
+        and duty_status=1;
+    </select>
+
+    <select id="selectTheDay" resultMap="bossMap">
+        select <include refid="Base_Column_List" />
+        from ba_boss
+        WHERE user_id=#{userId} and duty_status=1
+        and date_format(duty_date,'%Y-%m-%d')=date_format(NOW(),'%Y-%m-%d')
+    </select>
+
+    <select id="selectCancelBoss" resultMap="bossMap">
+        select <include refid="Base_Column_List" />
+        from ba_boss
+        WHERE user_id=#{userId} and duty_status=0
     </select>
 </mapper>

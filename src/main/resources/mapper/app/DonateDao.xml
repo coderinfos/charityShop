@@ -29,5 +29,15 @@
         from ba_donate
         WHERE donate_register_time is not null
         and user_id=#{userId}
+        order by donate_register_time desc
+    </select>
+    <select id="selectDonateSoldByUserId" resultMap="donateMap">
+        select <include refid="Base_Column_List" />
+        from ba_donate
+        WHERE donate_register_time is not null
+        and donate_price is not null
+        and donate_sale_time is not null
+        and user_id=#{userId}
+        order by donate_register_time desc
     </select>
 </mapper>

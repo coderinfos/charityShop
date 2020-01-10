@@ -3,6 +3,7 @@ package org.greencode.modules.app.dao;
 import org.greencode.modules.app.entity.DonateEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.greencode.modules.app.entity.HomeDonateVO;
 
 import java.util.List;
 
@@ -27,4 +28,15 @@ public interface DonateDao extends BaseMapper<DonateEntity> {
      * @return
      */
     List<DonateEntity> selectDonateSoldByUserId(Long userId);
+    /**
+     * 查询最近的五条售出记录
+     * @return
+     */
+    List<HomeDonateVO> selectRecentFive();
+    /**
+     * 查询已经提交没有登记的捐赠表
+     * @param userId
+     * @return
+     */
+    List<DonateEntity> selectUnregisteredByUserId(Long userId);
 }

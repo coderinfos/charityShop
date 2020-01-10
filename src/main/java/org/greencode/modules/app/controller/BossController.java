@@ -6,6 +6,7 @@ import java.util.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.greencode.modules.app.entity.HomeBossVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -124,7 +125,7 @@ public class BossController {
      * @param userId
      * @return
      */
-    @GetMapping("/Completed/{userId}")
+    @GetMapping("/completed/{userId}")
     @ApiOperation("通过用户id来查询排班表，筛选已完成且未取消的排班")
     public R Completed (@PathVariable("userId") Long userId) {
         if (userId == null) {
@@ -163,14 +164,25 @@ public class BossController {
         }
     }
     /**
-     * 未来三天申请店长列表
+     * 未来十四天申请店长列表
      * @return
      */
     @GetMapping("/appointmentList")
-    @ApiOperation("未来三天申请店长列表")
+    @ApiOperation("未来十四天申请店长列表")
     public R appointmentList (){
         List<BossEntity> nextThreeDay = bossService.findNextThreeDay();
         return R.ok().put("data",nextThreeDay);
+    }
+
+    /**
+     * 查询未来十四天的店长
+     * @return
+     */
+    @GetMapping("/theMonthBoss")
+    @ApiOperation("查询未来十四天的店长")
+    public R theMonthBoss (){
+        List<HomeBossVO> list = bossService.findtheMonthBoss();
+        return R.ok().put("data",list);
     }
     /**
      * 店长申请，信息保存
@@ -181,8 +193,8 @@ public class BossController {
         if(boss.getUserId()==null||boss.getShopId()==null||boss.getDutyType()==null||boss.getDutyDate()==null){
             return R.error(PARAM_ERROR_CODE,PARAM_ERROR_MSG);
         }
-        boolean find=bossService.getAppointment(boss.getDutyDate(),boss.getDutyType());
-        if(find){
+        boolean find=bossService.getAppointment(boss.getDutyDate(),boss.getDutyType(),boss.getShopId());
+        if(!find){
             return R.error(EXIST_ERROR_CODE,EXIST_ERROR_MSG);
         }
         boolean code = bossService.save(boss);

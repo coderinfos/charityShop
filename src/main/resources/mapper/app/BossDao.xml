@@ -18,6 +18,15 @@
         <result property="memo" column="memo"/>
     </resultMap>
 
+    <resultMap id="HomeBossMap" type="org.greencode.modules.app.entity.HomeBossVO">
+        <result property="userId" column="user_id"/>
+        <result property="dutyDate" column="duty_date"/>
+        <result property="dutyType" column="duty_type"/>
+        <result property="face" column="face"/>
+        <result property="faceOpen" column="face_open"/>
+    </resultMap>
+
+
     <sql id="Base_Column_List">
         id,shop_id,user_id,duty_date,duty_type,duty_status,duty_submit_time
     </sql>
@@ -27,32 +36,33 @@
         where date_format(duty_date,'%Y-%m-%d')=date_format(#{dutyDate},'%Y-%m-%d')
         and duty_type=#{dutyType}
         and duty_status=1
+        and shop_id=#{shopId}
     </select>
 
     <select id="findNextThreeDay" resultMap="bossMap">
         select <include refid="Base_Column_List" />
         from ba_boss
-        WHERE duty_date between now()+1 and ADDDATE(now()+1,INTERVAL 3 DAY)
+        where duty_date between now()+1 and ADDDATE(now()+1,INTERVAL 14 DAY)
         and duty_status=1;
     </select>
 
     <select id="selectByUserId" resultMap="bossMap">
         select <include refid="Base_Column_List" />
         from ba_boss
-        WHERE user_id=#{userId}
+        where user_id=#{userId}
         order by duty_date desc
     </select>
 
     <select id="selectNotStart" resultMap="bossMap">
         select <include refid="Base_Column_List" />
         from ba_boss
-        WHERE user_id=#{userId} and duty_status=1
+        where user_id=#{userId} and duty_status=1
         and TIMESTAMPDIFF(MINUTE,NOW() ,duty_date)>0;
     </select>
 
     <select id="selectCompleted" resultMap="bossMap">
-        SELECT  <include refid="Base_Column_List" /> FROM ba_boss
-        WHERE TO_DAYS( NOW( ) ) - TO_DAYS(duty_date) >0
+        select  <include refid="Base_Column_List" /> from ba_boss
+        where TO_DAYS( NOW( ) ) - TO_DAYS(duty_date) >0
         and user_id =11
         and duty_status=1;
     </select>
@@ -60,13 +70,21 @@
     <select id="selectTheDay" resultMap="bossMap">
         select <include refid="Base_Column_List" />
         from ba_boss
-        WHERE user_id=#{userId} and duty_status=1
+        where user_id=#{userId} and duty_status=1
         and date_format(duty_date,'%Y-%m-%d')=date_format(NOW(),'%Y-%m-%d')
     </select>
 
     <select id="selectCancelBoss" resultMap="bossMap">
         select <include refid="Base_Column_List" />
         from ba_boss
-        WHERE user_id=#{userId} and duty_status=0
+        where user_id=#{userId} and duty_status=0
+    </select>
+
+    <select id="selectTheMonthBoss" resultMap="HomeBossMap">
+        select b.user_id,b.duty_date,b.duty_type,u.face,u.face_open
+        from ba_boss b join ba_user u
+        on b.user_id=u.id
+        where b.duty_status=1
+        and date_format(b.duty_date,'%Y-%m-%d')  between date_format(now(),'%Y-%m-%d') and date_format(ADDDATE(now(),INTERVAL 14 DAY),'%Y-%m-%d');
     </select>
 </mapper>

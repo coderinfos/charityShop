@@ -3,6 +3,7 @@ package org.greencode.modules.app.dao;
 import org.greencode.modules.app.entity.BossEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.greencode.modules.app.entity.HomeBossVO;
 
 import java.util.Date;
 import java.util.List;
@@ -17,12 +18,12 @@ import java.util.List;
 @Mapper
 public interface BossDao extends BaseMapper<BossEntity> {
     /**
-     * 通过日期和上午下午来查找是否被申请
+     * 通过日期和上午下午,及分店id来查找是否被申请
      * @param dutyDate
      * @param dutyType
      * @return
      */
-    BossEntity selectByDutyDate(Date dutyDate, Integer dutyType);
+    List<BossEntity> selectByDutyDate(Date dutyDate, Integer dutyType,Long shopId);
 
     /**
      * 查询未来三天内的店长申请
@@ -58,4 +59,9 @@ public interface BossDao extends BaseMapper<BossEntity> {
      * @return
      */
     List<BossEntity> selectCancelBoss(Long userId);
+    /**
+     * 查询当月的店长排班
+     * @return
+     */
+    List<HomeBossVO> selectTheMonthBoss();
 }

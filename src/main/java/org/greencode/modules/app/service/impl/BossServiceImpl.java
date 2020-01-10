@@ -2,14 +2,13 @@ package org.greencode.modules.app.service.impl;
 
 import org.greencode.common.utils.R;
 import org.greencode.modules.app.dao.UserDao;
+import org.greencode.modules.app.entity.HomeBossVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -37,11 +36,15 @@ public class BossServiceImpl extends ServiceImpl<BossDao, BossEntity> implements
     }
 
     @Override
-    public boolean getAppointment(Date dutyDate, Integer dutyType) {
-        BossEntity bossEntity = bossDao.selectByDutyDate(dutyDate, dutyType);
-        if(bossEntity==null){
+    public boolean getAppointment(Date dutyDate, Integer dutyType,Long shopId) {
+        List<BossEntity> bossEntity = bossDao.selectByDutyDate(dutyDate, dutyType,shopId);
+        if(!bossEntity.isEmpty()){
+            if(bossEntity.size()<2){
+                return true;
+            }
             return false;
         }else {
+
             return true;
         }
     }
@@ -76,7 +79,7 @@ public class BossServiceImpl extends ServiceImpl<BossDao, BossEntity> implements
             Date start = new Date(longDate);
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-            System.out.println("显示输入的日期:" + dutyDate); //显示输入的日期
+            //System.out.println("显示输入的日期:" + dutyDate); //显示输入的日期
             Calendar cal = Calendar.getInstance();
             cal.setTime(dutyDate);
             Date time=null;
@@ -84,12 +87,12 @@ public class BossServiceImpl extends ServiceImpl<BossDao, BossEntity> implements
                 cal.add(Calendar.HOUR, 6);// 24小时制
                 time = cal.getTime();
 
-                System.out.println("显示更新后的日期:" + format.format(dutyDate));  //显示更新后的日期
+                //System.out.println("显示更新后的日期:" + format.format(dutyDate));  //显示更新后的日期
             }else if(dutyType==2){
                 cal.add(Calendar.HOUR, 5);// 24小时制
                 cal.add(Calendar.MINUTE, 30);// 24小时制
                 time = cal.getTime();
-                System.out.println("显示更新后的日期:" + format.format(dutyDate));  //显示更新后的日期
+               // System.out.println("显示更新后的日期:" + format.format(dutyDate));  //显示更新后的日期
             }
             long cha = start.getTime() - time.getTime();
             if(cha>0){
@@ -102,6 +105,11 @@ public class BossServiceImpl extends ServiceImpl<BossDao, BossEntity> implements
     @Override
     public List<BossEntity> getCancelBoss(Long userId) {
         return bossDao.selectCancelBoss(userId);
+    }
+
+    @Override
+    public List<HomeBossVO> findtheMonthBoss() {
+        return bossDao.selectTheMonthBoss();
     }
 
 }

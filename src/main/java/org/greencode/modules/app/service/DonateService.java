@@ -3,6 +3,7 @@ package org.greencode.modules.app.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.greencode.common.utils.PageUtils;
 import org.greencode.modules.app.entity.DonateEntity;
+import org.greencode.modules.app.entity.HomeDonateVO;
 
 import java.util.List;
 import java.util.Map;
@@ -31,5 +32,18 @@ public interface DonateService extends IService<DonateEntity> {
      * @return
      */
     List<DonateEntity> getSoldByUserId(Long userId);
+
+    /**
+     * 查询最近的五条售出记录
+     * @return
+     */
+    List<HomeDonateVO> getRecentFive();
+
+    /**
+     * 查询已经提交没有登记的有效捐赠表，两周内的是有效的
+     * @param userId
+     * @return
+     */
+    List<DonateEntity> getUnregisteredByUserId(Long userId);
 }
 

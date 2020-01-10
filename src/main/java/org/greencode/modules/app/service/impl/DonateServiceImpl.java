@@ -1,5 +1,6 @@
 package org.greencode.modules.app.service.impl;
 
+import org.greencode.modules.app.entity.HomeDonateVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +42,16 @@ public class DonateServiceImpl extends ServiceImpl<DonateDao, DonateEntity> impl
     @Override
     public List<DonateEntity> getSoldByUserId(Long userId) {
         return donateDao.selectDonateSoldByUserId(userId);
+    }
+
+    @Override
+    public List<HomeDonateVO> getRecentFive() {
+        return donateDao.selectRecentFive();
+    }
+
+    @Override
+    public List<DonateEntity> getUnregisteredByUserId(Long userId) {
+        return donateDao.selectUnregisteredByUserId(userId);
     }
 
 }

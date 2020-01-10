@@ -3,6 +3,7 @@ package org.greencode.modules.app.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.greencode.common.utils.PageUtils;
 import org.greencode.modules.app.entity.BossEntity;
+import org.greencode.modules.app.entity.HomeBossVO;
 
 import java.util.Date;
 import java.util.List;
@@ -20,12 +21,12 @@ public interface BossService extends IService<BossEntity> {
     PageUtils queryPage(Map<String, Object> params);
 
     /**
-     * 通过日期和上午下午查询是否已经被申请店长
+     * 通过日期和上午下午及分店id，查询是否已经被申请店长
      * @param dutyDate
      * @param dutyType
      * @return
      */
-    boolean getAppointment(Date dutyDate, Integer dutyType);
+    boolean getAppointment(Date dutyDate, Integer dutyType,Long shopId);
 
     /**
      * 查询未来三天的店长申请
@@ -57,5 +58,11 @@ public interface BossService extends IService<BossEntity> {
      * @return
      */
     List<BossEntity> getCancelBoss(Long userId);
+
+    /**
+     * 查询当月的店长排班
+     * @return
+     */
+    List<HomeBossVO> findtheMonthBoss();
 }
 

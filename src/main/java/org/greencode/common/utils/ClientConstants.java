@@ -31,10 +31,37 @@ public class ClientConstants {
     public static final int NOT_FIND_ERROR_CODE = 10002;
     public static final String NOT_FIND_ERROR_MSG = "没有找到该条记录！";
     /**
+     * 信息已存在
+     */
+    public static final int EXIST_ERROR_CODE = 10003;
+    public static final String EXIST_ERROR_MSG = "您选择的班次人数已满，请重新申请！";
+    /**
+     * 账号格式有误
+     */
+    public static final int USN_ERROR_CODE = 10004;
+    public static final String USN_ERROR_MSG = "账号长度在6-15位之间，且不能有空格！";
+    /**
+     * 密码格式有误
+     */
+    public static final int PWD_ERROR_CODE = 10005;
+    public static final String PWD_ERROR_MSG = "密码格式有误!6-16位数字和字母的组合";
+    /**
      * 手机号格式有误
      */
-    public static final int PHONE_ERROR_CODE = 10003;
+    public static final int PHONE_ERROR_CODE = 10006;
     public static final String PHONE_ERROR_MSG = "手机号格式有误！";
+
+    /**
+     *年龄格式有误
+     */
+    public static final int AGE_ERROR_CODE = 10007;
+    public static final String AGE_ERROR_MSG = "年龄格式有误，1岁--120岁！";
+
+    /**
+     *
+     */
+    public static final int NAME_ERROR_CODE = 10008;
+    public static final String NAME_ERROR_MSG = "名字格式有误，不能为空！";
 //    /**
 //     * 密码格式有误
 //     */
@@ -45,11 +72,7 @@ public class ClientConstants {
 //     */
 //    public static final int PWD_MATCH_CODE = 10005;
 //    public static final String PWD_MATCH_MSG = "两次密码不一致！";
-    /**
-     * 信息已存在
-     */
-    public static final int EXIST_ERROR_CODE = 10006;
-    public static final String EXIST_ERROR_MSG = "用户信息已存在！";
+
 //    /**
 //     * 验证码发送失败
 //     */
@@ -135,8 +158,17 @@ public class ClientConstants {
      * 正则：手机号校验
      */
     public static final String REGEX_MOBILE = "^((13[0-9])|(14[5,7,9])|(15([0-3]|[5-9]))|(166)|(17[0,1,3,5,6,7,8])|(18[0-9])|(19[8|9]))\\d{8}$";
+    /**
+     * 正则年龄校验，1岁--120岁
+     */
+    public static final String REGEX_AGE = "^(?:[1-9][0-9]?|1[01][0-9]|120)$";
+
+    /**
+     * 正则密码校验，6-16位数字和字母的组合
+     */
+    public static final String REGEX_PASSWORD = "^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$";
 //    /**
-//     * 正则：密码校验
+//     * 正则：密码校验，至少包含一个大写字母、一个小写字母和数字
 //     */
 //    public static final String REGEX_PASSWORD = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[\\s\\S]{8,16}$";
 //

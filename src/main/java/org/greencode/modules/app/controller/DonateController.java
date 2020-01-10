@@ -168,11 +168,15 @@ public class DonateController {
             DonateEntity donateEntity1 = new DonateEntity();
             donateEntity1.setUserId(donateEntity.getUserId());
             donateEntity1.setDonateSubmitTime(donateEntity.getDonateSubmitTime());
+            donateEntity.setDonateRegisterTime(donate.getDonateRegisterTime());
+            donateEntity.setShopId(donate.getShopId());
+            donateEntity.setDonateType(donate.getDonateType());
+            boolean code = donateService.updateById(donateEntity);
             for(int i =0;i<donate.getNumber()-1;i++){
                 donateEntity1.setDonateRegisterTime(donate.getDonateRegisterTime());
                 donateEntity1.setShopId(donate.getShopId());
                 donateEntity1.setDonateType(donate.getDonateType());
-                 donateService.save(donateEntity1);
+                donateService.save(donateEntity1);
 
             }
             return R.ok();

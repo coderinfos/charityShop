@@ -17,7 +17,7 @@ import org.greencode.modules.app.service.UserService;
 @Service("userService")
 public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements UserService {
     @Autowired
-    UserDao userDao;
+    private UserDao userDao;
 
     @Override
     public UserEntity getByMobilePhone(Long mobilePhone) {

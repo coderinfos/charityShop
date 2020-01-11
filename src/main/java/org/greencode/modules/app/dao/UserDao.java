@@ -4,6 +4,8 @@ import org.greencode.modules.app.entity.UserEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.Date;
+
 /**
  * 基本用户信息表
  * 
@@ -13,5 +15,6 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface UserDao extends BaseMapper<UserEntity> {
-	
+    UserEntity selectByMobilePhone(Long mobilePhone);
+
 }

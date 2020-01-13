@@ -1,7 +1,7 @@
 /**
  *
  *
- * https://shop.charityShop.org
+ *
  *
  * 版权所有，侵权必究！
  */
@@ -13,7 +13,7 @@ import lombok.Data;
 /**
  * 登录表单
  *
- * @author
+ * @author Mark sunlightcs@gmail.com
  */
 @Data
 public class SysLoginForm {

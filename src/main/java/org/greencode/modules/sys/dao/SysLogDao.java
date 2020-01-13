@@ -1,7 +1,7 @@
 /**
  *
  *
- * https://shop.charityShop.org
+ *
  *
  * 版权所有，侵权必究！
  */
@@ -16,7 +16,7 @@ import org.apache.ibatis.annotations.Mapper;
 /**
  * 系统日志
  *
- * @author
+ * @author Mark sunlightcs@gmail.com
  */
 @Mapper
 public interface SysLogDao extends BaseMapper<SysLogEntity> {

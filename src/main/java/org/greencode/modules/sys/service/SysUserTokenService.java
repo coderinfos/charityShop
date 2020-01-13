@@ -1,7 +1,7 @@
 /**
  *
  *
- * https://shop.charityShop.org
+ *
  *
  * 版权所有，侵权必究！
  */
@@ -15,7 +15,7 @@ import org.greencode.modules.sys.entity.SysUserTokenEntity;
 /**
  * 用户Token
  *
- * @author
+ * @author Mark sunlightcs@gmail.com
  */
 public interface SysUserTokenService extends IService<SysUserTokenEntity> {
 

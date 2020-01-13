@@ -1,7 +1,7 @@
 /**
  *
  *
- * https://shop.charityShop.org
+ *
  *
  * 版权所有，侵权必究！
  */
@@ -19,7 +19,7 @@ import java.util.Map;
 /**
  * 系统日志
  *
- * @author
+ * @author Mark sunlightcs@gmail.com
  */
 public interface SysLogService extends IService<SysLogEntity> {
 

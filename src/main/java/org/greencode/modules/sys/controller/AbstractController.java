@@ -1,7 +1,7 @@
 /**
  *
  *
- * https://shop.charityShop.org
+ *
  *
  * 版权所有，侵权必究！
  */
@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Controller公共组件
  *
- * @author
+ * @author Mark sunlightcs@gmail.com
  */
 public abstract class AbstractController {
 	protected Logger logger = LoggerFactory.getLogger(getClass());
@@ -27,5 +27,9 @@ public abstract class AbstractController {
 
 	protected Long getUserId() {
 		return getUser().getUserId();
+	}
+
+	protected Long getDeptId() {
+		return getUser().getDeptId();
 	}
 }

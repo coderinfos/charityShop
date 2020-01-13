@@ -1,7 +1,7 @@
 /**
  *
  *
- * https://shop.charityShop.org
+ *
  *
  * 版权所有，侵权必究！
  */
@@ -19,28 +19,17 @@ import java.util.Map;
 /**
  * 系统用户
  *
- * @author
+ * @author Mark sunlightcs@gmail.com
  */
 public interface SysUserService extends IService<SysUserEntity> {
 
 	PageUtils queryPage(Map<String, Object> params);
-
-	/**
-	 * 查询用户的所有权限
-	 * @param userId  用户ID
-	 */
-	List<String> queryAllPerms(Long userId);
 	
 	/**
 	 * 查询用户的所有菜单ID
 	 */
 	List<Long> queryAllMenuId(Long userId);
-
-	/**
-	 * 根据用户名，查询系统用户
-	 */
-	SysUserEntity queryByUserName(String username);
-
+	
 	/**
 	 * 保存用户
 	 */
@@ -50,11 +39,6 @@ public interface SysUserService extends IService<SysUserEntity> {
 	 * 修改用户
 	 */
 	void update(SysUserEntity user);
-	
-	/**
-	 * 删除用户
-	 */
-	void deleteBatch(Long[] userIds);
 
 	/**
 	 * 修改密码

@@ -1,7 +1,7 @@
 /**
  *
  *
- * https://shop.charityShop.org
+ *
  *
  * 版权所有，侵权必究！
  */
@@ -9,12 +9,15 @@
 package org.greencode.common.aspect;
 
 import com.google.gson.Gson;
+
+
 import org.greencode.common.annotation.SysLog;
-import org.greencode.common.utils.HttpContextUtils;
-import org.greencode.common.utils.IPUtils;
 import org.greencode.modules.sys.entity.SysLogEntity;
 import org.greencode.modules.sys.entity.SysUserEntity;
 import org.greencode.modules.sys.service.SysLogService;
+import org.greencode.common.utils.HttpContextUtils;
+import org.greencode.common.utils.IPUtils;
+
 import org.apache.shiro.SecurityUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -28,11 +31,10 @@ import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 import java.util.Date;
 
-
 /**
  * 系统日志，切面处理类
  *
- * @author
+ * @author Mark sunlightcs@gmail.com
  */
 @Aspect
 @Component
@@ -78,7 +80,7 @@ public class SysLogAspect {
 		//请求的参数
 		Object[] args = joinPoint.getArgs();
 		try{
-			String params = new Gson().toJson(args);
+			String params = new Gson().toJson(args[0]);
 			sysLog.setParams(params);
 		}catch (Exception e){
 

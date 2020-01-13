@@ -1,7 +1,7 @@
 /**
  *
  *
- * https://shop.charityShop.org
+ *
  *
  * 版权所有，侵权必究！
  */
@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * 系统用户
  *
- * @author
+ * @author Mark sunlightcs@gmail.com
  */
 @Mapper
 public interface SysUserDao extends BaseMapper<SysUserEntity> {
@@ -32,10 +32,5 @@ public interface SysUserDao extends BaseMapper<SysUserEntity> {
 	 * 查询用户的所有菜单ID
 	 */
 	List<Long> queryAllMenuId(Long userId);
-	
-	/**
-	 * 根据用户名，查询系统用户
-	 */
-	SysUserEntity queryByUserName(String username);
 
 }

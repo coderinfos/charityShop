@@ -1,7 +1,7 @@
 /**
  *
  *
- * https://shop.charityShop.org
+ *
  *
  * 版权所有，侵权必究！
  */
@@ -12,6 +12,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.greencode.common.utils.R;
 import org.greencode.modules.sys.dao.SysUserTokenDao;
 import org.greencode.modules.sys.entity.SysUserTokenEntity;
+//import org.greencode.modules.sys.oauth2.TokenGenerator;
 import org.greencode.modules.sys.oauth2.TokenGenerator;
 import org.greencode.modules.sys.service.SysUserTokenService;
 import org.springframework.stereotype.Service;

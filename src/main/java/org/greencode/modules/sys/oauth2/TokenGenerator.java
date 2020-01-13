@@ -1,12 +1,13 @@
 /**
  *
  *
- * https://shop.charityShop.org
+ *
  *
  * 版权所有，侵权必究！
  */
 
 package org.greencode.modules.sys.oauth2;
+
 
 import org.greencode.common.exception.RRException;
 
@@ -16,7 +17,7 @@ import java.util.UUID;
 /**
  * 生成token
  *
- * @author
+ * @author Mark sunlightcs@gmail.com
  */
 public class TokenGenerator {
 

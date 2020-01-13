@@ -1,7 +1,7 @@
 /**
  *
  *
- * https://shop.charityShop.org
+ *
  *
  * 版权所有，侵权必究！
  */
@@ -11,7 +11,7 @@ package org.greencode.common.utils;
 /**
  * 系统参数相关Key
  *
- * @author
+ * @author Mark sunlightcs@gmail.com
  */
 public class ConfigConstant {
     /**

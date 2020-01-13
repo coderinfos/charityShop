@@ -1,12 +1,13 @@
 /**
  *
  *
- * https://shop.charityShop.org
+ *
  *
  * 版权所有，侵权必究！
  */
 
 package org.greencode.modules.sys.service;
+
 
 import org.greencode.modules.sys.entity.SysUserEntity;
 import org.greencode.modules.sys.entity.SysUserTokenEntity;
@@ -16,7 +17,7 @@ import java.util.Set;
 /**
  * shiro相关接口
  *
- * @author
+ * @author Mark sunlightcs@gmail.com
  */
 public interface ShiroService {
     /**

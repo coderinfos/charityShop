@@ -1,7 +1,7 @@
 /**
  *
  *
- * https://shop.charityShop.org
+ *
  *
  * 版权所有，侵权必究！
  */
@@ -17,7 +17,7 @@ import java.lang.annotation.Target;
 /**
  * 系统日志注解
  *
- * @author
+ * @author Mark sunlightcs@gmail.com
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)

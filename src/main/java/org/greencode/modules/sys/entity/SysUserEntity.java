@@ -1,7 +1,7 @@
 /**
  *
  *
- * https://shop.charityShop.org
+ *
  *
  * 版权所有，侵权必究！
  */
@@ -11,12 +11,14 @@ package org.greencode.modules.sys.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.greencode.common.validator.group.AddGroup;
 import org.greencode.common.validator.group.UpdateGroup;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -24,7 +26,7 @@ import java.util.List;
 /**
  * 系统用户
  *
- * @author
+ * @author Mark sunlightcs@gmail.com
  */
 @Data
 @TableName("sys_user")
@@ -47,6 +49,7 @@ public class SysUserEntity implements Serializable {
 	 * 密码
 	 */
 	@NotBlank(message="密码不能为空", groups = AddGroup.class)
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String password;
 
 	/**
@@ -70,7 +73,7 @@ public class SysUserEntity implements Serializable {
 	 * 状态  0：禁用   1：正常
 	 */
 	private Integer status;
-
+	
 	/**
 	 * 角色ID列表
 	 */
@@ -78,13 +81,19 @@ public class SysUserEntity implements Serializable {
 	private List<Long> roleIdList;
 
 	/**
-	 * 创建者ID
-	 */
-	private Long createUserId;
-
-	/**
 	 * 创建时间
 	 */
 	private Date createTime;
 
+	/**
+	 * 部门ID
+	 */
+	@NotNull(message="部门不能为空", groups = {AddGroup.class, UpdateGroup.class})
+	private Long deptId;
+
+	/**
+	 * 部门名称
+	 */
+	@TableField(exist=false)
+	private String deptName;
 }

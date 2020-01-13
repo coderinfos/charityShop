@@ -1,7 +1,7 @@
 /**
  *
  *
- * https://shop.charityShop.org
+ *
  *
  * 版权所有，侵权必究！
  */
@@ -20,7 +20,7 @@ import java.util.Date;
 /**
  * 系统用户Token
  *
- * @author
+ * @author Mark sunlightcs@gmail.com
  */
 @Data
 @TableName("sys_user_token")

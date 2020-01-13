@@ -30,6 +30,7 @@ charityShop
 ├──resources 
 │  ├─mapper SQL对应的XML文件
 │  └─static 静态资源
+│  └─templates 后台管理系统页面
 
 ```
 <br> 
@@ -55,6 +56,15 @@ charityShop
 - Eclipse、IDEA运行charityShopApplication.java，则可启动项目
 - Swagger文档路径：http://localhost:8080/charityShop/swagger/index.html
 - Swagger注解路径：http://localhost:8080/charityShop/swagger-ui.html ,项目访问此路径
+<br> 
+
+ **后台管理系统部署**
+- 执行db/bbalt.sql文件，初始化数据，里面包含后台管理员信息、页面目录等
+- 修改application-dev.yml，更新MySQL账号和密码
+- Eclipse、IDEA运行charityShopApplication.java，则可启动项目
+- 后台管理系统访问路径：hhttp://localhost:8080/charityShop/
+- 登录账号密码：admin/admin
+- 后台管理系统的页面统一目录：\resources\templates\modules\app\
 <br> 
 
 

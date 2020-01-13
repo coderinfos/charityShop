@@ -5,9 +5,7 @@ import java.util.regex.Pattern;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpStatus;
 
 import org.greencode.modules.app.entity.DonateDTO;
 import org.greencode.modules.app.entity.HomeDonateVO;
@@ -22,8 +20,8 @@ import org.greencode.modules.app.service.DonateService;
 import org.greencode.common.utils.PageUtils;
 import org.greencode.common.utils.R;
 
-import static org.greencode.common.utils.ClientConstants.*;
-import static org.greencode.common.utils.ClientConstants.NOT_FIND_ERROR_MSG;
+import static org.greencode.common.constant.ClientConstants.*;
+import static org.greencode.common.constant.ClientConstants.NOT_FIND_ERROR_MSG;
 
 
 /**
@@ -158,20 +156,16 @@ public class DonateController {
         //
         DonateEntity donateEntity = list.get(0);
         //如果传过来的number大于1则要创建相同用户id和提交时间的记录
+        donateEntity.setDonateRegisterTime(donate.getDonateRegisterTime());
+        donateEntity.setShopId(donate.getShopId());
+        donateEntity.setDonateType(donate.getDonateType());
+        boolean code = donateService.updateById(donateEntity);
         if(donate.getNumber()==1){
-            donateEntity.setDonateRegisterTime(donate.getDonateRegisterTime());
-            donateEntity.setShopId(donate.getShopId());
-            donateEntity.setDonateType(donate.getDonateType());
-            boolean code = donateService.updateById(donateEntity);
             return common(code);
         }else {
             DonateEntity donateEntity1 = new DonateEntity();
             donateEntity1.setUserId(donateEntity.getUserId());
             donateEntity1.setDonateSubmitTime(donateEntity.getDonateSubmitTime());
-            donateEntity.setDonateRegisterTime(donate.getDonateRegisterTime());
-            donateEntity.setShopId(donate.getShopId());
-            donateEntity.setDonateType(donate.getDonateType());
-            boolean code = donateService.updateById(donateEntity);
             for(int i =0;i<donate.getNumber()-1;i++){
                 donateEntity1.setDonateRegisterTime(donate.getDonateRegisterTime());
                 donateEntity1.setShopId(donate.getShopId());

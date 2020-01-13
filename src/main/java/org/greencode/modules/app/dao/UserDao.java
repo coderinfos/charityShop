@@ -15,6 +15,17 @@ import java.util.Date;
  */
 @Mapper
 public interface UserDao extends BaseMapper<UserEntity> {
+    /**
+     * 通过电话来查询用户
+     * @param mobilePhone
+     * @return
+     */
     UserEntity selectByMobilePhone(Long mobilePhone);
 
+    /**
+     * 通过微信id来查询用户
+     * @param wechatId
+     * @return
+     */
+    UserEntity selectByWechatId(String wechatId);
 }

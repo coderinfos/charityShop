@@ -32,8 +32,16 @@
         <result property="memo" column="memo"/>
     </resultMap>
 
+    <sql id="Base_Column_List">
+        id,user_name,pass_word,face,face_open,nick_name,nick_name_open,real_name,real_name_open,sex,sex_open,age,age_open,mobile_phone,mobile_phone_open,signature_line,signature_line_open,
+        wechat_id,verification_code,reg_time
+    </sql>
+
     <select id="selectByMobilePhone" resultType="org.greencode.modules.app.entity.UserEntity" >
         select id,user_name,nick_name,sex,age from ba_user where mobile_phone=#{mobilePhone}
     </select>
 
+    <select id="selectByWechatId" resultType="org.greencode.modules.app.entity.UserEntity" >
+        select <include refid="Base_Column_List" /> from ba_user where wechat_id=#{wechatId}
+    </select>
 </mapper>

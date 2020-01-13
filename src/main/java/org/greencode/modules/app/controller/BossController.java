@@ -15,14 +15,14 @@ import org.greencode.modules.app.service.BossService;
 import org.greencode.common.utils.PageUtils;
 import org.greencode.common.utils.R;
 
-import static org.greencode.common.utils.ClientConstants.PARAM_ERROR_CODE;
-import static org.greencode.common.utils.ClientConstants.PARAM_ERROR_MSG;
-import static org.greencode.common.utils.ClientConstants.NOT_FIND_ERROR_CODE;
-import static org.greencode.common.utils.ClientConstants.NOT_FIND_ERROR_MSG;
-import static org.greencode.common.utils.ClientConstants.CANCEL_TIME_CODE;
-import static org.greencode.common.utils.ClientConstants.CANCEL_TIME_MSG;
-import static org.greencode.common.utils.ClientConstants.EXIST_ERROR_CODE;
-import static org.greencode.common.utils.ClientConstants.EXIST_ERROR_MSG;
+import static org.greencode.common.constant.ClientConstants.PARAM_ERROR_CODE;
+import static org.greencode.common.constant.ClientConstants.PARAM_ERROR_MSG;
+import static org.greencode.common.constant.ClientConstants.NOT_FIND_ERROR_CODE;
+import static org.greencode.common.constant.ClientConstants.NOT_FIND_ERROR_MSG;
+import static org.greencode.common.constant.ClientConstants.CANCEL_TIME_CODE;
+import static org.greencode.common.constant.ClientConstants.CANCEL_TIME_MSG;
+import static org.greencode.common.constant.ClientConstants.EXIST_ERROR_CODE;
+import static org.greencode.common.constant.ClientConstants.EXIST_ERROR_MSG;
 /**
  * 店长排班表
  *

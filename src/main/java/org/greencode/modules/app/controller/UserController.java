@@ -4,14 +4,10 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import cn.hutool.core.util.StrUtil;
-import com.sun.org.apache.bcel.internal.generic.RETURN;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.HttpStatus;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,8 +16,8 @@ import org.greencode.modules.app.service.UserService;
 import org.greencode.common.utils.PageUtils;
 import org.greencode.common.utils.R;
 
-import static org.greencode.common.utils.ClientConstants.*;
-import static org.greencode.common.utils.ClientConstants.NOT_FIND_ERROR_MSG;
+import static org.greencode.common.constant.ClientConstants.*;
+import static org.greencode.common.constant.ClientConstants.NOT_FIND_ERROR_MSG;
 
 
 /**

@@ -1,4 +1,4 @@
-package org.greencode.common.utils;
+package org.greencode.common.constant;
 
 
 
@@ -131,10 +131,10 @@ public class ClientConstants {
 //
 //
 //    public static final String NULL = "null";
-//    /**
-//     * map集合 初始化大小
-//     */
-//    public static final int MAP_INIT_NUM = 16;
+    /**
+     * map集合 初始化大小
+     */
+    public static final int MAP_INIT_NUM = 16;
 //    /**
 //     * 微信手机号（不含区号）判断标识
 //     */

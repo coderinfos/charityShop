@@ -21,5 +21,56 @@
         <result property="memo" column="memo"/>
     </resultMap>
 
+    <resultMap id="HomeDonateMap" type="org.greencode.modules.app.entity.HomeDonateVO">
+        <result property="nickName" column="nick_name"/>
+        <result property="nickNameOpen" column="nick_name_open"/>
+        <result property="face" column="face"/>
+        <result property="faceOpen" column="face_open"/>
+        <result property="userId" column="user_id"/>
+        <result property="donateType" column="donate_type"/>
+        <result property="donatePrice" column="donate_price"/>
+        <result property="donateSaleTime" column="donate_sale_time"/>
+    </resultMap>
 
+
+    <sql id="Base_Column_List">
+       id,user_id,shop_id,donate_name,donate_type,donate_image,donate_price,donate_submit_time,donate_register_time,donate_sale_time,operator,operation_time,operator_ip,memo
+    </sql>
+
+    <select id="selectDonateByUserId" resultMap="donateMap">
+        select <include refid="Base_Column_List" />
+        from ba_donate
+        WHERE donate_register_time is not null
+        and user_id=#{userId}
+        order by donate_register_time desc
+    </select>
+    <select id="selectDonateSoldByUserId" resultMap="donateMap">
+        select <include refid="Base_Column_List" />
+        from ba_donate
+        WHERE donate_register_time is not null
+        and donate_price is not null
+        and donate_sale_time is not null
+        and user_id=#{userId}
+        order by donate_register_time desc
+    </select>
+
+    <select id="selectRecentFive" resultMap="HomeDonateMap">
+        select u.nick_name,u.nick_name_open,u.face,u.face_open,d.user_id,d.donate_type,d.donate_price,d.donate_sale_time
+        from ba_donate d join ba_user u
+        on d.user_id=u.id
+        WHERE d.donate_register_time is not null
+        and d.donate_price is not null
+        and d.donate_sale_time is not null
+        order by d.donate_sale_time desc
+        limit 0,5;
+    </select>
+
+    <select id="selectUnregisteredByUserId" resultMap="donateMap">
+        select <include refid="Base_Column_List" />
+        from ba_donate
+        where user_id=#{userId}
+        and donate_register_time is null
+        and date_format(now(),'%Y-%m-%d')  between date_format(donate_submit_time,'%Y-%m-%d') and date_format(ADDDATE(donate_submit_time,INTERVAL 14 DAY),'%Y-%m-%d')
+        order by donate_submit_time asc
+    </select>
 </mapper>

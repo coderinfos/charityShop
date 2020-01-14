@@ -1,99 +1,296 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>店长排班表</title>
-		<#include "/header.html">
+    <meta charset="utf-8">
+    <title>教师列表</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="${request.contextPath}/statics/plugins/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="${request.contextPath}/statics/layuiadmin/style/admin.css" media="all">
 </head>
 <body>
-<div id="rrapp" v-cloak>
-    <div v-show="showList">
-        <div class="grid-btn">
-			<#if shiro.hasPermission("sys:boss:save")>
-            <a class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
-			</#if>
-			<#if shiro.hasPermission("sys:boss:update")>
-            <a class="btn btn-primary" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;修改</a>
-			</#if>
-			<#if shiro.hasPermission("sys:boss:delete")>
-            <a class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
-			</#if>
-        </div>
-        <table id="jqGrid"></table>
-        <div id="jqGridPager"></div>
-    </div>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">教师列表</div>
+                <div class="layui-card-body">
+                    <div class="layui-form toolbar">
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <input id="teaPhone" class="layui-input" type="text" placeholder="手机号码"/>
+                            </div>
+                            <div class="layui-inline">
+                                <button id="btnSearch" class="layui-btn icon-btn"><i class="layui-icon">&#xe615;</i>搜索</button>
 
-    <div v-show="!showList" class="panel panel-default">
-        <div class="panel-heading">{{title}}</div>
-        <form class="form-horizontal">
-														                    <div class="form-group">
-                        <div class="col-sm-2 control-label">捐赠人id</div>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="boss.userId" placeholder="捐赠人id"/>
+                                <button id="projectAdd" class="layui-btn" data-type="projectAdd"><i class="layui-icon"  data-type="projectAdd">&#xe654;</i>添加</button>
+
+                                <button id="exportExcel"  name="exportExcel" class="layui-btn icon-btn"><i class="layui-icon">&#xe67d;</i>导出</button>
+                            </div>
                         </div>
                     </div>
-											                    <div class="form-group">
-                        <div class="col-sm-2 control-label">报名分店id</div>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="boss.shopId" placeholder="报名分店id"/>
-                        </div>
-                    </div>
-											                    <div class="form-group">
-                        <div class="col-sm-2 control-label">值班日期</div>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="boss.dutyDate" placeholder="值班日期"/>
-                        </div>
-                    </div>
-											                    <div class="form-group">
-                        <div class="col-sm-2 control-label">1早班2晚班</div>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="boss.dutyType" placeholder="1早班2晚班"/>
-                        </div>
-                    </div>
-											                    <div class="form-group">
-                        <div class="col-sm-2 control-label">0为false,1为true审核通过(默认自动</div>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="boss.dutyStatus" placeholder="0为false,1为true审核通过(默认自动"/>
-                        </div>
-                    </div>
-											                    <div class="form-group">
-                        <div class="col-sm-2 control-label"></div>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="boss.dutySubmitTime" placeholder=""/>
-                        </div>
-                    </div>
-											                    <div class="form-group">
-                        <div class="col-sm-2 control-label"></div>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="boss.operator" placeholder=""/>
-                        </div>
-                    </div>
-											                    <div class="form-group">
-                        <div class="col-sm-2 control-label"></div>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="boss.operationTime" placeholder=""/>
-                        </div>
-                    </div>
-											                    <div class="form-group">
-                        <div class="col-sm-2 control-label"></div>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="boss.operatorIp" placeholder=""/>
-                        </div>
-                    </div>
-											                    <div class="form-group">
-                        <div class="col-sm-2 control-label"></div>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="boss.memo" placeholder=""/>
-                        </div>
-                    </div>
-							            <div class="form-group">
-                <div class="col-sm-2 control-label"></div>
-                <input type="button" class="btn btn-primary" id="btnSaveOrUpdate" data-loading-text="保存中..." @click="saveOrUpdate" value="确定"/>
-                &nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
+                    <table class="layui-hide" id="table1" lay-filter="user-table-autowidth"></table>
+                    <div id="user-laypage"></div>
+                </div>
             </div>
-        </form>
+        </div>
     </div>
 </div>
+<script src="${request.contextPath}/statics/layuiadmin/layui/layui.js"></script>
+<script th:inline="none">
+    layui.config({
+        //静态资源所在路径
+        base: '${request.contextPath}/statics/layuiadmin/'
+    }).extend({
+        //主入口模块
+        index: 'lib/index',
+        excel: 'layui_exts/excel'
+    }).use(['excel','index','table','layer','jquery','element'], function () {
+        var $ = layui.jquery;
+        var table = layui.table;
+        var layer = layui.layer;
+        var excel = layui.excel;
+        searchBtn();
+        showElement(1,10);
 
-<script src="${request.contextPath}/statics/js/modules/sys/boss.js?_${.now?long}"></script>
+        $('#exportExcel').on('click', function(){
+            // 模拟从后端接口读取需要导出的数据
+            $.ajax({
+                url: layui.data(layui.setter.tableName)['admin_host'] + '/admin/user/findAllTeacher?page=1&limit=999999999&teaPhone='
+                ,dataType: 'json'
+                ,success(res) {
+                    var data = res.data;
+                    console.log(res);
+                    // 重点！！！如果后端给的数据顺序和映射关系不对，请执行梳理函数后导出
+                    data = excel.filterExportData(data, [
+                        'teaId'
+                        ,'teaPhone'
+                        ,'inviteCode'
+                        ,'teaHead'
+                        ,'integral'
+                        ,'isAuth'
+                        ,'realName'
+                        ,'authFile'
+                        ,'organizationId'
+                        ,'profile'
+                        ,'expertise'
+                        ,'score'
+                        ,'speciality'
+                        ,'teaSite'
+                        ,'teaAge'
+                        ,'gradeId'
+                        ,'totalDay'
+                        ,'totalTime'
+                        ,'createTime'
+                    ]);
+                    // 重点2！！！一般都需要加一个表头，表头的键名顺序需要与最终导出的数据一致
+                    data.unshift({ teaId: "教师Id", teaPhone: "手机号（登入账号）",inviteCode: '邀请码',teaHead: '教师头像',
+                        integral: "积分余额",isAuth: "是否认证：0为未认证，1为认证中，2为已认证",
+                        realName: '真实姓名',authFile: '认证文件',organizationId: '机构ID',profile: '个人简介',
+                        expertise: '个人专长',score: '评分',speciality: '专业',
+                        teaSite: '所在地',teaAge: '教龄',gradeId: '等级ID',totalDay: '累计上线天数',totalTime: '制定计划时间'
+                        ,createTime: '创建时间'});
+                    var timeStart = Date.now();
+                    excel.exportExcel(data, '教师列表'+timeStart+'.xlsx', 'xlsx');
+                }
+                ,error() {
+                    layer.alert('获取数据失败，请检查是否部署在本地服务器环境下');
+                }
+            });
+        });
+
+        //监听单元格编辑
+        layui.table.on('tool(user-table-autowidth)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'del') {
+                layer.confirm('确认删除该教师吗？', function (obj) {
+
+                    layui.$.ajax({
+                        type: 'POST',
+                        url: '/admin/user/deletedTeacher',
+                        data: {
+                            'teaId':data.teaId
+                        },
+                        success: function (res) {
+                            if (res['code']===0){
+                                layer.msg("已删除");
+                                table.reload('table1');
+                            }else{
+                                layer.msg(res.msg === null ? "error" : res.msg);
+                            }
+                        }
+                    })
+                });
+            } else if (obj.event === 'edit') {
+                var index = layer.open({
+                    type: 2,
+                    content: 'teacher_edit',
+                    area: ['700px', '600px'],
+                    maxmin: true,
+                    title: '编辑项目',
+                    success: function (layero, index) {
+                        var body = layer.getChildFrame('body', index);
+                        body.contents().find("#teaId").val(data.teaId);
+                        body.contents().find("#realName").val(data.realName);
+                        body.contents().find("#organizationId").val(data.organizationId);
+                        body.contents().find("#gradeId").val(data.gradeId);
+                        body.contents().find("#score").val(data.score);
+                        body.contents().find("#totalDay").val(data.totalDay);
+                        body.contents().find("#totalTime").val(data.totalTime);
+                        body.contents().find("#integral").val(data.integral);
+                    }
+                });
+            }else if(obj.event === 'detail') {
+                layer.open({
+                    type: 2,
+                    content: 'teacher_detail',
+                    area: ['50%', '75%'],
+                    maxmin: true,
+                    title: '教师详情',
+                    success:function (layero, index) {
+                        var body = layer.getChildFrame('body', index);
+                        body.contents().find("#teaId").val(data.teaId);
+                    }
+                });
+            }
+        });
+
+        /* 触发弹层 */
+        var active = {
+            projectAdd: function () {
+                layer.open({
+                    type: 2,
+                    content: 'teacher_add',
+                    area: ['700px', '600px'],
+                    maxmin: true,
+                    title: '新增项目'
+                });
+            }
+        };
+
+
+        layui.$(' .layui-inline .layui-btn').on('click', function () {
+            var type = layui.$(this).data('type');
+            active[type] && active[type].call(this);
+        });
+    });
+
+
+    function show_img(t) {
+        var t = layui.$(t).find("img");
+        //页面层
+        layui.layer.open({
+            type: 1,
+            skin: 'layui-layer-rim', //加上边框
+            area: ['500px', '300px'], //宽高
+            shadeClose: true, //开启遮罩关闭
+            end: function (index, layero) {
+                return false;
+            },
+            content: '<div style="text-align:center"><img src="' + layui.$(t).attr('src') + '" /></div>'
+        });
+    }
+
+    function show_img2(t) {
+        var t = layui.$(t).find("img");
+        var auth = layui.$(t).attr('name');
+        if (auth.indexOf(";") == -1) {
+            layui.layer.open({
+                type: 1,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['500px', '350px'], //宽高
+                shadeClose: true, //开启遮罩关闭
+                end: function (index, layero) {
+                    return false;
+                },
+                content: '<div style="text-align:center"><img width="300px" height="200px" src="' + layui.$(t).attr('src') + '" /></div>'
+            });
+        }else {
+            layer.open({
+                type: 2,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['500px', '350px'], //宽高
+                shadeClose: true, //开启遮罩关闭
+                content: 'teacher_carousel',
+                success:function (layero, index) {
+                    var body = layer.getChildFrame('body', index);
+                    body.contents().find("#auth").val(auth);
+                }
+            });
+        }
+    }
+    var teaPhone = "";
+    function searchBtn() {
+        $("#btnSearch").bind('click', function () {
+            teaPhone = $("#teaPhone").val();
+            initTable();
+        })
+
+    }
+    function initTable() {
+        showElement();
+    }
+
+    function showElement(pageNum,pageSize) {
+        var table = layui.table,
+            laypage = layui.laypage;
+        layui.element.render();
+        table.render({
+            elem: '#table1',
+            url: layui.data(layui.setter.tableName)['admin_host'] + '/admin/user/findAllTeacher?pageNum='+pageNum+"&pageSize="+pageSize+"&teaPhone="+teaPhone,
+            method: 'GET',
+            // toolbar: true,
+            title: '教师列表',
+            // totalRow: true,
+            //高度最大适应B
+            // height: 'full-100',
+            cellMinWidth: 80,
+            // response: {statusCode: 200},
+            page: true,
+            cols: [[
+                {field: 'number', title: '序号', align: 'center',type:'numbers'},
+                {field: 'teaId', title: 'ID',sort: true, align: 'center'},
+                {field: 'teaPhone', title: '账号',align: 'center'},
+                {field: 'realName', title: '真实姓名',align: 'center'},
+                {field: 'teaHead', title: '头像',align: 'center',templet:function (d) {
+                        return '<div onclick="show_img(this)"><img src="'+d.teaHead+'" width="50px" height="50px"/></div>';
+                    }},
+                {field: 'authFile', title: '认证文件',align: 'center',templet:function (d) {
+                        let authFile = d.authFile;
+                        let auth;
+                        if (authFile.indexOf(";") == -1) {
+                            auth = authFile;
+                        }else{
+                            auth = authFile.split(";")[0];
+                        }
+                        return '<div onclick="show_img2(this)"><img src="'+auth+'" name="'+d.authFile+'" width="50px" height="50px"/></div>';
+                    }},
+                {field: 'teaAge', title: '教龄',align: 'center'},
+                {field: 'teaSite', title: '所在地',align: 'center'},
+                {field: 'organizationName', title: '所属机构',align: 'center'},
+                {field: 'integral', title: '积分余额',align: 'center'},
+                {field: 'score', title: '评分',align: 'center'},
+                {field: 'isAuth', title: '认证',align: 'center',templet:function(d){
+                        if(d.isAuth===0) {
+                            return '未认证';
+                        } else if(d.isAuth===1) {
+                            return '认证中';
+                        } else if(d.isAuth===2) {
+                            return '已认证';
+                        }
+                    }},
+                {fixed: 'right', title: '操作', toolbar: '#barDemo',align: 'center',width:200}
+            ]]
+        });
+    }
+
+</script>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+    <!--<a class="layui-btn layui-btn layui-btn-xs" lay-event="edit">编辑</a>-->
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
 </body>
 </html>

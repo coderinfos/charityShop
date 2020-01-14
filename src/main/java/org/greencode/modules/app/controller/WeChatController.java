@@ -9,23 +9,24 @@ import com.alibaba.fastjson.JSONObject;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 
+import org.greencode.common.utils.IPUtils;
 import org.greencode.common.utils.R;
 import org.greencode.common.utils.UrlUtil;
 import org.greencode.modules.app.entity.AdminUserEntity;
 import org.greencode.modules.app.entity.UserEntity;
 import org.greencode.modules.app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -39,6 +40,7 @@ import static org.greencode.common.constant.ClientConstants.*;
  */
 @RestController
 @RequestMapping("/api/wechat/")
+@Api(tags = "微信接口")
 @Slf4j
 public class WeChatController {
 
@@ -51,7 +53,8 @@ public class WeChatController {
      * @return
      */
     @PostMapping("getOpenId")
-    public JSONObject getOpenIdAndSessionKey(String code) {
+    @ApiOperation("传入code获取OpenId")
+    public JSONObject getOpenIdAndSessionKey(@RequestBody String code) {
         log.info("code:{}", code);
         if (code == null) {
             JSONObject jsonObject = new JSONObject();
@@ -91,90 +94,83 @@ public class WeChatController {
         return jsonObject;
     }
 
-//    /**
-//     * 第三方（微信授权登入）
-//     * @param openId
-//     * @return
-//     */
-//    @PostMapping("login")
-//    public R login(String openId) {
-//        log.info("openId:{}", openId);
-//        if (StrUtil.isEmpty(openId)) {
-//            log.info("param is null");
-//            return R.error(PARAM_ERROR_CODE,PARAM_ERROR_MSG);
-//        } else {
-//            log.info("param is not null");
-//            UserEntity userEntity = userService.getByWechatId(openId);
-//            //登录的时候修改上次登录的时间和最后登录的时间
-//
-//            if (userEntity.getPreLoginTime()==null) {
-//
-//            }
-//            //如果要传token那么这里应该创建一个token
-//            Map<String, Object> resMap = new HashMap<>(MAP_INIT_NUM);
-//            resMap.put("token", token);
-//            resMap.put("teaId", teacher.getTeaId());
-//            resMap.put("isAuth", teacher.getIsAuth());
-//            return new Response<>(1, "not first login", resMap);
-//        }
-//
-//    }
-//
-//
-//    @GetMapping("getParent")
-//    public Response getParent(HttpServletRequest request) {
-//        Integer studentId = (Integer) request.getSession().getAttribute("studentId");
-//        if (studentId == null) {
-//            return new Response<>(COMMON_ERROR_CODE,"学生ID为空") ;
-//        }
-//        List<ParentDo> list = parentMapper.selectByStudentId(studentId);
-//        if (list.size() >= 4) {
-//            return new Response<>(COMMON_ERROR_CODE,"绑定数量已达上限")  ;
-//        }
-//        log.info("回调成功");
-//        String code = request.getParameter("code");
-//        String appID = "wx5e6bd2d27e9f07d2";
-//        String appsecret = "f57eb7bbb4d3d862e630117e2af8460c";
-//        String url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" + appID +
-//                "&secret=" + appsecret + "&code=" + code + "&grant_type=authorization_code";
-//        cn.hutool.json.JSONObject jsonObject = JSONUtil.parseObj(HttpUtil.get(url));
+    /**
+     * 第三方（微信授权登入）,因为要获取ip，所以要传request,带openId
+     * @param request
+     * @return
+     */
+    @PostMapping("login")
+    @ApiOperation("第三方（微信授权登入）,因为要获取ip，所以要传request,带openId")
+    public R login(HttpServletRequest request) throws ParseException {
+        String openId = (String) request.getSession().getAttribute("openId");
+        //获取ip
+        String ipAddr = IPUtils.getIpAddr(request);
+        log.info("openId:{}", openId);
+        if (StrUtil.isEmpty(openId)) {
+            log.info("param is null");
+            return R.error(PARAM_ERROR_CODE,PARAM_ERROR_MSG);
+        } else {
+            log.info("param is not null");
+            UserEntity userEntity = userService.getByWechatId(openId);
+            //获取当前时间
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+            Date now = new Date();
+            String time = sdf.format(now);
+            Date parse = sdf.parse(time);
+            //登录的时候修改上次登录的时间和最后登录的时间
+            if (userEntity.getPreLoginTime()==null) {
+                //第一次登录，生成当前时间并存入
+                userEntity.setPreLoginTime(parse);
+                userEntity.setLastLoginIp(ipAddr);
+                userEntity.setPreLoginIp(ipAddr);
+
+            }else {
+                userEntity.setPreLoginTime(userEntity.getLastLoginTime());
+                userEntity.setPreLoginIp(userEntity.getPreLoginIp());
+                userEntity.setLastLoginTime(parse);
+            }
+            //如果要传token那么这里应该创建一个token
+            Map<String, Object> resMap = new HashMap<>(MAP_INIT_NUM);
+            //resMap.put("token", token);
+            resMap.put("id", userEntity.getId());
+            return R.ok(resMap);
+        }
+
+    }
+
+
+    @GetMapping("register")
+    @ApiOperation("传入openId,nickName,face,sex,mobilePhone保存到数据库")
+    public R register(@RequestBody JSONObject jsonObject) throws ParseException {
+
+
+        //获取当前时间
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+        Date now = new Date();
+        String time = sdf.format(now);
+        Date parse = sdf.parse(time);
+
 //        String openid = jsonObject.get("openid").toString();
-//        ParentDo parentDo = parentMapper.selectByOpenId(openid, studentId);
-//        //是否绑定过
-//        if (parentDo != null) {
-//            //是否解绑过
-//            if (parentDo.getDeleted()==1){
-//                parentMapper.recover(parentDo.getParentId());
-//                return new Response<>(COMMON_ERROR_CODE,"绑定成功");
-//            }
-//            return new Response<>(COMMON_ERROR_CODE,"您已绑定过");
-//        }
 //        String access_token = jsonObject.get("access_token").toString();
 //        String getUserURL = "https://api.weixin.qq.com/sns/userinfo?access_token=" + access_token + "&openid=" + openid + "&lang=zh_CN";
-////        String getUserURL = "https://api.weixin.qq.com/cgi-bin/user/info?access_token="+ access_token +"&openid="+openid+"&lang=zh_CN" ;
+//       String getUserURL = "https://api.weixin.qq.com/cgi-bin/user/info?access_token="+ access_token +"&openid="+openid+"&lang=zh_CN" ;
 //        cn.hutool.json.JSONObject user = JSONUtil.parseObj(HttpUtil.get(getUserURL));
-//        System.out.println(user);
-//        ParentDo parent = new ParentDo();
-//        parent.setOpenId(openid);
-//        parent.setNickname(user.get("nickname").toString());
-//        parent.setParentHead(user.get("headimgurl").toString());
-//        parent.setSex((Integer) user.get("sex"));
-//        parent.setStudentId(studentId);
-//        parent.setCountry(user.get("country").toString());
-//        parent.setProvince(user.get("province").toString());
-//        parent.setCity(user.get("city").toString());
-//        Integer count = parentMapper.insert(parent);
-//        if (count == 0) {
-//            return new Response<>(COMMON_ERROR_CODE,"绑定失败");
-//        } else {
-//            //第一次绑定家长  加50积分
-//            if (parentMapper.isFirst(studentId)==1){
-//                studentMapper.addIntegral(studentId,50);
-//            }
-//            return new Response<>(COMMON_ERROR_CODE,"绑定成功");
-//        }
-//    }
+        UserEntity userEntity = new UserEntity();
+        userEntity.setWechatId(jsonObject.get("openId").toString());
+        userEntity.setNickName(jsonObject.get("nickName").toString());
+        userEntity.setFace(jsonObject.get("face").toString());
+        userEntity.setSex(((Integer) jsonObject.get("sex")==1)?1:0);
+        userEntity.setMobilePhone((Long) jsonObject.get("mobilePhone"));
+        boolean code = userService.save(userEntity);
+        return common(code);
+    }
 
 
-
+    public R common(boolean code){
+        if(code){
+            return R.ok();
+        }else {
+            return R.error();
+        }
+    }
 }

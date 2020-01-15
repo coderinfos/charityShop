@@ -19,6 +19,8 @@ import org.greencode.modules.app.dao.BossDao;
 import org.greencode.modules.app.entity.BossEntity;
 import org.greencode.modules.app.service.BossService;
 
+import static org.greencode.common.utils.DateUtils.DATE_TIME_PATTERN;
+
 
 @Service("bossService")
 public class BossServiceImpl extends ServiceImpl<BossDao, BossEntity> implements BossService {
@@ -77,7 +79,7 @@ public class BossServiceImpl extends ServiceImpl<BossDao, BossEntity> implements
             Date dutyDate = bossEntity.getDutyDate();
             long longDate = System.currentTimeMillis();
             Date start = new Date(longDate);
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat format = new SimpleDateFormat(DATE_TIME_PATTERN);
 
             //System.out.println("显示输入的日期:" + dutyDate); //显示输入的日期
             Calendar cal = Calendar.getInstance();

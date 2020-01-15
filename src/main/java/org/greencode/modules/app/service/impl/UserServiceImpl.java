@@ -25,6 +25,12 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
     }
 
     @Override
+    public UserEntity getByWechatId(String wechatId) {
+        return userDao.selectByWechatId(wechatId);
+    }
+
+
+    @Override
     public PageUtils queryPage(Map<String, Object> params) {
         IPage<UserEntity> page = this.page(
                 new Query<UserEntity>().getPage(params),

@@ -22,6 +22,13 @@ public interface UserService extends IService<UserEntity> {
      */
     UserEntity getByMobilePhone(Long mobilePhone);
 
+    /**
+     * 通过微信id来查询用户
+     * @param wechatId
+     * @return
+     */
+    UserEntity getByWechatId(String wechatId);
+
     PageUtils queryPage(Map<String, Object> params);
 }
 

@@ -11,9 +11,12 @@ package org.greencode.modules.sys.controller;
 
 import com.google.code.kaptcha.Constants;
 import com.google.code.kaptcha.Producer;
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.subject.Subject;
 import org.greencode.common.utils.R;
+import org.greencode.modules.sys.entity.SysUserEntity;
+import org.greencode.modules.sys.service.SysUserService;
 import org.greencode.modules.sys.shiro.ShiroUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,6 +29,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Date;
 
 /**
  * 登录相关
@@ -36,7 +40,9 @@ import java.io.IOException;
 public class SysLoginController {
 	@Autowired
 	private Producer producer;
-	
+
+	@Autowired
+	private SysUserService sysUserService;
 	@RequestMapping("captcha.jpg")
 	public void captcha(HttpServletResponse response)throws IOException {
         response.setHeader("Cache-Control", "no-store, no-cache");
@@ -80,7 +86,21 @@ public class SysLoginController {
 	    
 		return R.ok();
 	}
-	
+
+
+	@ResponseBody
+	@RequestMapping(value = "/sys/register", method = RequestMethod.POST)
+	public R register(String username, String password) {
+		SysUserEntity user = new SysUserEntity();
+		user.setCreateTime(new Date());
+		//sha256加密
+		String salt = RandomStringUtils.randomAlphanumeric(20);
+		user.setUsername(username);
+		user.setSalt(salt);
+		user.setPassword(ShiroUtils.sha256(password, user.getSalt()));
+		sysUserService.save(user);
+		return R.ok();
+	}
 	/**
 	 * 退出
 	 */

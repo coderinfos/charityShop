@@ -43,14 +43,20 @@ public class DonateController {
     /**
      * 列表
      */
-    @GetMapping("/list")
-    @ApiOperation("列表")
-    public R list(@RequestParam Map<String, Object> params){
-        PageUtils page = donateService.queryPage(params);
+    @GetMapping("/receivingList")
+    @ApiOperation("捐物登记列表")
+    public R receivingList(@RequestParam Map<String, Object> params){
+        PageUtils page = donateService.receivingQueryPage(params);
 
         return R.ok().put("page", page);
     }
+    @GetMapping("/soldList")
+    @ApiOperation("列表")
+    public R soldList(@RequestParam Map<String, Object> params){
+        PageUtils page = donateService.soldQueryPage(params);
 
+        return R.ok().put("page", page);
+    }
 
     /**
      * 信息

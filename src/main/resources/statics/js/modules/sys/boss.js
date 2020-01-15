@@ -9,11 +9,11 @@ $(function () {
 			{ label: '值班日期', name: 'dutyDate', index: 'duty_date', width: 80 }, 			
 			{ label: '1早班2晚班', name: 'dutyType', index: 'duty_type', width: 80 }, 			
 			{ label: '0为false,1为true审核通过(默认自动', name: 'dutyStatus', index: 'duty_status', width: 80 }, 			
-			{ label: '', name: 'dutySubmitTime', index: 'duty_submit_time', width: 80 }, 			
-			{ label: '', name: 'operator', index: 'operator', width: 80 }, 			
-			{ label: '', name: 'operationTime', index: 'operation_time', width: 80 }, 			
-			{ label: '', name: 'operatorIp', index: 'operator_ip', width: 80 }, 			
-			{ label: '', name: 'memo', index: 'memo', width: 80 }			
+			{ label: '提交时间', name: 'dutySubmitTime', index: 'duty_submit_time', width: 80 },
+			{ label: '操作员', name: 'operator', index: 'operator', width: 80 },
+			{ label: '操作时间', name: 'operationTime', index: 'operation_time', width: 80 },
+			{ label: '操作IP', name: 'operatorIp', index: 'operator_ip', width: 80 },
+			{ label: '备注', name: 'memo', index: 'memo', width: 80 }
         ],
 		viewrecords: true,
         height: 385,

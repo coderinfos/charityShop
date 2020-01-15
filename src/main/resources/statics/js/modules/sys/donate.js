@@ -1,22 +1,22 @@
 $(function () {
     $("#jqGrid").jqGrid({
-        url: baseURL + 'app/donate/list',
+        url: baseURL + 'app/donate/soldList',
         datatype: "json",
-        colModel: [			
+        colModel: [
 			{ label: 'id', name: 'id', index: 'id', width: 50, key: true },
-			{ label: '捐赠人id', name: 'userId', index: 'user_id', width: 80 }, 			
-			{ label: '捐赠至分店id', name: 'shopId', index: 'shop_id', width: 80 }, 			
-			{ label: '', name: 'donateName', index: 'donate_name', width: 80 }, 			
-			{ label: '1物品,2书籍', name: 'donateType', index: 'donate_type', width: 80 }, 			
-			{ label: '', name: 'donateImage', index: 'donate_image', width: 80 }, 			
-			{ label: '', name: 'donatePrice', index: 'donate_price', width: 80 }, 			
-			{ label: '', name: 'donateSubmitTime', index: 'donate_submit_time', width: 80 }, 			
-			{ label: '', name: 'donateRegisterTime', index: 'donate_register_time', width: 80 }, 			
-			{ label: '', name: 'donateSaleTime', index: 'donate_sale_time', width: 80 }, 			
-			{ label: '', name: 'operator', index: 'operator', width: 80 }, 			
-			{ label: '', name: 'operationTime', index: 'operation_time', width: 80 }, 			
-			{ label: '', name: 'operatorIp', index: 'operator_ip', width: 80 }, 			
-			{ label: '', name: 'memo', index: 'memo', width: 80 }			
+			{ label: '捐赠人id', name: 'userId', index: 'user_id', width: 80 },
+			{ label: '捐赠至分店id', name: 'shopId', index: 'shop_id', width: 80 },
+			{ label: '名称', name: 'donateName', index: 'donate_name', width: 80 },
+			{ label: '1物品,2书籍', name: 'donateType', index: 'donate_type', width: 80 },
+			{ label: '图片', name: 'donateImage', index: 'donate_image', width: 80 },
+			{ label: '价格', name: 'donatePrice', index: 'donate_price', width: 80 },
+			{ label: '提交时间', name: 'donateSubmitTime', index: 'donate_submit_time', width: 80 },
+			{ label: '登记时间', name: 'donateRegisterTime', index: 'donate_register_time', width: 80 },
+			{ label: '售出时间', name: 'donateSaleTime', index: 'donate_sale_time', width: 80 },
+			{ label: '操作员', name: 'operator', index: 'operator', width: 80 },
+			{ label: '操作时间', name: 'operationTime', index: 'operation_time', width: 80 },
+			{ label: '操作IP', name: 'operatorIp', index: 'operator_ip', width: 80 },
+			{ label: '备注', name: 'memo', index: 'memo', width: 80 }
         ],
 		viewrecords: true,
         height: 385,

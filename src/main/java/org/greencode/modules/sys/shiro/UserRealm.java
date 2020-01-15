@@ -77,7 +77,7 @@ public class UserRealm extends AuthorizingRealm {
 	}
 
 	/**
-	 * 认证(登录时调用)
+	 * 认证(登录时调用)启用sys_user
 	 */
 	@Override
 	protected AuthenticationInfo doGetAuthenticationInfo(

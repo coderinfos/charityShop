@@ -1,11 +1,18 @@
 $(function () {
     $("#jqGrid").jqGrid({
-        url: baseURL + 'app/shop/list',
+        url: baseURL + 'app/donate/receivingList',
         datatype: "json",
         colModel: [			
 			{ label: 'id', name: 'id', index: 'id', width: 50, key: true },
-			{ label: '店名', name: 'shopName', index: 'shop_name', width: 80 },
-			{ label: '地址', name: 'address', index: 'address', width: 80 },
+			{ label: '捐赠人id', name: 'userId', index: 'user_id', width: 80 }, 			
+			{ label: '捐赠至分店id', name: 'shopId', index: 'shop_id', width: 80 }, 			
+			{ label: '名称', name: 'donateName', index: 'donate_name', width: 80 },
+			{ label: '1物品,2书籍', name: 'donateType', index: 'donate_type', width: 80 }, 			
+			{ label: '图片', name: 'donateImage', index: 'donate_image', width: 80 },
+			{ label: '价格', name: 'donatePrice', index: 'donate_price', width: 80 },
+			{ label: '提交时间', name: 'donateSubmitTime', index: 'donate_submit_time', width: 80 },
+			{ label: '登记时间', name: 'donateRegisterTime', index: 'donate_register_time', width: 80 },
+			{ label: '售出时间', name: 'donateSaleTime', index: 'donate_sale_time', width: 80 },
 			{ label: '操作员', name: 'operator', index: 'operator', width: 80 },
 			{ label: '操作时间', name: 'operationTime', index: 'operation_time', width: 80 },
 			{ label: '操作IP', name: 'operatorIp', index: 'operator_ip', width: 80 },
@@ -37,13 +44,58 @@ $(function () {
         }
     });
 });
+// layui.config({
+//     //静态资源所在路径
+//     base: '${request.contextPath}/statics/js/plugins/layui/css/modules/'
+// }).extend({
+//     //主入口模块
+//     excel: 'layui_exts/excel'
+// }).use(['jquery', 'excel', 'layer'], function () {
+//     var $ = layui.jquery;
+//     var layer = layui.layer;
+//     var excel = layui.excel;
+//     $('#exportExcel').on('click', function(){
+//         // 模拟从后端接口读取需要导出的数据
+//         $.ajax({
+//             url: baseURL + 'app/donate/list',
+//             datatype: "json",
+//             success: function(r) {
+//                 if (r.code === 0) {
+//                     var data = r.data;
+//                     console.log(r);
+//                     // 重点！！！如果后端给的数据顺序和映射关系不对，请执行梳理函数后导出
+//                     data = excel.filterExportData(data, [
+//                         'organizationId', 'organizationName', 'createTime'
+//                     ]);
+//                     // 重点2！！！一般都需要加一个表头，表头的键名顺序需要与最终导出的数据一致
+//                     data.unshift({
+//                         organizationId: "机构ID", organizationName: "机构名字", createTime: '创建时间'
+//                     });
+//
+//                     var timestart = Date.now();
+//                     excel.exportExcel(data, '机构列表' + '.xlsx', 'xlsx');
+//                     //	var timeend = Date.now();
+//
+//                     //	var spent = (timeend - timestart) / 1000;
+//                     //	layer.alert('单纯导出耗时 '+spent+' s');
+//                 } else {
+//                     layer.alert('获取数据失败，请检查是否部署在本地服务器环境下');
+//                 }
+//             }
+//         });
+//
+//
+//
+//     })
+// })
 
 var vm = new Vue({
+
 	el:'#rrapp',
 	data:{
 		showList: true,
 		title: null,
-		shop: {}
+		donate: {}
 	},
 	methods: {
 		query: function () {
@@ -52,7 +104,7 @@ var vm = new Vue({
 		add: function(){
 			vm.showList = false;
 			vm.title = "新增";
-			vm.shop = {};
+			vm.donate = {};
 		},
 		update: function (event) {
 			var id = getSelectedRow();
@@ -66,12 +118,12 @@ var vm = new Vue({
 		},
 		saveOrUpdate: function (event) {
 		    $('#btnSaveOrUpdate').button('loading').delay(1000).queue(function() {
-                var url = vm.shop.id == null ? "app/shop/save" : "app/shop/update";
+                var url = vm.donate.id == null ? "app/donate/save" : "app/donate/update";
                 $.ajax({
                     type: "POST",
                     url: baseURL + url,
                     contentType: "application/json",
-                    data: JSON.stringify(vm.shop),
+                    data: JSON.stringify(vm.donate),
                     success: function(r){
                         if(r.code === 0){
                              layer.msg("操作成功", {icon: 1});
@@ -100,7 +152,7 @@ var vm = new Vue({
                     lock = true;
 		            $.ajax({
                         type: "POST",
-                        url: baseURL + "app/shop/delete",
+                        url: baseURL + "app/donate/delete",
                         contentType: "application/json",
                         data: JSON.stringify(ids),
                         success: function(r){
@@ -117,8 +169,8 @@ var vm = new Vue({
              });
 		},
 		getInfo: function(id){
-			$.get(baseURL + "app/shop/info/"+id, function(r){
-                vm.shop = r.shop;
+			$.get(baseURL + "app/donate/info/"+id, function(r){
+                vm.donate = r.donate;
             });
 		},
 		reload: function (event) {

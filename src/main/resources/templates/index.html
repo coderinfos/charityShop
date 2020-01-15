@@ -54,63 +54,6 @@
 			<!-- 左侧菜单 -->
 			<ul class="layui-nav layui-nav-tree">
 				<menu-item :item="item" v-for="item in menuList"></menu-item>
-
-				<li data-name="home" class="layui-nav-item layui-nav-itemed">
-					<a lay-href="console" lay-tips="主页" lay-direction="2">
-						<i class="layui-icon layui-icon-home"></i>
-						<cite>主页</cite>
-					</a>
-				</li>
-
-				<li data-name="template" class="layui-nav-item">
-					<a href="javascript:;" lay-tips="用户管理" lay-direction="2">
-						<i class="layui-icon layui-icon-user"></i>
-						<cite>用户管理</cite>
-					</a>
-					<dl class="layui-nav-child">
-						<dd><a lay-href="boss">用户管理</a></dd>
-					</dl>
-					<dl class="layui-nav-child">
-						<dd><a lay-href="user_list">管理员管理</a></dd>
-					</dl>
-				</li>
-
-				<li data-name="template" class="layui-nav-item">
-					<a href="javascript:;" lay-tips="捐赠物品管理" lay-direction="2">
-						<i class="layui-icon layui-icon-user"></i>
-						<cite>捐赠物品管理</cite>
-					</a>
-					<dl class="layui-nav-child">
-						<dd><a lay-href="boss">收货明细</a></dd>
-					</dl>
-					<dl class="layui-nav-child">
-						<dd><a lay-href="message_list">出售明细</a></dd>
-					</dl>
-				</li>
-
-				<li data-name="template" class="layui-nav-item">
-					<a href="javascript:;" lay-tips="店长排班管理" lay-direction="2">
-						<i class="layui-icon layui-icon-user"></i>
-						<cite>店长排班管理</cite>
-					</a>
-					<dl class="layui-nav-child">
-						<dd><a lay-href="message_send">店长调整</a></dd>
-					</dl>
-					<dl class="layui-nav-child">
-						<dd><a lay-href="message_list">分店管理</a></dd>
-					</dl>
-				</li>
-
-				<li data-name="template" class="layui-nav-item">
-					<a href="javascript:;" lay-tips="操作日志" lay-direction="2">
-						<i class="layui-icon layui-icon-user"></i>
-						<cite>操作日志</cite>
-					</a>
-					<dl class="layui-nav-child">
-						<dd><a lay-href="log_list">操作记录</a></dd>
-					</dl>
-				</li>
-				</li>
 			</ul>
 		</div>
 	</div>
@@ -166,6 +109,5 @@
 <script type="text/javascript" src="${request.contextPath}/statics/plugins/layui/layui.js"></script>
 <script type="text/javascript" src="${request.contextPath}/statics/libs/vue.min.js"></script>
 <script type="text/javascript" src="${request.contextPath}/statics/js/index1.js"></script>
-
 </body>
 </html>

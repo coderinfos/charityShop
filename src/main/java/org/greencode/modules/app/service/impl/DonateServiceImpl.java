@@ -24,10 +24,13 @@ public class DonateServiceImpl extends ServiceImpl<DonateDao, DonateEntity> impl
     private DonateDao donateDao;
 
     @Override
-    public PageUtils queryPage(Map<String, Object> params) {
+    public PageUtils receivingQueryPage(Map<String, Object> params) {
+        QueryWrapper<DonateEntity> queryWrapper =new QueryWrapper<DonateEntity>();
+        queryWrapper.isNotNull("donate_register_time").isNull("donate_sale_time").isNotNull("donate_type");
+
         IPage<DonateEntity> page = this.page(
                 new Query<DonateEntity>().getPage(params),
-                new QueryWrapper<DonateEntity>()
+                queryWrapper
         );
 
         return new PageUtils(page);
@@ -52,6 +55,19 @@ public class DonateServiceImpl extends ServiceImpl<DonateDao, DonateEntity> impl
     @Override
     public List<DonateEntity> getUnregisteredByUserId(Long userId) {
         return donateDao.selectUnregisteredByUserId(userId);
+    }
+
+    @Override
+    public PageUtils soldQueryPage(Map<String, Object> params) {
+        QueryWrapper<DonateEntity> queryWrapper =new QueryWrapper<DonateEntity>();
+        queryWrapper.isNotNull("donate_sale_time").isNotNull("donate_price");
+
+        IPage<DonateEntity> page = this.page(
+                new Query<DonateEntity>().getPage(params),
+                queryWrapper
+        );
+
+        return new PageUtils(page);
     }
 
 }

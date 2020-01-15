@@ -16,7 +16,11 @@
     </#if>
     <#if shiro.hasPermission("sys:donate:delete")>
     <a class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+
 </#if>
+<button id="exportExcel"  name="exportExcel" class="layui-btn icon-btn"><i class="layui-icon">&#xe67d;</i>导出</button>
+
+<!--<a class="btn btn-primary" @click="exportExcel"><i class="fa fa-trash-o"></i>&nbsp;导出</a>-->
 </div>
 <table id="jqGrid"></table>
 <div id="jqGridPager"></div>
@@ -79,24 +83,24 @@
                 <input type="text" class="form-control" v-model="donate.donateSaleTime" placeholder=""/>
             </div>
         </div>
-        <!--        <div class="form-group">-->
-        <!--            <div class="col-sm-2 control-label">操作员</div>-->
-        <!--            <div class="col-sm-10">-->
-        <!--                <input type="text" class="form-control" v-model="donate.operator" placeholder=""/>-->
-        <!--            </div>-->
-        <!--        </div>-->
-        <!--        <div class="form-group">-->
-        <!--            <div class="col-sm-2 control-label">操作时间</div>-->
-        <!--            <div class="col-sm-10">-->
-        <!--                <input type="text" class="form-control" v-model="donate.operationTime" placeholder=""/>-->
-        <!--            </div>-->
-        <!--        </div>-->
-        <!--        <div class="form-group">-->
-        <!--            <div class="col-sm-2 control-label">操作IP</div>-->
-        <!--            <div class="col-sm-10">-->
-        <!--                <input type="text" class="form-control" v-model="donate.operatorIp" placeholder=""/>-->
-        <!--            </div>-->
-        <!--        </div>-->
+<!--        <div class="form-group">-->
+<!--            <div class="col-sm-2 control-label">操作员</div>-->
+<!--            <div class="col-sm-10">-->
+<!--                <input type="text" class="form-control" v-model="donate.operator" placeholder=""/>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div class="form-group">-->
+<!--            <div class="col-sm-2 control-label">操作时间</div>-->
+<!--            <div class="col-sm-10">-->
+<!--                <input type="text" class="form-control" v-model="donate.operationTime" placeholder=""/>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div class="form-group">-->
+<!--            <div class="col-sm-2 control-label">操作IP</div>-->
+<!--            <div class="col-sm-10">-->
+<!--                <input type="text" class="form-control" v-model="donate.operatorIp" placeholder=""/>-->
+<!--            </div>-->
+<!--        </div>-->
         <div class="form-group">
             <div class="col-sm-2 control-label">备注</div>
             <div class="col-sm-10">
@@ -112,6 +116,7 @@
 </div>
 </div>
 
-<script src="${request.contextPath}/statics/js/modules/sys/donate.js?_${.now?long}"></script>
+<script src="${request.contextPath}/statics/js/modules/sys/receivingDonate.js?_${.now?long}"></script>
+<script type="text/javascript" src="${request.contextPath}/statics/plugins/layui/layui.js"></script>
 </body>
 </html>

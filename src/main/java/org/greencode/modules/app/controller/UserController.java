@@ -91,20 +91,20 @@ public class UserController {
     @PostMapping("/save")
     @ApiOperation("注册用户，需要传入账号和密码，个人信息不需要填写")
     public R save(@RequestBody UserEntity user){
-        String userName = user.getUserName();
-        if(userName.indexOf(" ")!=-1||userName.length()<6||userName.length()>15){
-            return R.error(USN_ERROR_CODE,USN_ERROR_MSG);
-        }
-
-        boolean isPassword = Pattern.matches(REGEX_PASSWORD, user.getPassWord());
-        if (!isPassword) {
-            log.info("password format error");
-            return R.error(PWD_ERROR_CODE, PWD_ERROR_MSG);
-        }
-        UserEntity userEntity = new UserEntity();
-        userEntity.setUserName(user.getUserName());
-        userEntity.setPassWord(user.getPassWord());
-		userService.save(userEntity);
+//        String userName = user.getUserName();
+//        if(userName.indexOf(" ")!=-1||userName.length()<6||userName.length()>15){
+//            return R.error(USN_ERROR_CODE,USN_ERROR_MSG);
+//        }
+//
+//        boolean isPassword = Pattern.matches(REGEX_PASSWORD, user.getPassWord());
+//        if (!isPassword) {
+//            log.info("password format error");
+//            return R.error(PWD_ERROR_CODE, PWD_ERROR_MSG);
+//        }
+//        UserEntity userEntity = new UserEntity();
+//        userEntity.setUserName(user.getUserName());
+//        userEntity.setPassWord(user.getPassWord());
+		userService.save(user);
         return R.ok();
     }
 
@@ -148,6 +148,10 @@ public class UserController {
     @PostMapping("/delete")
     @ApiOperation("删除")
         public R delete(@RequestBody Long[] ids){
+        if(ids==null){
+            return R.error(PARAM_ERROR_CODE,PARAM_ERROR_MSG);
+
+        }
 		userService.removeByIds(Arrays.asList(ids));
 
         return R.ok();

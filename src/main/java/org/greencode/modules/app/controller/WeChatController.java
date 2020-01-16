@@ -53,7 +53,7 @@ public class WeChatController {
      * @return
      */
     @PostMapping("getOpenId")
-    @ApiOperation("传入code获取OpenId")
+    @ApiOperation("传入code,如果用户已经注册,返回用户信息,如果没有返回openid")
     public JSONObject getOpenIdAndSessionKey(@RequestBody String code) {
         log.info("code:{}", code);
         if (code == null) {

@@ -6,6 +6,7 @@ import java.util.Map;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.greencode.common.utils.IPUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +15,7 @@ import org.greencode.modules.app.service.ShopService;
 import org.greencode.common.utils.PageUtils;
 import org.greencode.common.utils.R;
 
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -56,14 +58,23 @@ public class ShopController {
     /**
      * 保存
      */
+//    @PostMapping("/save")
+//    @ApiOperation("保存")
+//    public R save(@RequestBody ShopEntity shop){
+//		shopService.save(shop);
+//
+//        return R.ok();
+//    }
     @PostMapping("/save")
     @ApiOperation("保存")
-    public R save(@RequestBody ShopEntity shop){
-		shopService.save(shop);
+    public R save(HttpServletRequest request){
+        ShopEntity shop =  (ShopEntity) request.getSession().getAttribute("SysUserEntity");
+        String ipAddr = IPUtils.getIpAddr(request);
+        shop.setOperatorIp(ipAddr);
+        shopService.save(shop);
 
         return R.ok();
     }
-
     /**
      * 修改
      */

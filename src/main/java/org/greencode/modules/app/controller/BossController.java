@@ -6,6 +6,7 @@ import java.util.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.greencode.common.utils.IPUtils;
 import org.greencode.modules.app.entity.HomeBossVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,8 @@ import org.greencode.modules.app.entity.BossEntity;
 import org.greencode.modules.app.service.BossService;
 import org.greencode.common.utils.PageUtils;
 import org.greencode.common.utils.R;
+
+import javax.servlet.http.HttpServletRequest;
 
 import static org.greencode.common.constant.ClientConstants.PARAM_ERROR_CODE;
 import static org.greencode.common.constant.ClientConstants.PARAM_ERROR_MSG;
@@ -174,22 +177,13 @@ public class BossController {
         return R.ok().put("data",nextThreeDay);
     }
 
-    /**
-     * 查询未来十四天的店长
-     * @return
-     */
-    @GetMapping("/theMonthBoss")
-    @ApiOperation("查询未来十四天的店长")
-    public R theMonthBoss (){
-        List<HomeBossVO> list = bossService.findtheMonthBoss();
-        return R.ok().put("data",list);
-    }
+
     /**
      * 店长申请，信息保存
      */
-    @PostMapping("/save")
+    @PostMapping("/apply")
     @ApiOperation("店长申请，信息保存传入UserId，ShopId，DutyType，DutyDate预约的日期(如果type为1则传当天9点，2020-01-09 09:00:00，为2下午，则2020-01-09 14:30:00)")
-    public R save(@RequestBody BossEntity boss){
+    public R apply(@RequestBody BossEntity boss){
         if(boss.getUserId()==null||boss.getShopId()==null||boss.getDutyType()==null||boss.getDutyDate()==null){
             return R.error(PARAM_ERROR_CODE,PARAM_ERROR_MSG);
         }
@@ -201,13 +195,28 @@ public class BossController {
         return common(code);
 
     }
+    @PostMapping("/save")
+    @ApiOperation("后台专用接口，保存")
+    public R save(@RequestBody BossEntity boss, HttpServletRequest request){
+        boss.setOperationTime(new Date());
+        boss.setDutySubmitTime(new Date());
+        String ipAddr = IPUtils.getIpAddr(request);
+        boss.setOperatorIp(ipAddr);
+//        boss.setOperator(operator);
+        boolean code = bossService.save(boss);
+        return common(code);
 
+    }
     /**
      * 修改
      */
     @PostMapping("/update")
-    @ApiOperation("修改")
-    public R update(@RequestBody BossEntity boss){
+    @ApiOperation("后台专用接口,修改")
+    public R update(@RequestBody BossEntity boss, HttpServletRequest request){
+        boss.setOperationTime(new Date());
+        String ipAddr = IPUtils.getIpAddr(request);
+        boss.setOperatorIp(ipAddr);
+//        boss.setOperator(operator);
         bossService.updateById(boss);
         return R.ok();
     }
@@ -239,7 +248,7 @@ public class BossController {
      * 删除
      */
     @PostMapping("/delete")
-    @ApiOperation("删除")
+    @ApiOperation("后台专用接口,删除")
         public R delete(@RequestBody Long[] ids){
 		bossService.removeByIds(Arrays.asList(ids));
 

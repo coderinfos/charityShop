@@ -33,6 +33,10 @@ public class HomeDonateVO implements Serializable {
      */
     private Integer donateType;
     /**
+     * 捐物的图片
+     */
+    private String donateImage;
+    /**
      *售价
      */
     private Integer donatePrice;

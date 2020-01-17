@@ -1,5 +1,6 @@
 package org.greencode.modules.app.service.impl;
 
+import org.greencode.common.utils.R;
 import org.greencode.modules.app.entity.HomeDonateVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,9 @@ import org.greencode.common.utils.Query;
 import org.greencode.modules.app.dao.DonateDao;
 import org.greencode.modules.app.entity.DonateEntity;
 import org.greencode.modules.app.service.DonateService;
+
+import static org.greencode.common.constant.ClientConstants.*;
+import static org.greencode.common.constant.ClientConstants.NOT_FIND_ERROR_MSG;
 
 
 @Service("donateService")
@@ -49,12 +53,26 @@ public class DonateServiceImpl extends ServiceImpl<DonateDao, DonateEntity> impl
 
     @Override
     public List<HomeDonateVO> getRecentFive() {
-        return donateDao.selectRecentFive();
+        List<HomeDonateVO> homeDonateVOS = donateDao.selectRecentFive();
+        homeDonateVOS.forEach(homeDonateVO ->{
+            if(homeDonateVO.getNickNameOpen()==0){
+                homeDonateVO.setNickName(DEFAULT_NAME);
+            }
+            if(homeDonateVO.getFaceOpen()==0){
+                homeDonateVO.setFace(DEFAULT_HEAD);
+            }
+        });
+
+        return homeDonateVOS;
     }
 
     @Override
     public List<DonateEntity> getUnregisteredByUserId(Long userId) {
-        return donateDao.selectUnregisteredByUserId(userId);
+        List<DonateEntity> list = donateDao.selectUnregisteredByUserId(userId);
+        if(list.isEmpty()){
+            return  null;
+        }
+        return list;
     }
 
     @Override

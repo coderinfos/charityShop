@@ -39,7 +39,7 @@ public class UserController {
      * 列表
      */
     @GetMapping("/list")
-    @ApiOperation("列表")
+    @ApiOperation("后台专用接口，列表")
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = userService.queryPage(params);
 
@@ -70,16 +70,16 @@ public class UserController {
      */
 
     @GetMapping("/foxMessage/{id}")
-    @ApiOperation("判断个人信息是否完整")
+    @ApiOperation("判断个人信息是否完整,真实姓名，昵称，手机")
     public R foxMessage(@PathVariable("id") Long id){
         UserEntity user = userService.getById(id);
         if(user==null){
             return R.error(NOT_FIND_ERROR_CODE,NOT_FIND_ERROR_MSG);
         }
-        if(user.getRealName()==null||user.getSex()==null||user.getAge()==null||user.getMobilePhone()==null){
+        if(user.getRealName()==null||user.getNickName()==null||user.getMobilePhone()==null){
             return R.error(PARAM_ERROR_CODE,PARAM_ERROR_MSG);
         }else {
-            return R.ok().put("user", user);
+            return R.ok();
         }
 
     }
@@ -89,7 +89,7 @@ public class UserController {
      * 注册
      */
     @PostMapping("/save")
-    @ApiOperation("注册用户，需要传入账号和密码，个人信息不需要填写")
+    @ApiOperation("后台专用接口，保存")
     public R save(@RequestBody UserEntity user){
 //        String userName = user.getUserName();
 //        if(userName.indexOf(" ")!=-1||userName.length()<6||userName.length()>15){
@@ -124,11 +124,11 @@ public class UserController {
             log.info("phone format error");
             return  R.error(PHONE_ERROR_CODE, PHONE_ERROR_MSG);
         }
-        boolean isPassword = Pattern.matches(REGEX_PASSWORD, user.getPassWord());
-            if (!isPassword) {
-                log.info("password format error");
-                return R.error(PWD_ERROR_CODE, PWD_ERROR_MSG);
-            }
+//        boolean isPassword = Pattern.matches(REGEX_PASSWORD, user.getPassWord());
+//            if (!isPassword) {
+//                log.info("password format error");
+//                return R.error(PWD_ERROR_CODE, PWD_ERROR_MSG);
+//            }
         boolean isAge = Pattern.matches(REGEX_AGE,user.getAge().toString());
             if (!isAge) {
                 log.info("age format error");
@@ -137,7 +137,9 @@ public class UserController {
         if(StringUtils.isEmpty(user.getRealName())){
             return R.error(NAME_ERROR_CODE, NAME_ERROR_MSG);
         }
-
+        if(StringUtils.isEmpty(user.getNickName())){
+            return R.error(NAME_ERROR_CODE, NAME_ERROR_MSG);
+        }
         boolean code = userService.updateById(user);
         return common(code);
     }
@@ -146,7 +148,7 @@ public class UserController {
      * 删除
      */
     @PostMapping("/delete")
-    @ApiOperation("删除")
+    @ApiOperation("后台专用接口，删除")
         public R delete(@RequestBody Long[] ids){
         if(ids==null){
             return R.error(PARAM_ERROR_CODE,PARAM_ERROR_MSG);

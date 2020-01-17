@@ -1,6 +1,9 @@
 package org.greencode.modules.app.service.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -16,6 +19,8 @@ import org.greencode.modules.app.service.ShopService;
 @Service("shopService")
 public class ShopServiceImpl extends ServiceImpl<ShopDao, ShopEntity> implements ShopService {
 
+    @Autowired
+    private ShopDao shopDao;
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
         IPage<ShopEntity> page = this.page(
@@ -24,6 +29,11 @@ public class ShopServiceImpl extends ServiceImpl<ShopDao, ShopEntity> implements
         );
 
         return new PageUtils(page);
+    }
+
+    @Override
+    public List<ShopEntity> shopList() {
+        return shopDao.selectList(null);
     }
 
 }

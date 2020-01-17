@@ -35,7 +35,7 @@ public class ShopEntity implements Serializable {
 	/**
 	 * 
 	 */
-	private Integer operator;
+	private String operator;
 	/**
 	 * 
 	 */

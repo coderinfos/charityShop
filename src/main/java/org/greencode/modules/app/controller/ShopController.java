@@ -1,6 +1,8 @@
 package org.greencode.modules.app.controller;
 
 import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import io.swagger.annotations.Api;
@@ -36,19 +38,27 @@ public class ShopController {
      * 列表
      */
     @GetMapping("/list")
-    @ApiOperation("列表")
+    @ApiOperation("后台专用接口,列表")
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = shopService.queryPage(params);
-
         return R.ok().put("page", page);
     }
 
+    /**
+     * 列表
+     */
+    @GetMapping("/shopList")
+    @ApiOperation("列表")
+    public R shopList(){
+        List<ShopEntity> shopEntities = shopService.shopList();
+        return R.ok().put("data", shopEntities);
+    }
 
     /**
      * 信息
      */
     @GetMapping("/info/{id}")
-    @ApiOperation("列表")
+    @ApiOperation("通过id来查询信息")
     public R info(@PathVariable("id") Long id){
 		ShopEntity shop = shopService.getById(id);
 
@@ -66,21 +76,25 @@ public class ShopController {
 //        return R.ok();
 //    }
     @PostMapping("/save")
-    @ApiOperation("保存")
-    public R save(HttpServletRequest request){
-        ShopEntity shop =  (ShopEntity) request.getSession().getAttribute("SysUserEntity");
+    @ApiOperation("后台专用接口，保存")
+    public R save(@RequestBody ShopEntity shop,HttpServletRequest request){
+        shop.setOperationTime(new Date());
         String ipAddr = IPUtils.getIpAddr(request);
         shop.setOperatorIp(ipAddr);
+//        shop.setOperator(operator);
         shopService.save(shop);
-
         return R.ok();
     }
     /**
      * 修改
      */
     @PostMapping("/update")
-    @ApiOperation("修改")
-    public R update(@RequestBody ShopEntity shop){
+    @ApiOperation("后台专用接口，修改")
+    public R update(@RequestBody ShopEntity shop,HttpServletRequest request){
+        shop.setOperationTime(new Date());
+        String ipAddr = IPUtils.getIpAddr(request);
+        shop.setOperatorIp(ipAddr);
+//        shop.setOperator(operator);
 		shopService.updateById(shop);
 
         return R.ok();
@@ -90,7 +104,7 @@ public class ShopController {
      * 删除
      */
     @PostMapping("/delete")
-    @ApiOperation("删除")
+    @ApiOperation("后台专用接口，删除")
         public R delete(@RequestBody Long[] ids){
 		shopService.removeByIds(Arrays.asList(ids));
 

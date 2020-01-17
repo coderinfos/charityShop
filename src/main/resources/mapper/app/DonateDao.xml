@@ -55,7 +55,7 @@
     </select>
 
     <select id="selectRecentFive" resultMap="HomeDonateMap">
-        select u.nick_name,u.nick_name_open,u.face,u.face_open,d.user_id,d.donate_type,d.donate_price,d.donate_sale_time
+        select u.nick_name,u.nick_name_open,u.face,u.face_open,d.user_id,d.donate_type,d.donate_price,d.donate_sale_time,d.donate_image
         from ba_donate d join ba_user u
         on d.user_id=u.id
         WHERE d.donate_register_time is not null

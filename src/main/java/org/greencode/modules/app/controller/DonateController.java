@@ -3,10 +3,13 @@ package org.greencode.modules.app.controller;
 import java.util.*;
 import java.util.regex.Pattern;
 
+import cn.hutool.core.collection.CollectionUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.shiro.util.CollectionUtils;
+import org.greencode.common.utils.IPUtils;
 import org.greencode.modules.app.entity.DonateDTO;
 import org.greencode.modules.app.entity.HomeDonateVO;
 import org.greencode.modules.app.entity.UserEntity;
@@ -19,6 +22,8 @@ import org.greencode.modules.app.entity.DonateEntity;
 import org.greencode.modules.app.service.DonateService;
 import org.greencode.common.utils.PageUtils;
 import org.greencode.common.utils.R;
+
+import javax.servlet.http.HttpServletRequest;
 
 import static org.greencode.common.constant.ClientConstants.*;
 import static org.greencode.common.constant.ClientConstants.NOT_FIND_ERROR_MSG;
@@ -69,15 +74,7 @@ public class DonateController {
     }
 
 
-    /**
-     * 查询最近的五条售出记录
-     */
-    @GetMapping("/homeDonate")
-    @ApiOperation("查询最近的五条售出记录")
-    public R homeDonate(){
-        List<HomeDonateVO> donate = donateService.getRecentFive();
-        return R.ok().put("donate", donate);
-    }
+
 
     /**
      * 通过用户id来查询捐赠表，（有捐物登记时间认为是有效捐物）
@@ -124,17 +121,31 @@ public class DonateController {
     /**
      * 捐赠物品，传入userId，donate_submit_time
      */
-    @PostMapping("/save")
+    @PostMapping("/donation")
     @ApiOperation("捐赠物品，传入userId，donateSubmitTime，所有需要传入时间的以2020-01-07 09:41:03格式")
-    public R save(@RequestBody DonateEntity donate){
+    public R donation(@RequestBody DonateEntity donate){
         if(donate.getUserId()==null || donate.getDonateSubmitTime()==null){
-            return R.error(1,"信息不完整");
+            return R.error(PARAM_ERROR_CODE,PARAM_ERROR_MSG);
         }
 
         boolean code = donateService.save(donate);
         return common(code);
     }
-
+    /**
+     *
+     */
+    @PostMapping("/save")
+    @ApiOperation("后台专用接口，保存")
+    public R save(@RequestBody DonateEntity donate, HttpServletRequest request){
+        if (donate.getDonateRegisterTime()==null||donate.getUserId()==null||donate.getDonateType()==null) {
+            return R.error(PARAM_ERROR_CODE,PARAM_ERROR_MSG);
+        }
+        donate.setOperationTime(new Date());
+        String ipAddr = IPUtils.getIpAddr(request);
+        donate.setOperatorIp(ipAddr);
+        boolean code = donateService.save(donate);
+        return common(code);
+    }
     /**
      * 捐物登记
      * @param
@@ -142,9 +153,9 @@ public class DonateController {
      * @return
      */
     @PostMapping("/receiving")
-    @ApiOperation("捐物登记，传入donateType，number，mobilePhone，donateRegisterTime,shopId所有需要传入时间的以2020-01-07 09:41:03格式")
+    @ApiOperation("捐物登记，传入donateType，number，mobilePhone,shopId")
     public R receiving(@RequestBody DonateDTO donate){
-        if(donate.getDonateType()==null||donate.getNumber()==null||donate.getNumber()==0||donate.getMobilePhone()==null||donate.getDonateRegisterTime()==null||donate.getShopId()==null){
+        if(donate.getDonateType()==null||donate.getNumber()==null||donate.getNumber()==0||donate.getMobilePhone()==null||donate.getShopId()==null){
             return R.error(PARAM_ERROR_CODE,PARAM_ERROR_MSG);
         }
         boolean isTelephone = Pattern.matches(REGEX_MOBILE,donate.getMobilePhone().toString());
@@ -154,30 +165,27 @@ public class DonateController {
         }
         //通过手机号码找出用户
         UserEntity userEntity = userService.getByMobilePhone(donate.getMobilePhone());
+        if(userEntity==null){
+            return  R.error(NOT_FIND_ERROR_CODE, NOT_FIND_PHONE_ERROR_MSG);
+        }
         //查出该用户所创建的捐物单,提交时间两周内的
         List<DonateEntity> list = donateService.getUnregisteredByUserId(userEntity.getId());
-        if(list.isEmpty()){
+        if(CollectionUtils.isEmpty(list)){
             return  R.error(NOT_FIND_ERROR_CODE, NOT_FIND_ERROR_MSG);
         }
         //
         DonateEntity donateEntity = list.get(0);
         //如果传过来的number大于1则要创建相同用户id和提交时间的记录
-        donateEntity.setDonateRegisterTime(donate.getDonateRegisterTime());
+        donateEntity.setDonateRegisterTime(new Date());
         donateEntity.setShopId(donate.getShopId());
         donateEntity.setDonateType(donate.getDonateType());
         boolean code = donateService.updateById(donateEntity);
         if(donate.getNumber()==1){
             return common(code);
         }else {
-            DonateEntity donateEntity1 = new DonateEntity();
-            donateEntity1.setUserId(donateEntity.getUserId());
-            donateEntity1.setDonateSubmitTime(donateEntity.getDonateSubmitTime());
             for(int i =0;i<donate.getNumber()-1;i++){
-                donateEntity1.setDonateRegisterTime(donate.getDonateRegisterTime());
-                donateEntity1.setShopId(donate.getShopId());
-                donateEntity1.setDonateType(donate.getDonateType());
-                donateService.save(donateEntity1);
-
+                donateEntity.setId(null);
+                donateService.save(donateEntity);
             }
             return R.ok();
         }
@@ -209,8 +217,15 @@ public class DonateController {
      * 修改
      */
     @PostMapping("/update")
-    @ApiOperation("修改")
-    public R update(@RequestBody DonateEntity donate){
+    @ApiOperation("后台专用接口,修改")
+    public R update(@RequestBody DonateEntity donate, HttpServletRequest request){
+        if (donate.getDonateRegisterTime()==null||donate.getUserId()==null||donate.getDonateType()==null) {
+            return R.error(PARAM_ERROR_CODE,PARAM_ERROR_MSG);
+        }
+
+        donate.setOperationTime(new Date());
+        String ipAddr = IPUtils.getIpAddr(request);
+        donate.setOperatorIp(ipAddr);
 		donateService.updateById(donate);
 
         return R.ok();

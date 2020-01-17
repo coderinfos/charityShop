@@ -1,5 +1,6 @@
 package org.greencode.modules.app.entity;
 
+import io.swagger.models.auth.In;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -28,5 +29,10 @@ public class HomeBossVO implements Serializable {
      * face是否公开,1为true,0为false
      */
     private Integer faceOpen;
+    /**
+     * 店名
+     */
+    private String shopName;
 
+    private Integer shopId;
 }

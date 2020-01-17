@@ -30,6 +30,7 @@ public class ClientConstants {
      */
     public static final int NOT_FIND_ERROR_CODE = 10002;
     public static final String NOT_FIND_ERROR_MSG = "没有找到该条记录！";
+    public static final String NOT_FIND_PHONE_ERROR_MSG = "请输入正确的手机号！";
     /**
      * 信息已存在
      */
@@ -62,6 +63,9 @@ public class ClientConstants {
      */
     public static final int NAME_ERROR_CODE = 10008;
     public static final String NAME_ERROR_MSG = "名字格式有误，不能为空！";
+
+    public static final int DATA_ERROR_CODE = 10009;
+    public static final String DATA_ERROR_MSG = "日期格式有误，不能为空！";
 //    /**
 //     * 密码格式有误
 //     */
@@ -167,6 +171,9 @@ public class ClientConstants {
      * 正则密码校验，6-16位数字和字母的组合
      */
     public static final String REGEX_PASSWORD = "^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$";
+    /**
+     * 日期验证
+     */
 //    /**
 //     * 正则：密码校验，至少包含一个大写字母、一个小写字母和数字
 //     */
@@ -177,11 +184,15 @@ public class ClientConstants {
 //     */
 //    public static final int KEY_TIMEOUT = 10;
 //
-//    /**
-//     * 初始头像
-//     */
+    /**
+     * 隐藏头像
+     */
 //    public static final String TEA_HEAD = "/img/teacher.png";
 //    public static final String STU_HEAD = "/img/student.png";
-//    public static final String TOU_HEAD = "/img/tourist.png";
-
+    public static final String TOU_HEAD = "/img/tourist.png";
+    /**
+     * 隐藏名字
+     */
+    public static final String DEFAULT_HEAD = "/img/tourist.png";
+    public static final String DEFAULT_NAME = "匿名";
 }

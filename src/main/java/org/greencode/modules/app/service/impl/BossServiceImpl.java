@@ -1,8 +1,10 @@
 package org.greencode.modules.app.service.impl;
 
 import org.greencode.common.utils.R;
+import org.greencode.modules.app.dao.ShopDao;
 import org.greencode.modules.app.dao.UserDao;
 import org.greencode.modules.app.entity.HomeBossVO;
+import org.greencode.modules.app.entity.ShopEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,8 @@ import org.greencode.modules.app.dao.BossDao;
 import org.greencode.modules.app.entity.BossEntity;
 import org.greencode.modules.app.service.BossService;
 
+import static org.greencode.common.constant.ClientConstants.DEFAULT_HEAD;
+import static org.greencode.common.constant.ClientConstants.DEFAULT_NAME;
 import static org.greencode.common.utils.DateUtils.DATE_TIME_PATTERN;
 
 
@@ -27,6 +31,9 @@ public class BossServiceImpl extends ServiceImpl<BossDao, BossEntity> implements
 
     @Autowired
     private BossDao bossDao;
+
+    @Autowired
+    private ShopDao shopDao;
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
         IPage<BossEntity> page = this.page(
@@ -111,7 +118,15 @@ public class BossServiceImpl extends ServiceImpl<BossDao, BossEntity> implements
 
     @Override
     public List<HomeBossVO> findtheMonthBoss() {
-        return bossDao.selectTheMonthBoss();
+        List<HomeBossVO> HomeBossVOS = bossDao.selectTheMonthBoss();
+        HomeBossVOS.forEach(HomeBossVO ->{
+            ShopEntity shopEntity = shopDao.selectById(HomeBossVO.getShopId());
+            HomeBossVO.setShopName(shopEntity.getShopName());
+            if(HomeBossVO.getFaceOpen()==0){
+                HomeBossVO.setFace(DEFAULT_HEAD);
+            }
+        });
+        return HomeBossVOS;
     }
 
 }

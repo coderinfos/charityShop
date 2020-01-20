@@ -16,12 +16,12 @@ import java.util.List;
  */
 @Mapper
 public interface DonateDao extends BaseMapper<DonateEntity> {
-    /**
-     * 通过用户id来查询捐赠表，（有捐物登记时间认为是有效捐物）
-     * @param userId
-     * @return
-     */
-    List<DonateEntity> selectDonateByUserId(Long userId);
+//    /**
+//     * 通过用户id来查询捐赠表，（有捐物登记时间认为是有效捐物）
+//     * @param userId
+//     * @return
+//     */
+//    List<DonateEntity> selectDonateByUserId(Long userId);
     /**
      * 通过用户ID来查询已经售出的捐赠记录,通过donatePrice这个字段判断是否售出，未售出为null
      * @param userId
@@ -38,5 +38,5 @@ public interface DonateDao extends BaseMapper<DonateEntity> {
      * @param userId
      * @return
      */
-    List<DonateEntity> selectUnregisteredByUserId(Long userId);
+    DonateEntity selectUnregisteredByUserId(Long userId,Long shopId);
 }

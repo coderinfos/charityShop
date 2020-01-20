@@ -47,12 +47,12 @@
         and duty_status=1;
     </select>
 
-    <select id="selectByUserId" resultMap="bossMap">
-        select <include refid="Base_Column_List" />
-        from ba_boss
-        where user_id=#{userId}
-        order by duty_date desc
-    </select>
+<!--    <select id="selectByUserId" resultMap="bossMap">-->
+<!--        select <include refid="Base_Column_List" />-->
+<!--        from ba_boss-->
+<!--        where user_id=#{userId}-->
+<!--        order by duty_date desc-->
+<!--    </select>-->
 
     <select id="selectNotStart" resultMap="bossMap">
         select <include refid="Base_Column_List" />

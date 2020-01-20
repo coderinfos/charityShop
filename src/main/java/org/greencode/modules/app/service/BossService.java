@@ -21,6 +21,12 @@ public interface BossService extends IService<BossEntity> {
     PageUtils queryPage(Map<String, Object> params);
 
     /**
+     * 查询该用户的今日是否排班
+     * @param userId
+     * @return
+     */
+    BossEntity theDay(Long userId);
+    /**
      * 通过日期和上午下午及分店id，查询是否已经被申请店长
      * @param dutyDate
      * @param dutyType
@@ -35,10 +41,10 @@ public interface BossService extends IService<BossEntity> {
     List<BossEntity> findNextThreeDay();
     /**
      * 通过用户id来查询排班表
-     * @param userId
+     * @param
      * @return
      */
-    List<BossEntity> getByUserId(Long userId);
+    PageUtils getByUserId(Map<String, Object> params);
 
     /**
      * 通过用户id来查询排班表，筛选未开始且未取消的排班

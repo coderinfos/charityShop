@@ -17,6 +17,7 @@ import org.greencode.common.utils.IPUtils;
 import org.greencode.common.utils.R;
 import org.greencode.common.utils.UrlUtil;
 import org.greencode.modules.app.entity.AdminUserEntity;
+import org.greencode.modules.app.entity.ShopEntity;
 import org.greencode.modules.app.entity.UserEntity;
 import org.greencode.modules.app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,7 @@ import static org.greencode.common.constant.ClientConstants.*;
  *
  */
 @RestController
-@RequestMapping("/api/wechat/")
+@RequestMapping("/app/wechat/")
 @Api(tags = "微信接口")
 @Slf4j
 public class WeChatController {
@@ -100,40 +101,40 @@ public class WeChatController {
      * @return
      */
     @PostMapping("login")
-    @ApiOperation("第三方（微信授权登入）,因为要获取ip，所以要传request,带openId")
-    public R login(HttpServletRequest request) throws ParseException {
-        String openId = (String) request.getSession().getAttribute("openId");
+    @ApiOperation("第三方（微信授权登入）传入openId")
+    public R login(@RequestBody Map<String, Object> map,HttpServletRequest request)  {
+        String openId = map.get("openId").toString();
         //获取ip
         String ipAddr = IPUtils.getIpAddr(request);
         log.info("openId:{}", openId);
-        if (StrUtil.isEmpty(openId)) {
+        if (openId==null) {
             log.info("param is null");
             return R.error(PARAM_ERROR_CODE,PARAM_ERROR_MSG);
         } else {
             log.info("param is not null");
             UserEntity userEntity = userService.getByWechatId(openId);
-            //获取当前时间
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
-            Date now = new Date();
-            String time = sdf.format(now);
-            Date parse = sdf.parse(time);
+            if(userEntity==null){
+                return R.error(NOT_FIND_ERROR_CODE,NOT_FIND_ERROR_MSG);
+            }
             //登录的时候修改上次登录的时间和最后登录的时间
             if (userEntity.getPreLoginTime()==null) {
                 //第一次登录，生成当前时间并存入
-                userEntity.setPreLoginTime(parse);
-                userEntity.setLastLoginIp(ipAddr);
+                userEntity.setPreLoginTime(new Date());
                 userEntity.setPreLoginIp(ipAddr);
-
+                userEntity.setLastLoginIp(ipAddr);
+                userEntity.setLastLoginTime(new Date());
             }else {
                 userEntity.setPreLoginTime(userEntity.getLastLoginTime());
-                userEntity.setPreLoginIp(userEntity.getPreLoginIp());
-                userEntity.setLastLoginTime(parse);
+                userEntity.setPreLoginIp(userEntity.getLastLoginIp());
+                userEntity.setLastLoginTime(new Date());
+                userEntity.setLastLoginIp(ipAddr);
             }
+            userService.updateById(userEntity);
             //如果要传token那么这里应该创建一个token
-            Map<String, Object> resMap = new HashMap<>(MAP_INIT_NUM);
+//            Map<String, Object> resMap = new HashMap<>(MAP_INIT_NUM);
             //resMap.put("token", token);
-            resMap.put("id", userEntity.getId());
-            return R.ok(resMap);
+//            resMap.put("id", userEntity.getId());
+            return R.ok().put("data",userEntity);
         }
 
     }
@@ -144,11 +145,7 @@ public class WeChatController {
     public R register(@RequestBody JSONObject jsonObject) throws ParseException {
 
 
-        //获取当前时间
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
-        Date now = new Date();
-        String time = sdf.format(now);
-        Date parse = sdf.parse(time);
+
 
 //        String openid = jsonObject.get("openid").toString();
 //        String access_token = jsonObject.get("access_token").toString();

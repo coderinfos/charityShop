@@ -3,6 +3,7 @@ package org.greencode.modules.app.service.impl;
 import org.greencode.common.utils.R;
 import org.greencode.modules.app.dao.ShopDao;
 import org.greencode.modules.app.dao.UserDao;
+import org.greencode.modules.app.entity.DonateEntity;
 import org.greencode.modules.app.entity.HomeBossVO;
 import org.greencode.modules.app.entity.ShopEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,11 @@ public class BossServiceImpl extends ServiceImpl<BossDao, BossEntity> implements
     }
 
     @Override
+    public BossEntity theDay(Long userId) {
+        return bossDao.selectTheDay(userId);
+    }
+
+    @Override
     public boolean getAppointment(Date dutyDate, Integer dutyType,Long shopId) {
         List<BossEntity> bossEntity = bossDao.selectByDutyDate(dutyDate, dutyType,shopId);
         if(!bossEntity.isEmpty()){
@@ -64,8 +70,17 @@ public class BossServiceImpl extends ServiceImpl<BossDao, BossEntity> implements
     }
 
     @Override
-    public List<BossEntity> getByUserId(Long userId) {
-        return bossDao.selectByUserId(userId);
+    public PageUtils getByUserId(Map<String, Object> params) {
+        QueryWrapper<BossEntity> queryWrapper =new QueryWrapper<BossEntity>();
+        queryWrapper.eq("user_id",params.get("userId")).orderByDesc("duty_date");
+
+        IPage<BossEntity> page = this.page(
+                new Query<BossEntity>().getPage(params),
+                queryWrapper
+        );
+
+        return new PageUtils(page);
+
     }
 
     @Override

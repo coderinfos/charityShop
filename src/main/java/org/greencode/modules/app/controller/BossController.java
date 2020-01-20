@@ -51,6 +51,19 @@ public class BossController {
 
         return R.ok().put("page", page);
     }
+    /**
+     * 信息
+     */
+    @GetMapping("/theDay/{userId}")
+    @ApiOperation("通过用户userId来查询当天是否有排班，如果有就会返回排班信息")
+    public R theDay(@PathVariable("userId") Long userId){
+        BossEntity boss = bossService.theDay(userId);
+        if(boss==null){
+            return R.error(NOT_FIND_ERROR_CODE,NOT_FIND_ERROR_MSG);
+        }
+        return R.ok().put("boss", boss);
+    }
+
 
 
     /**
@@ -66,17 +79,18 @@ public class BossController {
 
     /**
      * 通过用户id来查询排班表
-     * @param userId
+     * @param
      * @return
      */
-    @GetMapping("/myBoss/{userId}")
-    @ApiOperation("通过用户id来查询排班表，duty_status为0则是取消")
-    public R myBoss(@PathVariable("userId") Long userId){
+    @GetMapping("/myBoss")
+    @ApiOperation("(我的排班)userId,page,limit来查询排班表，duty_status为0则是取消")
+    public R myBoss(@RequestParam Map<String, Object> params){
+        Long userId = Long.parseLong(params.get("userId").toString());
         if(userId==null){
             return R.error(PARAM_ERROR_CODE,PARAM_ERROR_MSG);
         }
-        List<BossEntity> donate = bossService.getByUserId(userId);
-        if(donate.isEmpty()){
+        PageUtils donate = bossService.getByUserId(params);
+        if(donate==null){
             return R.error(NOT_FIND_ERROR_CODE,NOT_FIND_ERROR_MSG);
         }else {
             return R.ok().put("data",donate);
@@ -193,6 +207,7 @@ public class BossController {
         }
         boolean code = bossService.save(boss);
         return common(code);
+
 
     }
     @PostMapping("/save")

@@ -37,13 +37,13 @@
        id,user_id,shop_id,donate_name,donate_type,donate_image,donate_price,donate_submit_time,donate_register_time,donate_sale_time,operator,operation_time,operator_ip,memo
     </sql>
 
-    <select id="selectDonateByUserId" resultMap="donateMap">
-        select <include refid="Base_Column_List" />
-        from ba_donate
-        WHERE donate_register_time is not null
-        and user_id=#{userId}
-        order by donate_register_time desc
-    </select>
+<!--    <select id="selectDonateByUserId" resultMap="donateMap">-->
+<!--        select <include refid="Base_Column_List" />-->
+<!--        from ba_donate-->
+<!--        WHERE donate_register_time is not null-->
+<!--        and user_id=#{userId}-->
+<!--        order by donate_register_time desc-->
+<!--    </select>-->
     <select id="selectDonateSoldByUserId" resultMap="donateMap">
         select <include refid="Base_Column_List" />
         from ba_donate
@@ -69,8 +69,10 @@
         select <include refid="Base_Column_List" />
         from ba_donate
         where user_id=#{userId}
+        and shop_id=#{shopId}
         and donate_register_time is null
         and date_format(now(),'%Y-%m-%d')  between date_format(donate_submit_time,'%Y-%m-%d') and date_format(ADDDATE(donate_submit_time,INTERVAL 14 DAY),'%Y-%m-%d')
         order by donate_submit_time asc
+        limit 1;
     </select>
 </mapper>

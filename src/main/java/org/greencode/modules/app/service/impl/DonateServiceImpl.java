@@ -1,5 +1,6 @@
 package org.greencode.modules.app.service.impl;
 
+import org.apache.commons.lang.StringUtils;
 import org.greencode.common.utils.R;
 import org.greencode.modules.app.entity.HomeDonateVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,9 +42,17 @@ public class DonateServiceImpl extends ServiceImpl<DonateDao, DonateEntity> impl
     }
 
     @Override
-    public List<DonateEntity> getByUserId(Long userId) {
+    public PageUtils getByUserId(Map<String, Object> params) {
+        QueryWrapper<DonateEntity> queryWrapper =new QueryWrapper<DonateEntity>();
+        queryWrapper.isNotNull("donate_register_time").isNotNull("donate_type").eq("user_id",params.get("userId")).orderByDesc("donate_register_time");
 
-        return donateDao.selectDonateByUserId(userId);
+        IPage<DonateEntity> page = this.page(
+                new Query<DonateEntity>().getPage(params),
+                queryWrapper
+        );
+
+        return new PageUtils(page);
+
     }
 
     @Override
@@ -67,11 +76,9 @@ public class DonateServiceImpl extends ServiceImpl<DonateDao, DonateEntity> impl
     }
 
     @Override
-    public List<DonateEntity> getUnregisteredByUserId(Long userId) {
-        List<DonateEntity> list = donateDao.selectUnregisteredByUserId(userId);
-        if(list.isEmpty()){
-            return  null;
-        }
+    public DonateEntity getUnregisteredByUserId(Long userId,Long shopId) {
+        DonateEntity list = donateDao.selectUnregisteredByUserId(userId,shopId);
+
         return list;
     }
 

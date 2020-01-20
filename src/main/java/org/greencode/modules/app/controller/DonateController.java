@@ -56,7 +56,7 @@ public class DonateController {
         return R.ok().put("page", page);
     }
     @GetMapping("/soldList")
-    @ApiOperation("列表")
+    @ApiOperation("后台专用出售明细")
     public R soldList(@RequestParam Map<String, Object> params){
         PageUtils page = donateService.soldQueryPage(params);
 
@@ -78,17 +78,18 @@ public class DonateController {
 
     /**
      * 通过用户id来查询捐赠表，（有捐物登记时间认为是有效捐物）
-     * @param userId
+     * @param
      * @return
      */
-    @GetMapping("/myDonate/{userId}")
-    @ApiOperation("通过用户ID来查询捐赠表")
-    public R myDonate(@PathVariable("userId") Long userId){
+    @GetMapping("/myDonate")
+    @ApiOperation("（我的捐赠）通过用户ID来查询捐赠表,userId,page,limit")
+    public R myDonate(@RequestParam Map<String, Object> params){
+        Long userId = Long.parseLong(params.get("userId").toString());
         if(userId==null){
             return R.error(PARAM_ERROR_CODE,PARAM_ERROR_MSG);
         }
-        List<DonateEntity> donate = donateService.getByUserId(userId);
-        if(donate.isEmpty()){
+        PageUtils donate = donateService.getByUserId(params);
+        if(donate==null){
             return R.error(NOT_FIND_ERROR_CODE,NOT_FIND_ERROR_MSG);
         }else {
             return R.ok().put("data",donate);
@@ -122,9 +123,9 @@ public class DonateController {
      * 捐赠物品，传入userId，donate_submit_time
      */
     @PostMapping("/donation")
-    @ApiOperation("捐赠物品，传入userId，donateSubmitTime，所有需要传入时间的以2020-01-07 09:41:03格式")
+    @ApiOperation("捐赠物品，传入userId，donateSubmitTime，shopId所有需要传入时间的以2020-01-07 09:41:03格式")
     public R donation(@RequestBody DonateEntity donate){
-        if(donate.getUserId()==null || donate.getDonateSubmitTime()==null){
+        if(donate.getUserId()==null || donate.getDonateSubmitTime()==null||donate.getShopId()==null){
             return R.error(PARAM_ERROR_CODE,PARAM_ERROR_MSG);
         }
 
@@ -155,6 +156,7 @@ public class DonateController {
     @PostMapping("/receiving")
     @ApiOperation("捐物登记，传入donateType，number，mobilePhone,shopId")
     public R receiving(@RequestBody DonateDTO donate){
+
         if(donate.getDonateType()==null||donate.getNumber()==null||donate.getNumber()==0||donate.getMobilePhone()==null||donate.getShopId()==null){
             return R.error(PARAM_ERROR_CODE,PARAM_ERROR_MSG);
         }
@@ -168,26 +170,44 @@ public class DonateController {
         if(userEntity==null){
             return  R.error(NOT_FIND_ERROR_CODE, NOT_FIND_PHONE_ERROR_MSG);
         }
-        //查出该用户所创建的捐物单,提交时间两周内的
-        List<DonateEntity> list = donateService.getUnregisteredByUserId(userEntity.getId());
-        if(CollectionUtils.isEmpty(list)){
-            return  R.error(NOT_FIND_ERROR_CODE, NOT_FIND_ERROR_MSG);
+        //查出该用户所创建的捐物单,提交时间两周内的,且在该分店shopId
+        DonateEntity donateEntity = donateService.getUnregisteredByUserId(userEntity.getId(),donate.getShopId());
+
+        //建一个list用来存储id和type，返回前端
+        List<DonateEntity> list= new ArrayList();
+        if(donateEntity==null){
+            //如果没有找到，则新建一条记录
+            DonateEntity newdonate = new DonateEntity();
+            newdonate.setUserId(userEntity.getId());
+            newdonate.setDonateSubmitTime(new Date());
+            newdonate.setShopId(donate.getShopId());
+            donateService.save(newdonate);
+            donateEntity = donateService.getUnregisteredByUserId(userEntity.getId(),donate.getShopId());
         }
-        //
-        DonateEntity donateEntity = list.get(0);
+
         //如果传过来的number大于1则要创建相同用户id和提交时间的记录
         donateEntity.setDonateRegisterTime(new Date());
-        donateEntity.setShopId(donate.getShopId());
         donateEntity.setDonateType(donate.getDonateType());
         boolean code = donateService.updateById(donateEntity);
+        donateEntity.setId(donateEntity.getId());
+        list.add(donateEntity);
+        System.out.println(donateEntity.getId());
+
         if(donate.getNumber()==1){
-            return common(code);
+            return R.ok().put("data",list);
         }else {
             for(int i =0;i<donate.getNumber()-1;i++){
-                donateEntity.setId(null);
-                donateService.save(donateEntity);
+                DonateEntity num = new DonateEntity();
+                num.setShopId(donateEntity.getShopId());
+                num.setUserId(donateEntity.getUserId());
+                num.setDonateSubmitTime(donateEntity.getDonateSubmitTime());
+                num.setDonateRegisterTime(donateEntity.getDonateRegisterTime());
+                num.setDonateType(donateEntity.getDonateType());
+                donateService.save(num);
+                System.out.println(num.getId());
+                list.add(num);
             }
-            return R.ok();
+            return R.ok().put("data",list);
         }
 
     }

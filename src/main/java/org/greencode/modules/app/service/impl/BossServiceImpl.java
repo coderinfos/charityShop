@@ -1,5 +1,6 @@
 package org.greencode.modules.app.service.impl;
 
+import org.apache.commons.lang.StringUtils;
 import org.greencode.common.utils.R;
 import org.greencode.modules.app.dao.ShopDao;
 import org.greencode.modules.app.dao.UserDao;
@@ -37,9 +38,10 @@ public class BossServiceImpl extends ServiceImpl<BossDao, BossEntity> implements
     private ShopDao shopDao;
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
+        String userId = (String)params.get("userId");
         IPage<BossEntity> page = this.page(
                 new Query<BossEntity>().getPage(params),
-                new QueryWrapper<BossEntity>()
+                new QueryWrapper<BossEntity>().like(StringUtils.isNotBlank(userId),"user_id", userId)
         );
 
         return new PageUtils(page);

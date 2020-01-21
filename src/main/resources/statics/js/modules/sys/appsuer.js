@@ -54,9 +54,9 @@ $(function () {
 var vm = new Vue({
 	el:'#rrapp',
 	data:{
-        // q:{
-        //     username: null
-        // },
+        q:{
+            mobilePhoneOpen: null
+        },
 		showList: true,
 		title: null,
 		user: {}
@@ -144,6 +144,7 @@ var vm = new Vue({
 			vm.showList = true;
 			var page = $("#jqGrid").jqGrid('getGridParam','page');
 			$("#jqGrid").jqGrid('setGridParam',{
+                postData:{'mobilePhoneOpen': vm.q.mobilePhoneOpen},
                 page:page
             }).trigger("reloadGrid");
 		}

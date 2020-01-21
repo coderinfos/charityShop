@@ -1,5 +1,6 @@
 package org.greencode.modules.app.service.impl;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.Map;
@@ -32,9 +33,10 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
+        String mobilePhoneOpen = (String)params.get("mobilePhoneOpen");
         IPage<UserEntity> page = this.page(
                 new Query<UserEntity>().getPage(params),
-                new QueryWrapper<UserEntity>()
+                new QueryWrapper<UserEntity>().like(StringUtils.isNotBlank(mobilePhoneOpen),"mobile_phone", mobilePhoneOpen)
         );
 
         return new PageUtils(page);

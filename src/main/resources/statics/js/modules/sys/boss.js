@@ -45,6 +45,9 @@ $(function () {
 var vm = new Vue({
 	el:'#rrapp',
 	data:{
+        q:{
+            userId: null
+        },
 		showList: true,
 		title: null,
 		boss: {}
@@ -128,7 +131,8 @@ var vm = new Vue({
 		reload: function (event) {
 			vm.showList = true;
 			var page = $("#jqGrid").jqGrid('getGridParam','page');
-			$("#jqGrid").jqGrid('setGridParam',{ 
+			$("#jqGrid").jqGrid('setGridParam',{
+                postData:{'userId': vm.q.userId},
                 page:page
             }).trigger("reloadGrid");
 		}

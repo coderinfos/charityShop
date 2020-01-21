@@ -9,6 +9,10 @@
     <div v-show="showList">
         <div class="grid-btn">
             <#if shiro.hasPermission("sys:boss:save")>
+            <div class="form-group col-sm-2">
+                <input type="text" class="form-control" v-model="q.userId" @keyup.enter="query" placeholder="用户id">
+            </div>
+            <a class="btn btn-default" @click="query">查询</a>
             <a class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
         </#if>
         <#if shiro.hasPermission("sys:boss:update")>

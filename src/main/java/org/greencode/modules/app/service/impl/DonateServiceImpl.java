@@ -30,8 +30,9 @@ public class DonateServiceImpl extends ServiceImpl<DonateDao, DonateEntity> impl
 
     @Override
     public PageUtils receivingQueryPage(Map<String, Object> params) {
+        String userId = (String)params.get("userId");
         QueryWrapper<DonateEntity> queryWrapper =new QueryWrapper<DonateEntity>();
-        queryWrapper.isNotNull("donate_register_time").isNull("donate_sale_time").isNotNull("donate_type");
+        queryWrapper.isNotNull("donate_register_time").isNull("donate_sale_time").isNotNull("donate_type").like(StringUtils.isNotBlank(userId),"user_id", userId);
 
         IPage<DonateEntity> page = this.page(
                 new Query<DonateEntity>().getPage(params),
@@ -84,8 +85,9 @@ public class DonateServiceImpl extends ServiceImpl<DonateDao, DonateEntity> impl
 
     @Override
     public PageUtils soldQueryPage(Map<String, Object> params) {
+        String userId = (String)params.get("userId");
         QueryWrapper<DonateEntity> queryWrapper =new QueryWrapper<DonateEntity>();
-        queryWrapper.isNotNull("donate_sale_time").isNotNull("donate_price");
+        queryWrapper.isNotNull("donate_sale_time").isNotNull("donate_price").like(StringUtils.isNotBlank(userId),"user_id", userId);
 
         IPage<DonateEntity> page = this.page(
                 new Query<DonateEntity>().getPage(params),

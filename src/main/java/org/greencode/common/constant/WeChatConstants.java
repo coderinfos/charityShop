@@ -8,11 +8,11 @@ public class WeChatConstants {
     /**
      * 订阅号AppId
      */
-    public static final String APP_ID = "wx2c3a84a1c9b2d10b";
+    public static final String APP_ID = "wx36c6ab136f52e274";
     /**
      * 订阅号AppSecret
      */
-    public static final String APP_SECRET = "5fbac5fc7db93ff2a60043ca304d9fbc";
+    public static final String APP_SECRET = "cab17126353074a51e1cf86a3709e6ec";
 
     public static final String OK = "OK";
 

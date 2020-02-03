@@ -34,18 +34,10 @@ public class ShopController {
     @Autowired
     private ShopService shopService;
 
-    /**
-     * 列表
-     */
-    @GetMapping("/list")
-    @ApiOperation("后台专用接口,列表")
-    public R list(@RequestParam Map<String, Object> params){
-        PageUtils page = shopService.queryPage(params);
-        return R.ok().put("page", page);
-    }
+
 
     /**
-     * 列表
+     * 列表，没有分页功能
      */
     @GetMapping("/shopList")
     @ApiOperation("列表")
@@ -75,40 +67,7 @@ public class ShopController {
 //
 //        return R.ok();
 //    }
-    @PostMapping("/save")
-    @ApiOperation("后台专用接口，保存")
-    public R save(@RequestBody ShopEntity shop,HttpServletRequest request){
-        shop.setOperationTime(new Date());
-        String ipAddr = IPUtils.getIpAddr(request);
-        shop.setOperatorIp(ipAddr);
-//        shop.setOperator(operator);
-        shopService.save(shop);
-        return R.ok();
-    }
-    /**
-     * 修改
-     */
-    @PostMapping("/update")
-    @ApiOperation("后台专用接口，修改")
-    public R update(@RequestBody ShopEntity shop,HttpServletRequest request){
-        shop.setOperationTime(new Date());
-        String ipAddr = IPUtils.getIpAddr(request);
-        shop.setOperatorIp(ipAddr);
-//        shop.setOperator(operator);
-		shopService.updateById(shop);
 
-        return R.ok();
-    }
 
-    /**
-     * 删除
-     */
-    @PostMapping("/delete")
-    @ApiOperation("后台专用接口，删除")
-        public R delete(@RequestBody Long[] ids){
-		shopService.removeByIds(Arrays.asList(ids));
-
-        return R.ok();
-    }
 
 }

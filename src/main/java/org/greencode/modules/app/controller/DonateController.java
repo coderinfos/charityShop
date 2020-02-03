@@ -45,23 +45,6 @@ public class DonateController {
     private DonateService donateService;
     @Autowired
     private UserService userService;
-    /**
-     * 列表
-     */
-    @GetMapping("/receivingList")
-    @ApiOperation("捐物登记列表")
-    public R receivingList(@RequestParam Map<String, Object> params){
-        PageUtils page = donateService.receivingQueryPage(params);
-
-        return R.ok().put("page", page);
-    }
-    @GetMapping("/soldList")
-    @ApiOperation("后台专用出售明细")
-    public R soldList(@RequestParam Map<String, Object> params){
-        PageUtils page = donateService.soldQueryPage(params);
-
-        return R.ok().put("page", page);
-    }
 
     /**
      * 信息
@@ -132,21 +115,7 @@ public class DonateController {
         boolean code = donateService.save(donate);
         return common(code);
     }
-    /**
-     *
-     */
-    @PostMapping("/save")
-    @ApiOperation("后台专用接口，保存")
-    public R save(@RequestBody DonateEntity donate, HttpServletRequest request){
-        if (donate.getDonateRegisterTime()==null||donate.getUserId()==null||donate.getDonateType()==null) {
-            return R.error(PARAM_ERROR_CODE,PARAM_ERROR_MSG);
-        }
-        donate.setOperationTime(new Date());
-        String ipAddr = IPUtils.getIpAddr(request);
-        donate.setOperatorIp(ipAddr);
-        boolean code = donateService.save(donate);
-        return common(code);
-    }
+
     /**
      * 捐物登记
      * @param
@@ -231,35 +200,6 @@ public class DonateController {
         donateEntity.setDonateSaleTime(donate.getDonateSaleTime());
         boolean code = donateService.save(donateEntity);
         return common(code);
-    }
-
-    /**
-     * 修改
-     */
-    @PostMapping("/update")
-    @ApiOperation("后台专用接口,修改")
-    public R update(@RequestBody DonateEntity donate, HttpServletRequest request){
-        if (donate.getDonateRegisterTime()==null||donate.getUserId()==null||donate.getDonateType()==null) {
-            return R.error(PARAM_ERROR_CODE,PARAM_ERROR_MSG);
-        }
-
-        donate.setOperationTime(new Date());
-        String ipAddr = IPUtils.getIpAddr(request);
-        donate.setOperatorIp(ipAddr);
-		donateService.updateById(donate);
-
-        return R.ok();
-    }
-
-    /**
-     * 删除
-     */
-    @PostMapping("/delete")
-    @ApiOperation("删除")
-        public R delete(@RequestBody Long[] ids){
-		donateService.removeByIds(Arrays.asList(ids));
-
-        return R.ok();
     }
 
 

@@ -2,12 +2,15 @@ package org.greencode.modules.app.controller;
 
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.greencode.common.utils.IPUtils;
 import org.greencode.modules.app.entity.HomeBossVO;
+import org.greencode.modules.app.entity.UserEntity;
+import org.greencode.modules.app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,14 +21,10 @@ import org.greencode.common.utils.R;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static org.greencode.common.constant.ClientConstants.PARAM_ERROR_CODE;
-import static org.greencode.common.constant.ClientConstants.PARAM_ERROR_MSG;
-import static org.greencode.common.constant.ClientConstants.NOT_FIND_ERROR_CODE;
-import static org.greencode.common.constant.ClientConstants.NOT_FIND_ERROR_MSG;
-import static org.greencode.common.constant.ClientConstants.CANCEL_TIME_CODE;
-import static org.greencode.common.constant.ClientConstants.CANCEL_TIME_MSG;
-import static org.greencode.common.constant.ClientConstants.EXIST_ERROR_CODE;
-import static org.greencode.common.constant.ClientConstants.EXIST_ERROR_MSG;
+import static org.greencode.common.constant.ClientConstants.*;
+import static org.greencode.common.constant.ClientConstants.PHONE_ERROR_CODE;
+import static org.greencode.common.constant.ClientConstants.PHONE_ERROR_MSG;
+
 /**
  * 店长排班表
  *
@@ -41,16 +40,9 @@ public class BossController {
     @Autowired
     private BossService bossService;
 
-    /**
-     * 列表
-     */
-    @GetMapping("/list")
-    @ApiOperation("列表")
-    public R list(@RequestParam Map<String, Object> params){
-        PageUtils page = bossService.queryPage(params);
+    @Autowired
+    private UserService userService;
 
-        return R.ok().put("page", page);
-    }
     /**
      * 信息
      */
@@ -188,6 +180,7 @@ public class BossController {
     @ApiOperation("未来十四天申请店长列表")
     public R appointmentList (){
         List<BossEntity> nextThreeDay = bossService.findNextThreeDay();
+
         return R.ok().put("data",nextThreeDay);
     }
 
@@ -210,31 +203,7 @@ public class BossController {
 
 
     }
-    @PostMapping("/save")
-    @ApiOperation("后台专用接口，保存")
-    public R save(@RequestBody BossEntity boss, HttpServletRequest request){
-        boss.setOperationTime(new Date());
-        boss.setDutySubmitTime(new Date());
-        String ipAddr = IPUtils.getIpAddr(request);
-        boss.setOperatorIp(ipAddr);
-//        boss.setOperator(operator);
-        boolean code = bossService.save(boss);
-        return common(code);
 
-    }
-    /**
-     * 修改
-     */
-    @PostMapping("/update")
-    @ApiOperation("后台专用接口,修改")
-    public R update(@RequestBody BossEntity boss, HttpServletRequest request){
-        boss.setOperationTime(new Date());
-        String ipAddr = IPUtils.getIpAddr(request);
-        boss.setOperatorIp(ipAddr);
-//        boss.setOperator(operator);
-        bossService.updateById(boss);
-        return R.ok();
-    }
 
     /**
      * 通过排班id,取消店长预约
@@ -242,16 +211,27 @@ public class BossController {
      * @return
      */
     @PostMapping("/cancel")
-    @ApiOperation("通过排班id,取消店长预约")
-    public R cancel(@RequestBody Long id){
+    @ApiOperation("通过排班id,mobilePhone,取消店长预约")
+    public R cancel(@RequestParam Map<String, Object> params){
+        String id = (String)params.get("id");
+        String mobilePhone = (String)params.get("mobilePhone");
         if(id==null){
             log.info("id not is null");
             return R.error(PARAM_ERROR_CODE,PARAM_ERROR_MSG);
         }
-
+        boolean isTelephone = Pattern.matches(REGEX_MOBILE,mobilePhone);
+        if (!isTelephone) {
+            log.info("phone format error");
+            return  R.error(PHONE_ERROR_CODE, PHONE_ERROR_MSG);
+        }
         BossEntity boss = bossService.getById(id);
         if(boss==null){
             return R.error(NOT_FIND_ERROR_CODE,NOT_FIND_ERROR_MSG);
+        }
+        UserEntity userEntity = userService.getById(boss.getUserId());
+
+        if(!userEntity.getMobilePhone().equals(Long.parseLong(mobilePhone))){
+            return R.error(NOT_FIND_ERROR_CODE,NOT_FIND_PHONE_ERROR_MSG);
         }
         boss.setDutyStatus(0);
         boolean code = bossService.updateById(boss);
@@ -259,16 +239,7 @@ public class BossController {
     }
 
 
-    /**
-     * 删除
-     */
-    @PostMapping("/delete")
-    @ApiOperation("后台专用接口,删除")
-        public R delete(@RequestBody Long[] ids){
-		bossService.removeByIds(Arrays.asList(ids));
 
-        return R.ok();
-    }
 
     public R common(boolean code){
         if(code){

@@ -1,6 +1,6 @@
 $(function () {
     $("#jqGrid").jqGrid({
-        url: baseURL + 'app/shop/list',
+        url: baseURL + 'admin/shop/list',
         datatype: "json",
         colModel: [			
 			{ label: 'id', name: 'id', index: 'id', width: 50, key: true },
@@ -43,7 +43,7 @@ var vm = new Vue({
 	data:{
 		showList: true,
 		title: null,
-		shop: {}
+		shop: {},
 	},
 	methods: {
 		query: function () {
@@ -66,7 +66,8 @@ var vm = new Vue({
 		},
 		saveOrUpdate: function (event) {
 		    $('#btnSaveOrUpdate').button('loading').delay(1000).queue(function() {
-                var url = vm.shop.id == null ? "app/shop/save" : "app/shop/update";
+                var url = vm.shop.id == null ? "admin/shop/save" : "admin/shop/update";
+                vm.shop.operator = localStorage.getItem("admin");
                 $.ajax({
                     type: "POST",
                     url: baseURL + url,
@@ -100,7 +101,7 @@ var vm = new Vue({
                     lock = true;
 		            $.ajax({
                         type: "POST",
-                        url: baseURL + "app/shop/delete",
+                        url: baseURL + "admin/shop/delete",
                         contentType: "application/json",
                         data: JSON.stringify(ids),
                         success: function(r){
@@ -117,7 +118,7 @@ var vm = new Vue({
              });
 		},
 		getInfo: function(id){
-			$.get(baseURL + "app/shop/info/"+id, function(r){
+			$.get(baseURL + "admin/shop/info/"+id, function(r){
                 vm.shop = r.shop;
             });
 		},

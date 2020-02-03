@@ -1,6 +1,6 @@
 $(function () {
     $("#jqGrid").jqGrid({
-        url: baseURL + 'app/user/list',
+        url: baseURL + 'admin/user/list',
         datatype: "json",
         colModel: [
 			{ label: 'id', name: 'id', index: 'id', width: 50, key: true },
@@ -85,7 +85,8 @@ var vm = new Vue({
 		},
 		saveOrUpdate: function (event) {
 		    $('#btnSaveOrUpdate').button('loading').delay(1000).queue(function() {
-                var url = vm.user.id == null ? "app/user/save" : "app/user/update";
+                var url = vm.user.id == null ? "admin/user/save" : "admin/user/update";
+
                 $.ajax({
                     type: "POST",
                     url: baseURL + url,
@@ -119,7 +120,7 @@ var vm = new Vue({
                     lock = true;
 		            $.ajax({
                         type: "POST",
-                        url: baseURL + "app/user/delete",
+                        url: baseURL + "admin/user/delete",
                         contentType: "application/json",
                         data: JSON.stringify(ids),
                         success: function(r){
@@ -136,7 +137,7 @@ var vm = new Vue({
              });
 		},
 		getInfo: function(id){
-			$.get(baseURL + "app/user/info/"+id, function(r){
+			$.get(baseURL + "admin/user/info/"+id, function(r){
                 vm.user = r.user;
             });
 		},

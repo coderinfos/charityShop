@@ -35,16 +35,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    /**
-     * 列表
-     */
-    @GetMapping("/list")
-    @ApiOperation("后台专用接口，列表")
-    public R list(@RequestParam Map<String, Object> params){
-        PageUtils page = userService.queryPage(params);
-
-        return R.ok().put("page", page);
-    }
 
 
     /**
@@ -85,28 +75,7 @@ public class UserController {
     }
 
 
-    /**
-     * 注册
-     */
-    @PostMapping("/save")
-    @ApiOperation("后台专用接口，保存")
-    public R save(@RequestBody UserEntity user){
-//        String userName = user.getUserName();
-//        if(userName.indexOf(" ")!=-1||userName.length()<6||userName.length()>15){
-//            return R.error(USN_ERROR_CODE,USN_ERROR_MSG);
-//        }
-//
-//        boolean isPassword = Pattern.matches(REGEX_PASSWORD, user.getPassWord());
-//        if (!isPassword) {
-//            log.info("password format error");
-//            return R.error(PWD_ERROR_CODE, PWD_ERROR_MSG);
-//        }
-//        UserEntity userEntity = new UserEntity();
-//        userEntity.setUserName(user.getUserName());
-//        userEntity.setPassWord(user.getPassWord());
-		userService.save(user);
-        return R.ok();
-    }
+
 
     /**
      * 填写个人信息
@@ -144,20 +113,6 @@ public class UserController {
         return common(code);
     }
 
-    /**
-     * 删除
-     */
-    @PostMapping("/delete")
-    @ApiOperation("后台专用接口，删除")
-        public R delete(@RequestBody Long[] ids){
-        if(ids==null){
-            return R.error(PARAM_ERROR_CODE,PARAM_ERROR_MSG);
-
-        }
-		userService.removeByIds(Arrays.asList(ids));
-
-        return R.ok();
-    }
 
     /**
      * 通过手机来查询用户

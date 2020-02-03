@@ -9,12 +9,14 @@
 package org.greencode.modules.sys.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.code.kaptcha.Constants;
 import com.google.code.kaptcha.Producer;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.subject.Subject;
 import org.greencode.common.utils.R;
+import org.greencode.modules.sys.dao.SysUserDao;
 import org.greencode.modules.sys.entity.SysUserEntity;
 import org.greencode.modules.sys.service.SysUserService;
 import org.greencode.modules.sys.shiro.ShiroUtils;
@@ -43,6 +45,9 @@ public class SysLoginController {
 
 	@Autowired
 	private SysUserService sysUserService;
+
+	@Autowired
+	private SysUserDao sysUserDao;
 	@RequestMapping("captcha.jpg")
 	public void captcha(HttpServletResponse response)throws IOException {
         response.setHeader("Cache-Control", "no-store, no-cache");
@@ -83,8 +88,11 @@ public class SysLoginController {
 		}catch (AuthenticationException e) {
 			return R.error("账户验证失败");
 		}
-	    
-		return R.ok();
+		//查询用户信息
+		SysUserEntity user = sysUserDao.selectOne(new QueryWrapper<SysUserEntity>().eq("username", username));
+
+
+		return R.ok().put("data",user);
 	}
 
 

@@ -1,6 +1,6 @@
 $(function () {
     $("#jqGrid").jqGrid({
-        url: baseURL + 'app/donate/soldList',
+        url: baseURL + 'admin/donate/soldList',
         datatype: "json",
         colModel: [
 			{ label: 'id', name: 'id', index: 'id', width: 50, key: true },
@@ -76,7 +76,8 @@ var vm = new Vue({
 		},
 		saveOrUpdate: function (event) {
 		    $('#btnSaveOrUpdate').button('loading').delay(1000).queue(function() {
-                var url = vm.donate.id == null ? "app/donate/save" : "app/donate/update";
+                var url = vm.donate.id == null ? "admin/donate/save" : "admin/donate/update";
+                vm.donate.operator = localStorage.getItem("admin");
                 $.ajax({
                     type: "POST",
                     url: baseURL + url,
@@ -110,7 +111,7 @@ var vm = new Vue({
                     lock = true;
 		            $.ajax({
                         type: "POST",
-                        url: baseURL + "app/donate/delete",
+                        url: baseURL + "admin/donate/delete",
                         contentType: "application/json",
                         data: JSON.stringify(ids),
                         success: function(r){
@@ -127,7 +128,7 @@ var vm = new Vue({
              });
 		},
 		getInfo: function(id){
-			$.get(baseURL + "app/donate/info/"+id, function(r){
+			$.get(baseURL + "admin/donate/info/"+id, function(r){
                 vm.donate = r.donate;
             });
 		},

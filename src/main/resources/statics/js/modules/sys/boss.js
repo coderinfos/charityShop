@@ -1,6 +1,6 @@
 $(function () {
     $("#jqGrid").jqGrid({
-        url: baseURL + 'app/boss/list',
+        url: baseURL + 'admin/boss/list',
         datatype: "json",
         colModel: [			
 			{ label: 'id', name: 'id', index: 'id', width: 50, key: true },
@@ -73,7 +73,8 @@ var vm = new Vue({
 		},
 		saveOrUpdate: function (event) {
 		    $('#btnSaveOrUpdate').button('loading').delay(1000).queue(function() {
-                var url = vm.boss.id == null ? "app/boss/save" : "app/boss/update";
+                var url = vm.boss.id == null ? "admin/boss/save" : "admin/boss/update";
+                vm.boss.operator = localStorage.getItem("admin");
                 $.ajax({
                     type: "POST",
                     url: baseURL + url,
@@ -107,7 +108,7 @@ var vm = new Vue({
                     lock = true;
 		            $.ajax({
                         type: "POST",
-                        url: baseURL + "app/boss/delete",
+                        url: baseURL + "admin/boss/delete",
                         contentType: "application/json",
                         data: JSON.stringify(ids),
                         success: function(r){
@@ -124,7 +125,7 @@ var vm = new Vue({
              });
 		},
 		getInfo: function(id){
-			$.get(baseURL + "app/boss/info/"+id, function(r){
+			$.get(baseURL + "admin/boss/info/"+id, function(r){
                 vm.boss = r.boss;
             });
 		},

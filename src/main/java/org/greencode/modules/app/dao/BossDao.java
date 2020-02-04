@@ -52,7 +52,7 @@ public interface BossDao extends BaseMapper<BossEntity> {
     /**
      * 查询当天排班
      */
-    BossEntity selectTheDay (Long userId);
+    List<BossEntity> selectTheDay (Long userId);
     /**
      * 通过用户id来查询已经取消排班表
      * @param userId

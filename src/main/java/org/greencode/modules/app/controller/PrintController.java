@@ -3,10 +3,10 @@ package org.greencode.modules.app.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.greencode.common.utils.UrlUtil;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.xml.crypto.Data;
+import java.util.Date;
 
 @RestController
 @RequestMapping("app/utils")
@@ -18,4 +18,9 @@ public class PrintController {
         return UrlUtil.sendPost("http://api.poscom.cn/apisc/sendMsg",param);
     }
 
+    @GetMapping("/getDate")
+    @ApiOperation(value = "获取时间")
+    public Date getData(){
+        return new Date();
+    }
 }

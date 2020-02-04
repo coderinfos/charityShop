@@ -25,7 +25,7 @@ public interface BossService extends IService<BossEntity> {
      * @param userId
      * @return
      */
-    BossEntity theDay(Long userId);
+    List<BossEntity> theDay(Long userId);
     /**
      * 通过日期和上午下午及分店id，查询是否已经被申请店长
      * @param dutyDate

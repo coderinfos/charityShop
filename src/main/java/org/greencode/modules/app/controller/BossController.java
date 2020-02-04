@@ -49,7 +49,7 @@ public class BossController {
     @GetMapping("/theDay/{userId}")
     @ApiOperation("通过用户userId来查询当天是否有排班，如果有就会返回排班信息")
     public R theDay(@PathVariable("userId") Long userId){
-        BossEntity boss = bossService.theDay(userId);
+        List<BossEntity> boss = bossService.theDay(userId);
         if(boss==null){
             return R.error(NOT_FIND_ERROR_CODE,NOT_FIND_ERROR_MSG);
         }
@@ -212,7 +212,7 @@ public class BossController {
      */
     @PostMapping("/cancel")
     @ApiOperation("通过排班id,mobilePhone,取消店长预约")
-    public R cancel(@RequestParam Map<String, Object> params){
+    public R cancel(@RequestBody Map<String, Object> params){
         String id = (String)params.get("id");
         String mobilePhone = (String)params.get("mobilePhone");
         if(id==null){

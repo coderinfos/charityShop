@@ -10,6 +10,10 @@ import java.util.Date;
 public class HomeBossVO implements Serializable {
     private static final long serialVersionUID = 1L;
     /**
+     * 排班id
+     */
+    private Long id;
+    /**
      * 捐赠人id
      */
     private Long userId;

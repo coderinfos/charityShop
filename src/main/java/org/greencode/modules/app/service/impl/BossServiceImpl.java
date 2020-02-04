@@ -48,7 +48,7 @@ public class BossServiceImpl extends ServiceImpl<BossDao, BossEntity> implements
     }
 
     @Override
-    public BossEntity theDay(Long userId) {
+    public List<BossEntity> theDay(Long userId) {
         return bossDao.selectTheDay(userId);
     }
 
@@ -93,10 +93,17 @@ public class BossServiceImpl extends ServiceImpl<BossDao, BossEntity> implements
     @Override
     public List<BossEntity> completed(Long userId) {
         //查找当天的并判断是否完成
-        BossEntity bossEntity = bossDao.selectTheDay(userId);
+        List<BossEntity> bossEntityList = bossDao.selectTheDay(userId);
+
         //查找以前已经完成的
         List<BossEntity> bossEntities = bossDao.selectCompleted(userId);
-        if(bossEntity!=null){
+        if(bossEntityList!=null){
+            BossEntity bossEntity = null;
+            if(bossEntityList.size()>1){
+                 bossEntity=bossEntityList.get(1);
+            }else {
+                bossEntity=bossEntityList.get(0);
+            }
             //拿到预约上午还是下午
             Integer dutyType = bossEntity.getDutyType();
             //拿到预约当天的日期

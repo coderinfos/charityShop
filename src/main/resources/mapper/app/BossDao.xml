@@ -19,6 +19,7 @@
     </resultMap>
 
     <resultMap id="HomeBossMap" type="org.greencode.modules.app.entity.HomeBossVO">
+        <result property="id" column="id"/>
         <result property="userId" column="user_id"/>
         <result property="shopId" column="shop_id"/>
         <result property="dutyDate" column="duty_date"/>
@@ -40,12 +41,7 @@
         and shop_id=#{shopId}
     </select>
 
-    <select id="findNextThreeDay" resultMap="bossMap">
-        select <include refid="Base_Column_List" />
-        from ba_boss
-        where duty_date between now()+1 and ADDDATE(now()+1,INTERVAL 14 DAY)
-        and duty_status=1;
-    </select>
+
 
 <!--    <select id="selectByUserId" resultMap="bossMap">-->
 <!--        select <include refid="Base_Column_List" />-->
@@ -80,9 +76,14 @@
         from ba_boss
         where user_id=#{userId} and duty_status=0
     </select>
-
+    <select id="findNextThreeDay" resultMap="bossMap">
+        select <include refid="Base_Column_List" />
+        from ba_boss
+        where duty_date between now()+1 and ADDDATE(now()+1,INTERVAL 14 DAY)
+        and duty_status=1;
+    </select>
     <select id="selectTheMonthBoss" resultMap="HomeBossMap">
-        select b.user_id,b.duty_date,b.duty_type,u.face,u.face_open,b.shop_id
+        select b.id,b.user_id,b.duty_date,b.duty_type,u.face,u.face_open,b.shop_id
         from ba_boss b join ba_user u
         on b.user_id=u.id
         where b.duty_status=1

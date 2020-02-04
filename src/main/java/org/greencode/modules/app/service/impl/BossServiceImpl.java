@@ -90,62 +90,63 @@ public class BossServiceImpl extends ServiceImpl<BossDao, BossEntity> implements
     }
 
     //方式1：获取shopId 根据这个id获取数据，赋值
-//    @Override
-//    public PageUtils getByUserId(Map<String, Object> params) {
-//        QueryWrapper<BossEntity> queryWrapper =new QueryWrapper<BossEntity>();
-//        queryWrapper.eq("user_id",params.get("userId")).orderByDesc("duty_date");
-//
-//        IPage<BossEntity> page = this.page(
-//                new Query<BossEntity>().getPage(params),
-//                queryWrapper
-//        );
-//
-//
-//        List<BossEntity> records = page.getRecords();
-//        List<BossEntity> recordsNew= new ArrayList<>();
-//
-//        for (BossEntity record : records) {
-//
-//            BossVo bossVo= new BossVo();
-//            BeanUtils.copyProperties(record,bossVo);
-//            ShopEntity shopEntity = shopService.getById(bossVo.getShopId());
-//            bossVo.setShopName(shopEntity.getShopName());
-//
-//            recordsNew.add(bossVo);
-//        }
-//
-//        //这里的recordsNew就是包含了 shopname要返回的值
-//        page.setRecords(recordsNew);
-//
-//
-//        return new PageUtils(page);
-//
-//    }
+    @Override
+    public PageUtils getByUserId(Map<String, Object> params) {
+        QueryWrapper<BossEntity> queryWrapper =new QueryWrapper<BossEntity>();
+        queryWrapper.eq("user_id",params.get("userId")).orderByDesc("duty_date");
+
+        IPage<BossEntity> page = this.page(
+                new Query<BossEntity>().getPage(params),
+                queryWrapper
+        );
+
+
+        List<BossEntity> records = page.getRecords();
+        List<BossEntity> recordsNew= new ArrayList<>();
+
+        for (BossEntity record : records) {
+
+            BossVo bossVo= new BossVo();
+            BeanUtils.copyProperties(record,bossVo);
+            ShopEntity shopEntity = shopService.getById(bossVo.getShopId());
+            bossVo.setShopName(shopEntity.getShopName());
+
+            recordsNew.add(bossVo);
+        }
+
+        //这里的recordsNew就是包含了 shopname要返回的值
+        page.setRecords(recordsNew);
+
+
+        return new PageUtils(page);
+
+    }
 
     /**
      * todo  这个方法的mapper.xml 中 queryPageBossVo() 和 queryPageBossVoCount() 查询条件需要补全
+     * 未进行测试
      * @param params
      * @return
      */
-    //方式2：利用sql直接连表查询返回结果集
-    @Override
-    public PageUtils queryListBossVo(Map<String, Object> params) {
-
-
-        List<BossVo> list = baseMapper.queryPageBossVo(params);
-
-        Page<BossVo> bossVoPage = new Page<>();
-
-        //current 和size来自前端的参数，total是符合条件的记录数
-        bossVoPage.setSize(Integer.parseInt(params.get("size").toString()));
-        bossVoPage.setCurrent(Integer.parseInt(params.get("current").toString()));
-        bossVoPage.setTotal(baseMapper.queryPageBossVoCount(params));
-
-        bossVoPage.setRecords(list);
-
-        return new PageUtils(bossVoPage);
-
-    }
+//    //方式2：利用sql直接连表查询返回结果集
+//    @Override
+//    public PageUtils queryListBossVo(Map<String, Object> params) {
+//
+//
+//        List<BossVo> list = baseMapper.queryPageBossVo(params);
+//
+//        Page<BossVo> bossVoPage = new Page<>();
+//
+//        //current 和size来自前端的参数，total是符合条件的记录数
+//        bossVoPage.setSize(Integer.parseInt(params.get("size").toString()));
+//        bossVoPage.setCurrent(Integer.parseInt(params.get("current").toString()));
+//        bossVoPage.setTotal(baseMapper.queryPageBossVoCount(params));
+//
+//        bossVoPage.setRecords(list);
+//
+//        return new PageUtils(bossVoPage);
+//
+//    }
 
 
     @Override

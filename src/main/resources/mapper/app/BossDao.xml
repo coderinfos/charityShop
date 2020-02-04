@@ -29,6 +29,19 @@
     </resultMap>
 
 
+
+    <resultMap id="BossVoMap" type="org.greencode.modules.app.controller.BossVo">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="shopId" column="shop_id"/>
+        <result property="shopName" column="shop_name"/>
+        <result property="dutyDate" column="duty_date"/>
+        <result property="dutyType" column="duty_type"/>
+        <result property="face" column="face"/>
+        <result property="faceOpen" column="face_open"/>
+    </resultMap>
+
     <sql id="Base_Column_List">
         id,shop_id,user_id,duty_date,duty_type,duty_status,duty_submit_time
     </sql>
@@ -88,5 +101,38 @@
         on b.user_id=u.id
         where b.duty_status=1
         and date_format(b.duty_date,'%Y-%m-%d')  between date_format(now(),'%Y-%m-%d') and date_format(ADDDATE(now(),INTERVAL 14 DAY),'%Y-%m-%d');
+    </select>
+
+
+    <result property="id" column="id"/>
+    <result property="userId" column="user_id"/>
+    <result property="userName" column="user_name"/>
+    <result property="shopId" column="shop_id"/>
+    <result property="shopName" column="shop_name"/>
+    <result property="dutyDate" column="duty_date"/>
+    <result property="dutyType" column="duty_type"/>
+    <result property="face" column="face"/>
+    <result property="faceOpen" column="face_open"/>
+
+
+
+
+
+    <!-- 这个sql返回结果为集合-->
+    <select id="queryPageBossVo" resultMap="BossVoMap">
+        select id,user_id,user_name,shop_id,shop_name,duty_date,duty_type,face,face_open
+         from ba_boss b
+         join ba_shop s on b.shop_id=s.id
+         join ba_user u  on  on b.user_id=u.id
+        /* where 后面写分页查询的条件以及其他的条件 */
+    </select>
+
+
+    <select id="queryPageBossVoCount"  resultType="java.lang.Integer">
+        select count(1)
+         from ba_boss b
+         join ba_shop s on b.shop_id=s.id
+         join ba_user u  on  on b.user_id=u.id
+        /* where 后面写分页查询的条件以及其他的条件 */
     </select>
 </mapper>

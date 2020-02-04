@@ -1,12 +1,16 @@
 package org.greencode.modules.app.service.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.commons.lang.StringUtils;
 import org.greencode.common.utils.R;
+import org.greencode.modules.app.controller.BossVo;
 import org.greencode.modules.app.dao.ShopDao;
 import org.greencode.modules.app.dao.UserDao;
 import org.greencode.modules.app.entity.DonateEntity;
 import org.greencode.modules.app.entity.HomeBossVO;
 import org.greencode.modules.app.entity.ShopEntity;
+import org.greencode.modules.app.service.ShopService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,8 +40,22 @@ public class BossServiceImpl extends ServiceImpl<BossDao, BossEntity> implements
 
     @Autowired
     private ShopDao shopDao;
+
+    @Autowired
+    private ShopService shopService;
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
+        String userId = (String)params.get("userId");
+        IPage<BossEntity> page = this.page(
+                new Query<BossEntity>().getPage(params),
+                new QueryWrapper<BossEntity>().like(StringUtils.isNotBlank(userId),"user_id", userId)
+        );
+
+        return new PageUtils(page);
+    }
+
+    @Override
+    public PageUtils queryPageBossVo(Map<String, Object> params){
         String userId = (String)params.get("userId");
         IPage<BossEntity> page = this.page(
                 new Query<BossEntity>().getPage(params),
@@ -71,19 +89,64 @@ public class BossServiceImpl extends ServiceImpl<BossDao, BossEntity> implements
         return bossDao.findNextThreeDay();
     }
 
+    //方式1：获取shopId 根据这个id获取数据，赋值
+//    @Override
+//    public PageUtils getByUserId(Map<String, Object> params) {
+//        QueryWrapper<BossEntity> queryWrapper =new QueryWrapper<BossEntity>();
+//        queryWrapper.eq("user_id",params.get("userId")).orderByDesc("duty_date");
+//
+//        IPage<BossEntity> page = this.page(
+//                new Query<BossEntity>().getPage(params),
+//                queryWrapper
+//        );
+//
+//
+//        List<BossEntity> records = page.getRecords();
+//        List<BossEntity> recordsNew= new ArrayList<>();
+//
+//        for (BossEntity record : records) {
+//
+//            BossVo bossVo= new BossVo();
+//            BeanUtils.copyProperties(record,bossVo);
+//            ShopEntity shopEntity = shopService.getById(bossVo.getShopId());
+//            bossVo.setShopName(shopEntity.getShopName());
+//
+//            recordsNew.add(bossVo);
+//        }
+//
+//        //这里的recordsNew就是包含了 shopname要返回的值
+//        page.setRecords(recordsNew);
+//
+//
+//        return new PageUtils(page);
+//
+//    }
+
+    /**
+     * todo  这个方法的mapper.xml 中 queryPageBossVo() 和 queryPageBossVoCount() 查询条件需要补全
+     * @param params
+     * @return
+     */
+    //方式2：利用sql直接连表查询返回结果集
     @Override
-    public PageUtils getByUserId(Map<String, Object> params) {
-        QueryWrapper<BossEntity> queryWrapper =new QueryWrapper<BossEntity>();
-        queryWrapper.eq("user_id",params.get("userId")).orderByDesc("duty_date");
+    public PageUtils queryListBossVo(Map<String, Object> params) {
 
-        IPage<BossEntity> page = this.page(
-                new Query<BossEntity>().getPage(params),
-                queryWrapper
-        );
 
-        return new PageUtils(page);
+        List<BossVo> list = baseMapper.queryPageBossVo(params);
+
+        Page<BossVo> bossVoPage = new Page<>();
+
+        //current 和size来自前端的参数，total是符合条件的记录数
+        bossVoPage.setSize(Integer.parseInt(params.get("size").toString()));
+        bossVoPage.setCurrent(Integer.parseInt(params.get("current").toString()));
+        bossVoPage.setTotal(baseMapper.queryPageBossVoCount(params));
+
+        bossVoPage.setRecords(list);
+
+        return new PageUtils(bossVoPage);
 
     }
+
 
     @Override
     public List<BossEntity> getNotStart(Long userId) {

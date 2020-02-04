@@ -49,4 +49,7 @@ public class ShopEntity implements Serializable {
 	 */
 	private String memo;
 
+	public String getShopName() {
+		return shopName;
+	}
 }

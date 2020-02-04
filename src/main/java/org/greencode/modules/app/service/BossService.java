@@ -2,6 +2,7 @@ package org.greencode.modules.app.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.greencode.common.utils.PageUtils;
+import org.greencode.modules.app.controller.BossVo;
 import org.greencode.modules.app.entity.BossEntity;
 import org.greencode.modules.app.entity.HomeBossVO;
 
@@ -70,5 +71,12 @@ public interface BossService extends IService<BossEntity> {
      * @return
      */
     List<HomeBossVO> findtheMonthBoss();
+
+    /**
+     * sql方式查询店长信息（包含店名称）
+     * @param params
+     * @return
+     */
+    PageUtils queryListBossVo(Map<String, Object> params);
 }
 

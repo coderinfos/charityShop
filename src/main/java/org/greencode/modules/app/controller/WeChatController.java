@@ -53,9 +53,10 @@ public class WeChatController {
      * @param code
      * @return
      */
-    @PostMapping("getOpenId")
+    @GetMapping("getOpenId")
     @ApiOperation("传入code,如果用户已经注册,返回用户信息,如果没有返回openid")
-    public JSONObject getOpenIdAndSessionKey(@RequestBody String code) {
+    public JSONObject getOpenIdAndSessionKey(String code) {
+        System.out.println("code-------------"+code);
         log.info("code:{}", code);
         if (code == null) {
             JSONObject jsonObject = new JSONObject();
@@ -72,7 +73,7 @@ public class WeChatController {
         params.put("grant_type", "authorization_code");
         JSONObject jsonObject = JSON.parseObject(UrlUtil.sendPost(requestUrl, params));
         log.info("jsonObject:{}", jsonObject);
-        if ((Integer)jsonObject.get(ERR_CODE) != 0) {
+        if (jsonObject.get(ERR_CODE) != null) {
             log.info("request is error");
             return jsonObject;
         }
@@ -80,19 +81,22 @@ public class WeChatController {
         String openId = (String) jsonObject.get("openid");
         log.info("openId:{}", openId);
         UserEntity userEntity = userService.getByWechatId(openId);
-
+        JSONObject jsonObject1 = new JSONObject();
         if (userEntity == null) {
             log.info("First Login");
-            jsonObject.put("type_code", 0);
-            jsonObject.put("type_msg", "first login");
-            jsonObject.put("data", openId);
-            return jsonObject;
+            jsonObject1.put("type_code", 0);
+            jsonObject1.put("type_msg", "first login");
+            UserEntity user = new UserEntity();
+            user.setWechatId(openId);
+            userService.save(user);
+            jsonObject1.put("data", user);
+            return jsonObject1;
         }
         log.info("not first login");
-        jsonObject.put("type_code", 1);
-        jsonObject.put("type_msg", "not first login");
-        jsonObject.put("data", userEntity);
-        return jsonObject;
+        jsonObject1.put("type_code", 1);
+        jsonObject1.put("type_msg", "not first login");
+        jsonObject1.put("data", userEntity);
+        return jsonObject1;
     }
 
     /**

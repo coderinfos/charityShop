@@ -54,16 +54,7 @@ public class BossServiceImpl extends ServiceImpl<BossDao, BossEntity> implements
         return new PageUtils(page);
     }
 
-    @Override
-    public PageUtils queryPageBossVo(Map<String, Object> params){
-        String userId = (String)params.get("userId");
-        IPage<BossEntity> page = this.page(
-                new Query<BossEntity>().getPage(params),
-                new QueryWrapper<BossEntity>().like(StringUtils.isNotBlank(userId),"user_id", userId)
-        );
 
-        return new PageUtils(page);
-    }
 
     @Override
     public List<BossEntity> theDay(Long userId) {
@@ -101,21 +92,7 @@ public class BossServiceImpl extends ServiceImpl<BossDao, BossEntity> implements
         );
 
 
-        List<BossEntity> records = page.getRecords();
-        List<BossEntity> recordsNew= new ArrayList<>();
 
-        for (BossEntity record : records) {
-
-            BossVo bossVo= new BossVo();
-            BeanUtils.copyProperties(record,bossVo);
-            ShopEntity shopEntity = shopService.getById(bossVo.getShopId());
-            bossVo.setShopName(shopEntity.getShopName());
-
-            recordsNew.add(bossVo);
-        }
-
-        //这里的recordsNew就是包含了 shopname要返回的值
-        page.setRecords(recordsNew);
 
 
         return new PageUtils(page);
@@ -125,7 +102,7 @@ public class BossServiceImpl extends ServiceImpl<BossDao, BossEntity> implements
     /**
      * todo  这个方法的mapper.xml 中 queryPageBossVo() 和 queryPageBossVoCount() 查询条件需要补全
      * 未进行测试
-     * @param params
+     * @param
      * @return
      */
 //    //方式2：利用sql直接连表查询返回结果集

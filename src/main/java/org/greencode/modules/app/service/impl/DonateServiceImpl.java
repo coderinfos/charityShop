@@ -1,7 +1,10 @@
 package org.greencode.modules.app.service.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.commons.lang.StringUtils;
 import org.greencode.common.utils.R;
+import org.greencode.modules.app.controller.BossVo;
+import org.greencode.modules.app.entity.DonateVO;
 import org.greencode.modules.app.entity.HomeDonateVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,15 +47,37 @@ public class DonateServiceImpl extends ServiceImpl<DonateDao, DonateEntity> impl
 
     @Override
     public PageUtils getByUserId(Map<String, Object> params) {
-        QueryWrapper<DonateEntity> queryWrapper =new QueryWrapper<DonateEntity>();
-        queryWrapper.isNotNull("donate_register_time").isNotNull("donate_type").eq("user_id",params.get("userId")).orderByDesc("donate_register_time");
+        Long userId = Long.parseLong(params.get("userId").toString());
+        Integer pageNum=null;
+        Integer pageSize=null;
+        if(params.get("pageNum")!=null){
+             pageNum = Integer.parseInt(params.get("pageNum").toString());
+        }
+        if(params.get("pageNum")!=null){
+            pageSize = Integer.parseInt(params.get("pageSize").toString());
+        }
 
-        IPage<DonateEntity> page = this.page(
-                new Query<DonateEntity>().getPage(params),
-                queryWrapper
-        );
+        int start=0;
+        int end  =10;
+        Page<DonateVO> DonateVOPage = new Page<>();
+        if(pageNum!=null&pageNum!=null){
+            start=(pageNum-1)*pageSize;
+            end=pageSize;
+            DonateVOPage.setSize(pageSize);
+            DonateVOPage.setCurrent(pageNum);
+        }
+        List<DonateVO> list = donateDao.selectDonateByUserId(userId,start,end);
 
-        return new PageUtils(page);
+
+
+        //current 和size来自前端的参数，total是符合条件的记录数
+
+        DonateVOPage.setTotal(donateDao.queryPageDonateVOPageCount(userId));
+
+        DonateVOPage.setRecords(list);
+
+        return new PageUtils(DonateVOPage);
+
 
     }
 

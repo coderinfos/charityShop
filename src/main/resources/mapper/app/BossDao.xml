@@ -104,16 +104,6 @@
     </select>
 
 
-    <result property="id" column="id"/>
-    <result property="userId" column="user_id"/>
-    <result property="userName" column="user_name"/>
-    <result property="shopId" column="shop_id"/>
-    <result property="shopName" column="shop_name"/>
-    <result property="dutyDate" column="duty_date"/>
-    <result property="dutyType" column="duty_type"/>
-    <result property="face" column="face"/>
-    <result property="faceOpen" column="face_open"/>
-
 
 
 

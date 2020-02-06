@@ -72,11 +72,6 @@ public interface BossService extends IService<BossEntity> {
      */
     List<HomeBossVO> findtheMonthBoss();
 
-    /**
-     * sql方式查询店长信息（包含店名称）
-     * @param params
-     * @return
-     */
-    PageUtils queryListBossVo(Map<String, Object> params);
+
 }
 

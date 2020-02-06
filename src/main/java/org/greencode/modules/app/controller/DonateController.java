@@ -65,7 +65,7 @@ public class DonateController {
      * @return
      */
     @GetMapping("/myDonate")
-    @ApiOperation("（我的捐赠）通过用户ID来查询捐赠表,userId,page,limit")
+    @ApiOperation("（我的捐赠）通过用户ID来查询捐赠表,userId,pageNum,pageSize")
     public R myDonate(@RequestParam Map<String, Object> params){
         Long userId = Long.parseLong(params.get("userId").toString());
         if(userId==null){

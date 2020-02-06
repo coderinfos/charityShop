@@ -87,28 +87,34 @@ public class UserController {
             log.info("id is not null");
             return R.error(NOT_FIND_ERROR_CODE,NOT_FIND_ERROR_MSG);
         }
-        //填写个人信息的时候加上各种正则判断
-        boolean isTelephone = Pattern.matches(REGEX_MOBILE, user.getMobilePhone().toString());
-        if (!isTelephone) {
-            log.info("phone format error");
-            return  R.error(PHONE_ERROR_CODE, PHONE_ERROR_MSG);
+        if(user.getMobilePhone()!=null){
+            //填写个人信息的时候加上各种正则判断
+            boolean isTelephone = Pattern.matches(REGEX_MOBILE, user.getMobilePhone().toString());
+            if (!isTelephone) {
+                log.info("phone format error");
+                return  R.error(PHONE_ERROR_CODE, PHONE_ERROR_MSG);
+            }
         }
+
 //        boolean isPassword = Pattern.matches(REGEX_PASSWORD, user.getPassWord());
 //            if (!isPassword) {
 //                log.info("password format error");
 //                return R.error(PWD_ERROR_CODE, PWD_ERROR_MSG);
 //            }
-        boolean isAge = Pattern.matches(REGEX_AGE,user.getAge().toString());
+        if(user.getAge()!=null){
+            boolean isAge = Pattern.matches(REGEX_AGE,user.getAge().toString());
             if (!isAge) {
                 log.info("age format error");
                 return R.error(AGE_ERROR_CODE, AGE_ERROR_MSG);
             }
-        if(StringUtils.isEmpty(user.getRealName())){
-            return R.error(NAME_ERROR_CODE, NAME_ERROR_MSG);
         }
-        if(StringUtils.isEmpty(user.getNickName())){
-            return R.error(NAME_ERROR_CODE, NAME_ERROR_MSG);
-        }
+//
+//        if(StringUtils.isEmpty(user.getRealName())){
+//            return R.error(NAME_ERROR_CODE, NAME_ERROR_MSG);
+//        }
+//        if(StringUtils.isEmpty(user.getNickName())){
+//            return R.error(NAME_ERROR_CODE, NAME_ERROR_MSG);
+//        }
         boolean code = userService.updateById(user);
         return common(code);
     }

@@ -51,9 +51,9 @@
         FROM  ba_donate d join ba_shop b ON d.shop_id=b.id
         WHERE d.donate_price >=50
         AND d.donate_register_time  IS NOT  NULL
-        AND d.user_id=#{arg0}
+        AND d.user_id=#{userId}
         ORDER BY donate_register_time DESC
-        limit #{arg1},#{arg2}
+        limit #{start},#{end}
     </select>
 
     <select id="queryPageDonateVOPageCount" resultType="int" >

@@ -99,6 +99,8 @@ public class WeChatController {
         return jsonObject1;
     }
 
+
+
     /**
      * 第三方（微信授权登入）,因为要获取ip，所以要传request,带openId
      * @param request

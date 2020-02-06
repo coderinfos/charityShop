@@ -1,5 +1,6 @@
 package org.greencode.modules.app.dao;
 
+import org.apache.ibatis.annotations.Param;
 import org.greencode.modules.app.entity.DonateEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
@@ -22,7 +23,7 @@ public interface DonateDao extends BaseMapper<DonateEntity> {
      * @param userId
      * @return
      */
-    List<DonateVO> selectDonateByUserId(Long userId,Integer start,Integer end);
+    List<DonateVO> selectDonateByUserId(@Param("userId") Long userId,@Param("start") Integer start,@Param("end")Integer end);
 
     Integer queryPageDonateVOPageCount(Long userId);
     /**

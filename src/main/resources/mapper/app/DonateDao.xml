@@ -49,9 +49,11 @@
         SELECT d.id,b.shop_name,d.donate_register_time,d.donate_sale_time,d.donate_price,
         d.donate_name,d.donate_type
         FROM  ba_donate d join ba_shop b ON d.shop_id=b.id
-        WHERE d.donate_price >=50
-        AND d.donate_register_time  IS NOT  NULL
+        WHERE  d.donate_register_time  IS NOT  NULL
         AND d.user_id=#{userId}
+        <if test="type==2">
+        AND d.donate_sale_time IS NOT  NULL
+        </if>
         ORDER BY donate_register_time DESC
         limit #{start},#{end}
     </select>
@@ -59,20 +61,14 @@
     <select id="queryPageDonateVOPageCount" resultType="int" >
         SELECT COUNT(1)
         FROM  ba_donate d join ba_shop b ON d.shop_id=b.id
-        WHERE d.donate_price >=50
-        AND d.donate_register_time  IS NOT  NULL
+        WHERE  d.donate_register_time  IS NOT  NULL
         AND d.user_id = #{userId}
+        <if test="type==2">
+        AND d.donate_sale_time IS NOT  NULL
+        </if>
         ORDER BY donate_register_time DESC
     </select>
-    <select id="selectDonateSoldByUserId" resultMap="donateMap">
-        select <include refid="Base_Column_List" />
-        from ba_donate
-        WHERE donate_register_time is not null
-        and donate_price is not null
-        and donate_sale_time is not null
-        and user_id=#{userId}
-        order by donate_register_time desc
-    </select>
+
 
     <select id="selectRecentFive" resultMap="HomeDonateMap">
         select u.nick_name,u.nick_name_open,u.face,u.face_open,d.user_id,d.donate_type,d.donate_price,d.donate_sale_time,d.donate_image

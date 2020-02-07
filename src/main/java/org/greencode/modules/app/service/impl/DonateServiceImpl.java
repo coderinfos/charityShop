@@ -3,12 +3,12 @@ package org.greencode.modules.app.service.impl;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.commons.lang.StringUtils;
 import org.greencode.common.utils.R;
-import org.greencode.modules.app.controller.BossVo;
 import org.greencode.modules.app.entity.DonateVO;
 import org.greencode.modules.app.entity.HomeDonateVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -50,13 +50,17 @@ public class DonateServiceImpl extends ServiceImpl<DonateDao, DonateEntity> impl
         Long userId = Long.parseLong(params.get("userId").toString());
         Integer pageNum=null;
         Integer pageSize=null;
+        Integer type=null;
         if(params.get("pageNum")!=null){
              pageNum = Integer.parseInt(params.get("pageNum").toString());
         }
         if(params.get("pageNum")!=null){
             pageSize = Integer.parseInt(params.get("pageSize").toString());
         }
-
+        //type用来判断查询type=1所有，type=2已售
+        if(params.get("type")!=null){
+         type = Integer.parseInt(params.get("type").toString());
+        }
         int start=0;
         int end  =10;
         Page<DonateVO> DonateVOPage = new Page<>();
@@ -66,25 +70,16 @@ public class DonateServiceImpl extends ServiceImpl<DonateDao, DonateEntity> impl
             DonateVOPage.setSize(pageSize);
             DonateVOPage.setCurrent(pageNum);
         }
-        List<DonateVO> list = donateDao.selectDonateByUserId(userId,start,end);
-
-
-
+        //type用来判断查询type=1所有，type=2已售
+        List<DonateVO> list = donateDao.selectDonateByUserId(userId,start,end,type);
+        DonateVOPage.setTotal(donateDao.queryPageDonateVOPageCount(userId,type));
         //current 和size来自前端的参数，total是符合条件的记录数
-
-        DonateVOPage.setTotal(donateDao.queryPageDonateVOPageCount(userId));
-
         DonateVOPage.setRecords(list);
-
         return new PageUtils(DonateVOPage);
 
-
     }
 
-    @Override
-    public List<DonateEntity> getSoldByUserId(Long userId) {
-        return donateDao.selectDonateSoldByUserId(userId);
-    }
+
 
     @Override
     public List<HomeDonateVO> getRecentFive() {

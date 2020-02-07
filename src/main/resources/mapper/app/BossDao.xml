@@ -30,16 +30,13 @@
 
 
 
-    <resultMap id="BossVoMap" type="org.greencode.modules.app.controller.BossVo">
+    <resultMap id="BossVoMap" type="org.greencode.modules.app.entity.BossVO">
         <result property="id" column="id"/>
         <result property="userId" column="user_id"/>
-        <result property="userName" column="user_name"/>
-        <result property="shopId" column="shop_id"/>
         <result property="shopName" column="shop_name"/>
         <result property="dutyDate" column="duty_date"/>
         <result property="dutyType" column="duty_type"/>
-        <result property="face" column="face"/>
-        <result property="faceOpen" column="face_open"/>
+        <result property="dutyStatus" column="duty_status"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -67,7 +64,7 @@
         select <include refid="Base_Column_List" />
         from ba_boss
         where user_id=#{userId} and duty_status=1
-        and TIMESTAMPDIFF(MINUTE,NOW() ,duty_date)>0;
+        AND duty_date>NOW();
     </select>
 
     <select id="selectCompleted" resultMap="bossMap">
@@ -84,11 +81,7 @@
         and date_format(duty_date,'%Y-%m-%d')=date_format(NOW(),'%Y-%m-%d')
     </select>
 
-    <select id="selectCancelBoss" resultMap="bossMap">
-        select <include refid="Base_Column_List" />
-        from ba_boss
-        where user_id=#{userId} and duty_status=0
-    </select>
+
     <select id="findNextThreeDay" resultMap="bossMap">
         select <include refid="Base_Column_List" />
         from ba_boss
@@ -109,20 +102,43 @@
 
 
     <!-- 这个sql返回结果为集合-->
-    <select id="queryPageBossVo" resultMap="BossVoMap">
-        select id,user_id,user_name,shop_id,shop_name,duty_date,duty_type,face,face_open
+    <select id="selectBossByUserId" resultMap="BossVoMap">
+        select b.id,user_id,s.shop_name,b.duty_date,b.duty_type,b.duty_status
          from ba_boss b
          join ba_shop s on b.shop_id=s.id
-         join ba_user u  on  on b.user_id=u.id
-        /* where 后面写分页查询的条件以及其他的条件 */
+        WHERE b.user_id=#{userId}
+        <if test="type==2">
+          AND b.duty_date>NOW()
+          AND b.duty_status=1
+        </if>
+        <if test="type==3">
+            AND TO_DAYS( NOW( ) ) - TO_DAYS(duty_date) >0
+            AND b.duty_status=1
+        </if>
+        <if test="type==4">
+            AND b.duty_status=0
+        </if>
+        ORDER BY b.duty_submit_time DESC
+        limit #{start},#{end}
     </select>
 
 
-    <select id="queryPageBossVoCount"  resultType="java.lang.Integer">
+    <select id="queryPageBossVOPageCount"  resultType="java.lang.Integer">
         select count(1)
-         from ba_boss b
-         join ba_shop s on b.shop_id=s.id
-         join ba_user u  on  on b.user_id=u.id
-        /* where 后面写分页查询的条件以及其他的条件 */
+        from ba_boss b
+        join ba_shop s on b.shop_id=s.id
+        WHERE b.user_id=#{userId}
+        <if test="type==2">
+            AND b.duty_date>NOW()
+            AND b.duty_status=1
+        </if>
+        <if test="type==3">
+            AND TO_DAYS( NOW( ) ) - TO_DAYS(duty_date) >0
+            AND b.duty_status=1
+        </if>
+        <if test="type==4">
+            AND b.duty_status=0
+        </if>
+        ORDER BY b.duty_submit_time DESC
     </select>
 </mapper>

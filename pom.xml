@@ -42,6 +42,8 @@
 		<hutool.version>4.1.1</hutool.version>
 		<lombok.version>1.18.4</lombok.version>
 
+		<!--<project.build.locales>zh_CN</project.build.locales>-->
+		<!--<WxJava.version>3.6.0</WxJava.version>-->
 		<!--wagon plugin 配置-->
 		<service-path>/work/charityShop</service-path>
 		<pack-name>${project.artifactId}-${project.version}.jar</pack-name>
@@ -231,6 +233,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
+
+		<!--<dependency>-->
+			<!--<groupId>com.github.binarywang</groupId>-->
+			<!--<artifactId>weixin-java-miniapp</artifactId>-->
+			<!--<version>${WxJava.version}</version>-->
+		<!--</dependency>-->
 
 	</dependencies>
 

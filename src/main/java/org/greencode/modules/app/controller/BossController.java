@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.util.CollectionUtils;
 import org.greencode.common.utils.IPUtils;
 import org.greencode.modules.app.entity.HomeBossVO;
 import org.greencode.modules.app.entity.UserEntity;
@@ -56,6 +57,15 @@ public class BossController {
         return R.ok().put("boss", boss);
     }
 
+    @GetMapping("/newTheDay/{userId}")
+    @ApiOperation("（查询当前时间）通过用户userId来查询当天是否有排班，如果有就会返回排班信息")
+    public R newTheDay(@PathVariable("userId") Long userId){
+        BossEntity boss = bossService.newTheDay(userId);
+        if(boss==null){
+            return R.error(NOT_FIND_ERROR_CODE,NOT_FIND_ERROR_MSG);
+        }
+        return R.ok().put("boss", boss);
+    }
 
 
     /**
@@ -75,13 +85,9 @@ public class BossController {
      * @return
      */
     @GetMapping("/myBoss")
-    @ApiOperation("(我的排班)userId,page,limit来查询排班表，duty_status为0则是取消")
+    @ApiOperation("(我的排班)userId,pageNum,pageSize，type(type=1所有，type=2未开始，type=3已完成，type=4已取消)")
     public R myBoss(@RequestParam Map<String, Object> params){
-        Long userId = Long.parseLong(params.get("userId").toString());
-        if(userId==null){
-            return R.error(PARAM_ERROR_CODE,PARAM_ERROR_MSG);
-        }
-        PageUtils donate = bossService.getByUserId(params);
+        PageUtils  donate = bossService.getByUserId(params);
         if(donate==null){
             return R.error(NOT_FIND_ERROR_CODE,NOT_FIND_ERROR_MSG);
         }else {
@@ -89,64 +95,8 @@ public class BossController {
         }
     }
 
-    /**
-     * 通过用户id来查询排班表，筛选未开始且未取消的排班
-     * @param userId
-     * @return
-     */
-    @GetMapping("/notStart/{userId}")
-    @ApiOperation("通过用户id来查询排班表，筛选未开始且未取消的排班")
-    public R notStart (@PathVariable("userId") Long userId){
-        if(userId==null){
-            return R.error(PARAM_ERROR_CODE,PARAM_ERROR_MSG);
-        }
-        List<BossEntity> donate = bossService.getNotStart(userId);
-        if(donate.isEmpty()){
-            return R.error(NOT_FIND_ERROR_CODE,NOT_FIND_ERROR_MSG);
-        }else {
 
-            return R.ok().put("data",donate);
-        }
 
-    }
-    /**
-     * 通过用户id来查询已经取消排班表
-     * @param userId
-     * @return
-     */
-    @GetMapping("/cancelBoss/{userId}")
-    @ApiOperation("通过用户id来查询已经取消排班表")
-    public R  cancelBoss (@PathVariable("userId") Long userId){
-        if(userId==null){
-            return R.error(PARAM_ERROR_CODE,PARAM_ERROR_MSG);
-        }
-        List<BossEntity> donate = bossService.getCancelBoss(userId);
-        if(donate.isEmpty()){
-            return R.error(NOT_FIND_ERROR_CODE,NOT_FIND_ERROR_MSG);
-        }else {
-
-            return R.ok().put("data",donate);
-        }
-
-    }
-    /**
-     * 通过用户id来查询排班表，筛选已完成且未取消的排班
-     * @param userId
-     * @return
-     */
-    @GetMapping("/completed/{userId}")
-    @ApiOperation("通过用户id来查询排班表，筛选已完成且未取消的排班")
-    public R Completed (@PathVariable("userId") Long userId) {
-        if (userId == null) {
-            return R.error(PARAM_ERROR_CODE,PARAM_ERROR_MSG);
-        }
-        List<BossEntity> donate = bossService.completed(userId);
-        if (donate.isEmpty()) {
-            return R.error(NOT_FIND_ERROR_CODE,NOT_FIND_ERROR_MSG);
-        } else {
-            return R.ok().put("data",donate);
-        }
-    }
 
     /**
      * 通过id来查询是否在24小时内
@@ -189,7 +139,7 @@ public class BossController {
      * 店长申请，信息保存
      */
     @PostMapping("/apply")
-    @ApiOperation("店长申请，信息保存传入UserId，ShopId，DutyType，DutyDate预约的日期(如果type为1则传当天9点，2020-01-09 09:00:00，为2下午，则2020-01-09 14:30:00)")
+    @ApiOperation("店长申请，信息保存传入userId，shopId，dutyType，dutyDate预约的日期(如果type为1则传当天9点，2020-01-09 09:00:00，为2下午，则2020-01-09 14:30:00)")
     public R apply(@RequestBody BossEntity boss){
         if(boss.getUserId()==null||boss.getShopId()==null||boss.getDutyType()==null||boss.getDutyDate()==null){
             return R.error(PARAM_ERROR_CODE,PARAM_ERROR_MSG);
@@ -197,6 +147,21 @@ public class BossController {
         boolean find=bossService.getAppointment(boss.getDutyDate(),boss.getDutyType(),boss.getShopId());
         if(!find){
             return R.error(EXIST_ERROR_CODE,EXIST_ERROR_MSG);
+        }
+        List<BossEntity> bossEntityList = bossService.findBossByUserId(boss.getUserId());
+        if(!CollectionUtils.isEmpty(bossEntityList)){
+            for(BossEntity bossEntity:bossEntityList){
+                boolean a = bossEntity.getDutyDate().equals(boss.getDutyDate());
+                boolean b = bossEntity.getDutyType().equals(boss.getDutyType());
+                boolean c = bossEntity.getShopId().equals(boss.getShopId());
+                if(a&&b&&c){
+                    BossEntity bossEntity1=new BossEntity();
+                    bossEntity1.setId(bossEntity.getId());
+                    bossEntity1.setDutyStatus(1);
+                    bossService.updateById(bossEntity1);
+                    return R.ok();
+                }
+            }
         }
         boolean code = bossService.save(boss);
         return common(code);

@@ -1,10 +1,11 @@
 package org.greencode.modules.app.dao;
 
-import org.greencode.common.utils.PageUtils;
-import org.greencode.modules.app.controller.BossVo;
+import org.apache.ibatis.annotations.Param;
+
 import org.greencode.modules.app.entity.BossEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.greencode.modules.app.entity.BossVO;
 import org.greencode.modules.app.entity.HomeBossVO;
 
 import java.util.Date;
@@ -27,7 +28,7 @@ public interface BossDao extends BaseMapper<BossEntity> {
      * @param dutyType
      * @return
      */
-    List<BossEntity> selectByDutyDate(Date dutyDate, Integer dutyType, Long shopId);
+    List<BossEntity> selectByDutyDate(@Param("dutyDate")Date dutyDate,@Param("dutyType")Integer dutyType,@Param("shopId")Long shopId);
 
     /**
      * 查询未来三天内的店长申请
@@ -63,13 +64,7 @@ public interface BossDao extends BaseMapper<BossEntity> {
      */
     List<BossEntity> selectTheDay(Long userId);
 
-    /**
-     * 通过用户id来查询已经取消排班表
-     *
-     * @param userId
-     * @return
-     */
-    List<BossEntity> selectCancelBoss(Long userId);
+
 
     /**
      * 查询当月的店长排班
@@ -77,18 +72,24 @@ public interface BossDao extends BaseMapper<BossEntity> {
      * @return
      */
     List<HomeBossVO> selectTheMonthBoss();
-    /**
-     * sql分页查询返回BossVo数据
-     *
-     * 参数：params 包含分页参数 和其他条件参数
-     * @return
-     */
-    List<BossVo> queryPageBossVo(Map<String, Object> params);
 
     /**
-     * sql分页查询返回queryPageBossVo方法 BossVo数据记录数
-     *参数：params 条件参数
+     * 我的排版 通过用户userId来查询我的排班，实现分页
+     * @param userId
+     * @param start
+     * @param end
+     * @param type
      * @return
      */
-    Integer queryPageBossVoCount(Map<String, Object> params);
+    List<BossVO> selectBossByUserId(@Param("userId")Long userId,@Param("start")int start,
+                                    @Param("end")int end,@Param("type") Integer type);
+/**
+ * 功能描述: 用来统计我的排班一共有多少条信息
+ * @Param: [userId, type]
+ * @Return: long
+ * @Author: mango
+ * @methodName: queryPageBossVOPageCount
+ * @Date: 2020/2/7 19:37
+ */
+Integer queryPageBossVOPageCount(@Param("userId")Long userId,@Param("type") Integer type);
 }

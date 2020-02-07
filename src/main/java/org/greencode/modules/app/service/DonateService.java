@@ -30,12 +30,7 @@ public interface DonateService extends IService<DonateEntity> {
      */
     PageUtils getByUserId(Map<String, Object> params);
 
-    /**
-     * 通过用户ID来查询已经售出的捐赠记录,通过donatePrice这个字段判断是否售出，未售出为null
-     * @param userId
-     * @return
-     */
-    List<DonateEntity> getSoldByUserId(Long userId);
+
 
     /**
      * 查询最近的五条售出记录

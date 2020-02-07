@@ -23,9 +23,10 @@ public interface DonateDao extends BaseMapper<DonateEntity> {
      * @param userId
      * @return
      */
-    List<DonateVO> selectDonateByUserId(@Param("userId") Long userId,@Param("start") Integer start,@Param("end")Integer end);
+    List<DonateVO> selectDonateByUserId(@Param("userId") Long userId,@Param("start") Integer start
+            ,@Param("end")Integer end,@Param("type")Integer type);
 
-    Integer queryPageDonateVOPageCount(Long userId);
+    Integer queryPageDonateVOPageCount(@Param("userId")Long userId,@Param("type")Integer type);
     /**
      * 通过用户ID来查询已经售出的捐赠记录,通过donatePrice这个字段判断是否售出，未售出为null
      * @param userId

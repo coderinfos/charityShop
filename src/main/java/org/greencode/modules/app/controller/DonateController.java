@@ -65,42 +65,24 @@ public class DonateController {
      * @return
      */
     @GetMapping("/myDonate")
-    @ApiOperation("（我的捐赠）通过用户ID来查询捐赠表,userId,pageNum,pageSize")
+    @ApiOperation("（我的捐赠）通过用户ID来查询捐赠表,userId,pageNum,pageSize,type")
     public R myDonate(@RequestParam Map<String, Object> params){
         Long userId = Long.parseLong(params.get("userId").toString());
         if(userId==null){
             return R.error(PARAM_ERROR_CODE,PARAM_ERROR_MSG);
         }
-        PageUtils donate = donateService.getByUserId(params);
-        if(donate==null){
-            return R.error(NOT_FIND_ERROR_CODE,NOT_FIND_ERROR_MSG);
-        }else {
-            return R.ok().put("data",donate);
-        }
+            PageUtils donate = donateService.getByUserId(params);
+            if(donate==null){
+                return R.error(NOT_FIND_ERROR_CODE,NOT_FIND_ERROR_MSG);
+            }else {
+                return R.ok().put("data",donate);
+            }
 
-
-    }
-
-    /**
-     * 通过用户ID来查询已经售出的捐赠记录,通过donatePrice这个字段判断是否售出，未售出为null
-     * @param userId
-     * @return
-     */
-    @GetMapping("/myDonateSold/{userId}")
-    @ApiOperation("通过用户ID来查询已经售出的捐赠记录")
-    public R myDonateSold(@PathVariable("userId") Long userId){
-        if(userId==null){
-            return R.error(PARAM_ERROR_CODE,PARAM_ERROR_MSG);
-        }
-        List<DonateEntity> donate = donateService.getSoldByUserId(userId);
-        if(donate.isEmpty()){
-            return R.error(NOT_FIND_ERROR_CODE,NOT_FIND_ERROR_MSG);
-        }else {
-            return R.ok().put("data",donate);
-        }
 
 
     }
+
+
 
     /**
      * 捐赠物品，传入userId，donate_submit_time
@@ -198,7 +180,7 @@ public class DonateController {
         }
         donateEntity.setDonatePrice(donate.getDonatePrice());
         donateEntity.setDonateSaleTime(donate.getDonateSaleTime());
-        boolean code = donateService.save(donateEntity);
+        boolean code = donateService.updateById(donateEntity);
         return common(code);
     }
 

@@ -7,7 +7,6 @@ server:
   port: 8083
   servlet:
     context-path: /charityShop
-
 spring:
   profiles:
     active: test

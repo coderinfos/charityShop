@@ -1,14 +1,12 @@
 package org.greencode.modules.app.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.commons.lang.StringUtils;
 import org.greencode.common.utils.R;
-import org.greencode.modules.app.controller.BossVo;
 import org.greencode.modules.app.dao.ShopDao;
 import org.greencode.modules.app.dao.UserDao;
-import org.greencode.modules.app.entity.DonateEntity;
-import org.greencode.modules.app.entity.HomeBossVO;
-import org.greencode.modules.app.entity.ShopEntity;
+import org.greencode.modules.app.entity.*;
 import org.greencode.modules.app.service.ShopService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +22,6 @@ import org.greencode.common.utils.PageUtils;
 import org.greencode.common.utils.Query;
 
 import org.greencode.modules.app.dao.BossDao;
-import org.greencode.modules.app.entity.BossEntity;
 import org.greencode.modules.app.service.BossService;
 
 import static org.greencode.common.constant.ClientConstants.DEFAULT_HEAD;
@@ -58,6 +55,7 @@ public class BossServiceImpl extends ServiceImpl<BossDao, BossEntity> implements
 
     @Override
     public List<BossEntity> theDay(Long userId) {
+
         return bossDao.selectTheDay(userId);
     }
 
@@ -83,53 +81,43 @@ public class BossServiceImpl extends ServiceImpl<BossDao, BossEntity> implements
     //方式1：获取shopId 根据这个id获取数据，赋值
     @Override
     public PageUtils getByUserId(Map<String, Object> params) {
-        QueryWrapper<BossEntity> queryWrapper =new QueryWrapper<BossEntity>();
-        queryWrapper.eq("user_id",params.get("userId")).orderByDesc("duty_date");
+        Long userId = Long.parseLong(params.get("userId").toString());
+        Integer pageNum=null;
+        Integer pageSize=null;
+        Integer type=null;
+        if(params.get("pageNum")!=null){
+            pageNum = Integer.parseInt(params.get("pageNum").toString());
+        }
+        if(params.get("pageNum")!=null){
+            pageSize = Integer.parseInt(params.get("pageSize").toString());
+        }
+        //type=1所有，type=2未开始，type=3已完成，type=4已取消)
+        if(params.get("type")!=null){
+            type = Integer.parseInt(params.get("type").toString());
+        }
+        int start=0;
+        int end  =10;
+        Page<BossVO> BossVOPage = new Page<>();
+        if(pageNum!=null&pageNum!=null){
+            start=(pageNum-1)*pageSize;
+            end=pageSize;
+            BossVOPage.setSize(pageSize);
+            BossVOPage.setCurrent(pageNum);
+        }
+        //type=1所有，type=2未开始，type=3已完成，type=4已取消)
 
-        IPage<BossEntity> page = this.page(
-                new Query<BossEntity>().getPage(params),
-                queryWrapper
-        );
-
-
-
-
-
-        return new PageUtils(page);
+        List<BossVO> list = bossDao.selectBossByUserId(userId,start,end,type);
+        BossVOPage.setTotal(bossDao.queryPageBossVOPageCount(userId,type));
+        //current 和size来自前端的参数，total是符合条件的记录数
+        BossVOPage.setRecords(list);
+        return new PageUtils(BossVOPage);
 
     }
 
-    /**
-     * todo  这个方法的mapper.xml 中 queryPageBossVo() 和 queryPageBossVoCount() 查询条件需要补全
-     * 未进行测试
-     * @param
-     * @return
-     */
-//    //方式2：利用sql直接连表查询返回结果集
-//    @Override
-//    public PageUtils queryListBossVo(Map<String, Object> params) {
-//
-//
-//        List<BossVo> list = baseMapper.queryPageBossVo(params);
-//
-//        Page<BossVo> bossVoPage = new Page<>();
-//
-//        //current 和size来自前端的参数，total是符合条件的记录数
-//        bossVoPage.setSize(Integer.parseInt(params.get("size").toString()));
-//        bossVoPage.setCurrent(Integer.parseInt(params.get("current").toString()));
-//        bossVoPage.setTotal(baseMapper.queryPageBossVoCount(params));
-//
-//        bossVoPage.setRecords(list);
-//
-//        return new PageUtils(bossVoPage);
-//
-//    }
 
 
-    @Override
-    public List<BossEntity> getNotStart(Long userId) {
-        return bossDao.selectNotStart(userId);
-    }
+
+
 
     @Override
     public List<BossEntity> completed(Long userId) {
@@ -176,10 +164,7 @@ public class BossServiceImpl extends ServiceImpl<BossDao, BossEntity> implements
         return bossEntities;
     }
 
-    @Override
-    public List<BossEntity> getCancelBoss(Long userId) {
-        return bossDao.selectCancelBoss(userId);
-    }
+
 
     @Override
     public List<HomeBossVO> findtheMonthBoss() {
@@ -192,6 +177,77 @@ public class BossServiceImpl extends ServiceImpl<BossDao, BossEntity> implements
             }
         });
         return HomeBossVOS;
+    }
+
+    @Override
+    public List<BossEntity> findBossByUserId(Long userId) {
+        QueryWrapper<BossEntity> queryWrapper =new QueryWrapper<BossEntity>();
+        queryWrapper.eq("user_id",userId);
+
+
+        return bossDao.selectList(queryWrapper);
+    }
+
+    @Override
+    public BossEntity newTheDay(Long userId) {
+        List<BossEntity> bossEntityList = bossDao.selectNotStart(userId);
+        if(bossEntityList!=null){
+            BossEntity bossEntity = null;
+            if(bossEntityList.size()>1){
+                //如果一天两次排班那么就是整天
+                for(BossEntity bossEntity1:bossEntityList){
+                    if(bossEntity1.getDutyType()==2){
+                        Calendar start = Calendar.getInstance();
+                        start.setTime(bossEntity1.getDutyDate());
+                        start.add(Calendar.HOUR, -5);// 24小时制
+                        start.add(Calendar.MINUTE, -30);// 24小时制
+
+                        Calendar end = Calendar.getInstance();
+                        end.setTime(bossEntity1.getDutyDate());
+                        end.add(Calendar.HOUR, 5);// 24小时制
+                        end.add(Calendar.MINUTE, 30);// 24小时制
+
+                        //现在的时间
+                        Calendar date = Calendar.getInstance();
+                        date.setTime(new Date());
+                        if(date.after(start) && date.before(end)){
+                            return bossEntity1;
+                        }else {
+                            return null;
+                        }
+                    }
+                }
+            }else {
+                //排班是上午或者下午
+                bossEntity=bossEntityList.get(0);
+                //拿到预约上午还是下午
+                Integer dutyType = bossEntity.getDutyType();
+                //拿到预约当天的日期
+                Date dutyDate = bossEntity.getDutyDate();
+                //开始时间
+                Calendar start = Calendar.getInstance();
+                start.setTime(dutyDate);
+                //当前时间
+                Calendar date = Calendar.getInstance();
+                start.setTime(new Date());
+                //结束时间
+                Calendar end = Calendar.getInstance();
+                end.setTime(dutyDate);
+                if(dutyType==1){
+                    end.add(Calendar.HOUR, 6);// 24小时制
+                }else if(dutyType==2){
+                    end.add(Calendar.HOUR, 5);// 24小时制
+                    end.add(Calendar.MINUTE, 30);// 24小时制
+                }
+                if(date.after(start) && date.before(end)){
+                    return bossEntity;
+                }else {
+                    return null;
+                }
+            }
+        }
+        return null;
+
     }
 
 }

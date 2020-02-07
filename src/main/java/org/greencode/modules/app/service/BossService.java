@@ -2,7 +2,6 @@ package org.greencode.modules.app.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.greencode.common.utils.PageUtils;
-import org.greencode.modules.app.controller.BossVo;
 import org.greencode.modules.app.entity.BossEntity;
 import org.greencode.modules.app.entity.HomeBossVO;
 
@@ -47,24 +46,14 @@ public interface BossService extends IService<BossEntity> {
      */
     PageUtils getByUserId(Map<String, Object> params);
 
-    /**
-     * 通过用户id来查询排班表，筛选未开始且未取消的排班
-     * @param userId
-     * @return
-     */
-    List<BossEntity> getNotStart(Long userId);
+
     /**
      * 通过用户id来查询排班表，筛选已经完成且未取消的排班
      * @param userId
      * @return
      */
     List<BossEntity> completed(Long userId);
-    /**
-     * 通过用户id来查询已经取消排班表
-     * @param userId
-     * @return
-     */
-    List<BossEntity> getCancelBoss(Long userId);
+
 
     /**
      * 查询当月的店长排班
@@ -72,6 +61,20 @@ public interface BossService extends IService<BossEntity> {
      */
     List<HomeBossVO> findtheMonthBoss();
 
-
+/**
+ * 功能描述: 通过id来查询排班
+ * @Param: [userId]
+ * @Return: java.util.List<org.greencode.modules.app.entity.BossEntity>
+ * @Author: mango
+ * @methodName: findBossByUserId
+ * @Date: 2020/2/7 18:30
+ */
+    List<BossEntity> findBossByUserId(Long userId);
+    /**
+     * 查询该用户的今日是否排班(此时此刻)
+     * @param userId
+     * @return
+     */
+    BossEntity newTheDay(Long userId);
 }
 

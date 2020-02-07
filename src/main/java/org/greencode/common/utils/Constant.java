@@ -21,11 +21,11 @@ public class Constant {
     /**
      * 当前页码
      */
-    public static final String PAGE = "page";
+    public static final String PAGE = "pageNum";
     /**
      * 每页显示记录数
      */
-    public static final String LIMIT = "limit";
+    public static final String LIMIT = "pageSize";
     /**
      * 排序字段
      */

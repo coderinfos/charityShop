@@ -190,7 +190,7 @@ public class BossServiceImpl extends ServiceImpl<BossDao, BossEntity> implements
 
     @Override
     public BossEntity newTheDay(Long userId) {
-        List<BossEntity> bossEntityList = bossDao.selectNotStart(userId);
+        List<BossEntity> bossEntityList = bossDao.selectTheDay(userId);
         if(bossEntityList!=null){
             BossEntity bossEntity = null;
             if(bossEntityList.size()>1){
@@ -229,7 +229,7 @@ public class BossServiceImpl extends ServiceImpl<BossDao, BossEntity> implements
                 start.setTime(dutyDate);
                 //当前时间
                 Calendar date = Calendar.getInstance();
-                start.setTime(new Date());
+                date.setTime(new Date());
                 //结束时间
                 Calendar end = Calendar.getInstance();
                 end.setTime(dutyDate);
@@ -239,6 +239,11 @@ public class BossServiceImpl extends ServiceImpl<BossDao, BossEntity> implements
                     end.add(Calendar.HOUR, 5);// 24小时制
                     end.add(Calendar.MINUTE, 30);// 24小时制
                 }
+                System.out.println("start--------------"+start);
+                System.out.println("end----------------"+end);
+                System.out.println("date---------------"+date);
+                System.out.println(date.after(start));
+                System.out.println(date.before(end));
                 if(date.after(start) && date.before(end)){
                     return bossEntity;
                 }else {

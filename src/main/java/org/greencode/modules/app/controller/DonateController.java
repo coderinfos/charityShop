@@ -178,6 +178,10 @@ public class DonateController {
         if(donateEntity==null){
             return R.error(NOT_FIND_ERROR_CODE,NOT_FIND_ERROR_MSG);
         }
+
+        if(donate.getDonateType()!=null){
+            donateEntity.setDonateType(donate.getDonateType());
+        }
         donateEntity.setDonatePrice(donate.getDonatePrice());
         donateEntity.setDonateSaleTime(donate.getDonateSaleTime());
         boolean code = donateService.updateById(donateEntity);

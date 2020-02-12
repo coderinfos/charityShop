@@ -14,6 +14,7 @@ import org.greencode.modules.app.entity.DonateDTO;
 import org.greencode.modules.app.entity.HomeDonateVO;
 import org.greencode.modules.app.entity.UserEntity;
 import org.greencode.modules.app.service.UserService;
+import org.greencode.modules.app.service.WxService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.web.bind.annotation.*;
@@ -45,7 +46,8 @@ public class DonateController {
     private DonateService donateService;
     @Autowired
     private UserService userService;
-
+    @Autowired
+    private WxService wxService;
     /**
      * 信息
      */
@@ -169,9 +171,9 @@ public class DonateController {
      * @return
      */
     @PostMapping("/sold")
-    @ApiOperation("售出登记，传入id，donateSaleTime，donatePrice，所有需要传入时间的以2020-01-07 09:41:03格式")
+    @ApiOperation("售出登记，传入id，donatePrice，type所有需要传入时间的以2020-01-07 09:41:03格式")
     public R sold(@RequestBody DonateEntity donate){
-        if(donate.getDonatePrice()==null||donate.getDonateSaleTime()==null||donate.getId()==null){
+        if(donate.getDonatePrice()==null||donate.getId()==null){
             return R.error(PARAM_ERROR_CODE,PARAM_ERROR_MSG);
         }
         DonateEntity donateEntity = donateService.getById(donate.getId());
@@ -183,8 +185,11 @@ public class DonateController {
             donateEntity.setDonateType(donate.getDonateType());
         }
         donateEntity.setDonatePrice(donate.getDonatePrice());
-        donateEntity.setDonateSaleTime(donate.getDonateSaleTime());
+        donateEntity.setDonateSaleTime(new Date());
         boolean code = donateService.updateById(donateEntity);
+        //售出登记成功后自动发送订阅
+        UserEntity user = userService.getById(donateEntity.getUserId());
+        wxService.WxPushNotification(user.getWechatId(),1,donateEntity.getDonatePrice());
         return common(code);
     }
 

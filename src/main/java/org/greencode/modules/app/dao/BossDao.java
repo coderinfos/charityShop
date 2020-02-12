@@ -92,4 +92,13 @@ public interface BossDao extends BaseMapper<BossEntity> {
  * @Date: 2020/2/7 19:37
  */
 Integer queryPageBossVOPageCount(@Param("userId")Long userId,@Param("type") Integer type);
+/**
+ * 功能描述: 查询明天要值班的店长
+ * @Param: []
+ * @Return: java.util.List<org.greencode.modules.app.entity.BossEntity>
+ * @Author: mango
+ * @methodName: tomorrow
+ * @Date: 2020/2/12 20:27
+ */
+List<BossEntity> tomorrow();
 }

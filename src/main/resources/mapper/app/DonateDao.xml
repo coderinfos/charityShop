@@ -91,4 +91,11 @@
         order by donate_submit_time asc
         limit 1;
     </select>
+
+    <select id="findNotReceiveTheGoods"  resultMap="donateMap">
+        SELECT <include refid="Base_Column_List" />
+        from ba_donate
+        where donate_register_time is  null
+        AND DATE_SUB(CURDATE(), INTERVAL 15 DAY) = donate_submit_time
+    </select>
 </mapper>

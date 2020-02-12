@@ -45,5 +45,13 @@ public interface DonateDao extends BaseMapper<DonateEntity> {
      */
     DonateEntity selectUnregisteredByUserId(Long userId,Long shopId);
 
-
+/**
+ * 功能描述: 查询提交时间两个星期，未登记的信息
+ * @Param: []
+ * @Return: java.util.List<org.greencode.modules.app.entity.DonateEntity>
+ * @Author: mango
+ * @methodName: findNotReceiveTheGoods
+ * @Date: 2020/2/11 19:29
+ */
+    List<DonateEntity> findNotReceiveTheGoods();
 }

@@ -141,4 +141,10 @@
         </if>
         ORDER BY b.duty_submit_time DESC
     </select>
+
+    <select id="tomorrow" resultMap="bossMap">
+        select  <include refid="Base_Column_List" /> from ba_boss
+        WHERE TO_DAYS(duty_date)-TO_DAYS(NOW()) = 1
+        AND duty_status=1
+    </select>
 </mapper>

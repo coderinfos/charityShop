@@ -1,14 +1,10 @@
 package org.greencode.modules.app.controller;
 
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -16,23 +12,24 @@ import lombok.extern.slf4j.Slf4j;
 import org.greencode.common.utils.IPUtils;
 import org.greencode.common.utils.R;
 import org.greencode.common.utils.UrlUtil;
-import org.greencode.modules.app.entity.AdminUserEntity;
-import org.greencode.modules.app.entity.ShopEntity;
 import org.greencode.modules.app.entity.UserEntity;
+import org.greencode.modules.app.entity.wx.MpTemplateMsgVo;
+import org.greencode.modules.app.entity.wx.TemplateData;
+import org.greencode.modules.app.entity.wx.TouserVo;
 import org.greencode.modules.app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.client.RestTemplate;
+
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 import static org.greencode.common.constant.WeChatConstants.*;
 import static org.greencode.common.constant.ClientConstants.*;
 
@@ -48,6 +45,8 @@ public class WeChatController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
     /**
      * 传入code来查询openId是否存在库中，走登录还是走注册
      * @param code
@@ -55,7 +54,9 @@ public class WeChatController {
      */
     @GetMapping("getOpenId")
     @ApiOperation("传入code,如果用户已经注册,返回用户信息,如果没有返回openid")
-    public JSONObject getOpenIdAndSessionKey(String code) {
+    public JSONObject getOpenIdAndSessionKey(String code,HttpServletRequest request) {
+        //获取ip
+        String ipAddr = IPUtils.getIpAddr(request);
         System.out.println("code-------------"+code);
         log.info("code:{}", code);
         if (code == null) {
@@ -83,11 +84,17 @@ public class WeChatController {
         UserEntity userEntity = userService.getByWechatId(openId);
         JSONObject jsonObject1 = new JSONObject();
         if (userEntity == null) {
+
             log.info("First Login");
             jsonObject1.put("type_code", 0);
             jsonObject1.put("type_msg", "first login");
             UserEntity user = new UserEntity();
             user.setWechatId(openId);
+            //第一次登录，生成当前时间并存入
+            user.setPreLoginTime(new Date());
+            user.setPreLoginIp(ipAddr);
+            user.setLastLoginIp(ipAddr);
+            user.setLastLoginTime(new Date());
             userService.save(user);
             jsonObject1.put("data", user);
             return jsonObject1;
@@ -96,76 +103,12 @@ public class WeChatController {
         jsonObject1.put("type_code", 1);
         jsonObject1.put("type_msg", "not first login");
         jsonObject1.put("data", userEntity);
+        userEntity.setPreLoginTime(userEntity.getLastLoginTime());
+        userEntity.setPreLoginIp(userEntity.getLastLoginIp());
+        userEntity.setLastLoginTime(new Date());
+        userEntity.setLastLoginIp(ipAddr);
+        userService.updateById(userEntity);
         return jsonObject1;
-    }
-
-
-
-    /**
-     * 第三方（微信授权登入）,因为要获取ip，所以要传request,带openId
-     * @param request
-     * @return
-     */
-    @PostMapping("login")
-    @ApiOperation("第三方（微信授权登入）传入openId")
-    public R login(@RequestBody Map<String, Object> map,HttpServletRequest request)  {
-        String openId = map.get("openId").toString();
-        //获取ip
-        String ipAddr = IPUtils.getIpAddr(request);
-        log.info("openId:{}", openId);
-        if (openId==null) {
-            log.info("param is null");
-            return R.error(PARAM_ERROR_CODE,PARAM_ERROR_MSG);
-        } else {
-            log.info("param is not null");
-            UserEntity userEntity = userService.getByWechatId(openId);
-            if(userEntity==null){
-                return R.error(NOT_FIND_ERROR_CODE,NOT_FIND_ERROR_MSG);
-            }
-            //登录的时候修改上次登录的时间和最后登录的时间
-            if (userEntity.getPreLoginTime()==null) {
-                //第一次登录，生成当前时间并存入
-                userEntity.setPreLoginTime(new Date());
-                userEntity.setPreLoginIp(ipAddr);
-                userEntity.setLastLoginIp(ipAddr);
-                userEntity.setLastLoginTime(new Date());
-            }else {
-                userEntity.setPreLoginTime(userEntity.getLastLoginTime());
-                userEntity.setPreLoginIp(userEntity.getLastLoginIp());
-                userEntity.setLastLoginTime(new Date());
-                userEntity.setLastLoginIp(ipAddr);
-            }
-            userService.updateById(userEntity);
-            //如果要传token那么这里应该创建一个token
-//            Map<String, Object> resMap = new HashMap<>(MAP_INIT_NUM);
-            //resMap.put("token", token);
-//            resMap.put("id", userEntity.getId());
-            return R.ok().put("data",userEntity);
-        }
-
-    }
-
-
-    @GetMapping("register")
-    @ApiOperation("传入openId,nickName,face,sex,mobilePhone保存到数据库")
-    public R register(@RequestBody JSONObject jsonObject) throws ParseException {
-
-
-
-
-//        String openid = jsonObject.get("openid").toString();
-//        String access_token = jsonObject.get("access_token").toString();
-//        String getUserURL = "https://api.weixin.qq.com/sns/userinfo?access_token=" + access_token + "&openid=" + openid + "&lang=zh_CN";
-//       String getUserURL = "https://api.weixin.qq.com/cgi-bin/user/info?access_token="+ access_token +"&openid="+openid+"&lang=zh_CN" ;
-//        cn.hutool.json.JSONObject user = JSONUtil.parseObj(HttpUtil.get(getUserURL));
-        UserEntity userEntity = new UserEntity();
-        userEntity.setWechatId(jsonObject.get("openId").toString());
-        userEntity.setNickName(jsonObject.get("nickName").toString());
-        userEntity.setFace(jsonObject.get("face").toString());
-        userEntity.setSex(((Integer) jsonObject.get("sex")==1)?1:0);
-        userEntity.setMobilePhone((Long) jsonObject.get("mobilePhone"));
-        boolean code = userService.save(userEntity);
-        return common(code);
     }
 
 

@@ -66,7 +66,7 @@ public class UserController {
         if(user==null){
             return R.error(NOT_FIND_ERROR_CODE,NOT_FIND_ERROR_MSG);
         }
-        if(user.getRealName()==null||user.getNickName()==null||user.getMobilePhone()==null){
+        if(user.getNickName()==null||user.getMobilePhone()==null){
             return R.error(PARAM_ERROR_CODE,PARAM_ERROR_MSG);
         }else {
             return R.ok();

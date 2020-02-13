@@ -87,6 +87,7 @@ public class ShiroConfig {
         filterMap.put("/sys/login", "anon");
         filterMap.put("/favicon.ico", "anon");
         filterMap.put("/captcha.jpg", "anon");
+        filterMap.put("/item.html", "anon");
         filterMap.put("/admin/**", "authc");
 
         shiroFilter.setFilterChainDefinitionMap(filterMap);

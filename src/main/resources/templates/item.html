@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>item</title>
+</head>
+<body>
+<!--<table th:each="user:${userEntity}">-->
+
+    <tr >
+        <td>学生Id</td>
+        <td th:text="${userEntity.id}">id</td>
+    </tr>
+
+    <tr >
+        <td>学生姓名</td>
+        <td th:text="${userEntity.nickName}">名字</td>
+
+    </tr>
+
+</table>
+</body>
+</html>

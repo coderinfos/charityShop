@@ -7,6 +7,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.ui.Model;
 
 import org.apache.shiro.util.CollectionUtils;
 import org.greencode.common.utils.IPUtils;
@@ -192,6 +193,7 @@ public class DonateController {
         wxService.WxPushNotification(user.getWechatId(),1,donateEntity.getDonatePrice());
         return common(code);
     }
+
 
 
     public R common(boolean code){

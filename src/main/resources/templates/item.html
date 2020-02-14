@@ -7,16 +7,20 @@
 <body>
 <!--<table th:each="user:${userEntity}">-->
 
-    <tr >
+    <div >
         <td>学生Id</td>
-        <td th:text="${userEntity.id}">id</td>
-    </tr>
+        <td>${userEntity.id}</td>
 
-    <tr >
+    </div>
+
+    <div >
         <td>学生姓名</td>
-        <td th:text="${userEntity.nickName}">名字</td>
+        <if ${userEntity.nickNameOpen}==0>
+        <td>${userEntity.nickName}</td>
 
-    </tr>
+        </if>
+
+    </div>
 
 </table>
 </body>

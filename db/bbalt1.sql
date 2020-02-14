@@ -122,7 +122,7 @@ CREATE TABLE `ba_user` (
   `nick_name_open` tinyint(4) DEFAULT '1' COMMENT '昵称是否公开,1为true,0为false',
   `real_name` varchar(50) DEFAULT NULL COMMENT '真实姓名',
   `real_name_open` tinyint(4) DEFAULT '1' COMMENT '真实姓名是否公开,1为true,0为false',
-  `sex` tinyint(4) DEFAULT NULL COMMENT '性别1为男，0为女',
+  `sex` tinyint(4) DEFAULT NULL COMMENT '性别0未知1男2女',
   `sex_open` tinyint(4) DEFAULT '1' COMMENT '性别是否公开 ,1为true,0为false',
   `age` smallint(6) DEFAULT NULL COMMENT '年龄',
   `age_open` tinyint(4) DEFAULT '1' COMMENT '年龄是否公开 ,1为true,0为false',

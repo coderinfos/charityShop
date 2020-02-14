@@ -24,8 +24,10 @@ public class ItemDetailsController {
     public String item(@PathVariable("id") Long id, Model model){
         DonateEntity donateEntity = donateService.getById(id);
         UserEntity userEntity = userService.getById(donateEntity.getUserId());
+        UserEntity user = userService.openUser(userEntity);
 
-        model.addAttribute("userEntity",userEntity);
+
+        model.addAttribute("user",user);
         return "item";
     }
 }

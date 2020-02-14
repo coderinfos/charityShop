@@ -42,4 +42,31 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
         return new PageUtils(page);
     }
 
+    @Override
+    public UserEntity openUser(UserEntity userEntity) {
+        UserEntity user = new UserEntity();
+        if(userEntity.getFaceOpen()==1){
+            user.setFace(userEntity.getFace());
+        }
+        if(userEntity.getNickNameOpen()==1){
+            user.setNickName(userEntity.getNickName());
+        }
+        if(userEntity.getRealNameOpen()==1){
+            user.setRealName(userEntity.getRealName());
+        }
+        if(userEntity.getSexOpen()==1){
+            user.setSex(userEntity.getSex());
+        }
+        if(userEntity.getAgeOpen()==1){
+            user.setAge(userEntity.getAge());
+        }
+        if(userEntity.getMobilePhoneOpen()==1){
+            user.setMobilePhone(userEntity.getMobilePhone());
+        }
+        if(userEntity.getSignatureLineOpen()==1){
+            user.setSignatureLine(userEntity.getSignatureLine());
+        }
+        return user;
+    }
+
 }

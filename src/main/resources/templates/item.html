@@ -5,23 +5,31 @@
     <title>item</title>
 </head>
 <body>
-<!--<table th:each="user:${userEntity}">-->
-
+<!--<table th:each="user:${user}">-->
+    <img src="${user.face!""}">
     <div >
-        <td>学生Id</td>
-        <td>${userEntity.id}</td>
-
+        <td>姓名</td>
+        <td>${user.realName!"匿名"}</td>
     </div>
-
     <div >
-        <td>学生姓名</td>
-        <if ${userEntity.nickNameOpen}==0>
-        <td>${userEntity.nickName}</td>
-
-        </if>
-
+        <td>昵称</td>
+        <td>${user.nickName!"匿名"}</td>
     </div>
-
+    <div >
+        <td>性别</td>
+        <if ${user.sex}="0">未知</if>
+        <if ${user.sex}="1">男</if>
+        <if ${user.sex}="2">女</if>
+    </div>
+<div>
+    <#if ${user.sex} gte 90>
+    优秀！
+    <#elseif ${user.sex} gte 80>
+    良好！
+    <#else>
+    一般！
+    </#if>
+</div>
 </table>
 </body>
 </html>

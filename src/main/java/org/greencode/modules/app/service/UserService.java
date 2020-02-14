@@ -30,5 +30,7 @@ public interface UserService extends IService<UserEntity> {
     UserEntity getByWechatId(String wechatId);
 
     PageUtils queryPage(Map<String, Object> params);
+
+    UserEntity openUser(UserEntity userEntity);
 }
 

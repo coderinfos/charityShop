@@ -51,7 +51,7 @@ public class ScheduledTask {
      * @methodName: findNotReceiveTheGoods
      * @Date: 2020/2/12 20:20
      */
-    @Scheduled(cron = "0 39 20 * * ?")
+    @Scheduled(cron = "0 0 21 * * ?")
     public void findBoss () {
         Date date=new Date();
         System.out.println("date"+date);

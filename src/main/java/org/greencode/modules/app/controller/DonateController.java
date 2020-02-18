@@ -190,7 +190,12 @@ public class DonateController {
         boolean code = donateService.updateById(donateEntity);
         //售出登记成功后自动发送订阅
         UserEntity user = userService.getById(donateEntity.getUserId());
-        wxService.WxPushNotification(user.getWechatId(),1,donateEntity.getDonatePrice());
+        if(donateEntity.getDonateType()==1){
+            wxService.WxPushNotification(user.getWechatId(),1,donateEntity.getDonatePrice());
+        }else if(donateEntity.getDonateType()==2){
+            wxService.WxPushNotification(user.getWechatId(),4,donateEntity.getDonatePrice());
+        }
+
         return common(code);
     }
 

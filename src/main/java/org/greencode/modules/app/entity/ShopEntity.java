@@ -34,12 +34,12 @@ public class ShopEntity implements Serializable {
 	/**
 	 * 
 	 */
-	@ExcelColumn(value = "店名", col = 2)
+	@ExcelColumn(value = "地址", col = 2)
 	private String address;
 	/**
 	 *
 	 */
-	@ExcelColumn(value = "地址", col = 3)
+	@ExcelColumn(value = "操作员", col = 3)
 	private String operator;
 	/**
 	 *

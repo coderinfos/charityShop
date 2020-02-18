@@ -24,6 +24,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -217,7 +218,7 @@ public class ExcelUtils {
 
     }
 
-    public static <T> void writeExcel(HttpServletResponse response, List<T> dataList, Class<T> cls){
+    public static <T> void writeExcel(HttpServletResponse response, List<T> dataList, Class<T> cls,String fileName){
         Field[] fields = cls.getDeclaredFields();
         List<Field> fieldList = Arrays.stream(fields)
                 .filter(field -> {
@@ -290,7 +291,9 @@ public class ExcelUtils {
         //冻结窗格
         wb.getSheet("Sheet1").createFreezePane(0, 1, 0, 1);
         //浏览器下载excel
-        buildExcelDocument("abbot.xlsx",wb,response);
+
+        String date = new SimpleDateFormat("yyyyMMddHHmm").format(new Date());
+        buildExcelDocument(fileName+date,wb,response);
         //生成excel文件
 //        buildExcelFile(".\\default.xlsx",wb);
     }

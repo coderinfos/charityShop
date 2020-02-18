@@ -4,13 +4,13 @@ $(function () {
         datatype: "json",
         colModel: [			
 			{ label: 'id', name: 'id', index: 'id', width: 50, key: true },
-			{ label: '', name: 'operator', index: 'operator', width: 80 }, 			
-			{ label: '', name: 'operationType', index: 'operation_type', width: 80 }, 			
-			{ label: '', name: 'content', index: 'content', width: 80 }, 			
+			{ label: '操作员', name: 'operator', index: 'operator', width: 80 },
+			{ label: '操作类型', name: 'operationType', index: 'operation_type', width: 80 },
+			{ label: '内容', name: 'content', index: 'content', width: 80 },
 			{ label: '捐赠人Id', name: 'userId', index: 'user_id', width: 80 }, 			
-			{ label: '', name: 'operationTime', index: 'operation_time', width: 80 }, 			
-			{ label: '', name: 'operatorIp', index: 'operator_ip', width: 80 }, 			
-			{ label: '', name: 'memo', index: 'memo', width: 80 }			
+			{ label: '操作时间', name: 'operationTime', index: 'operation_time', width: 80 },
+			{ label: '操作IP', name: 'operatorIp', index: 'operator_ip', width: 80 },
+			{ label: '备注', name: 'memo', index: 'memo', width: 80 }
         ],
 		viewrecords: true,
         height: 385,
@@ -68,6 +68,7 @@ var vm = new Vue({
 		saveOrUpdate: function (event) {
 		    $('#btnSaveOrUpdate').button('loading').delay(1000).queue(function() {
                 var url = vm.operationlLog.id == null ? "app/operationllog/save" : "app/operationllog/update";
+                vm.operationlLog.operator = localStorage.getItem("admin");
                 $.ajax({
                     type: "POST",
                     url: baseURL + url,
@@ -99,6 +100,7 @@ var vm = new Vue({
             }, function(){
                if(!lock) {
                     lock = true;
+                   operator = localStorage.getItem("admin");
 		            $.ajax({
                         type: "POST",
                         url: baseURL + "app/operationllog/delete",

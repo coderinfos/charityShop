@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.greencode.common.utils.IPUtils;
 import org.greencode.common.utils.R;
 import org.greencode.common.utils.UrlUtil;
+import org.greencode.modules.app.dao.UserDao;
 import org.greencode.modules.app.entity.UserEntity;
 import org.greencode.modules.app.entity.wx.MpTemplateMsgVo;
 import org.greencode.modules.app.entity.wx.TemplateData;
@@ -45,6 +46,8 @@ public class WeChatController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private UserDao userDao;
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
     /**
@@ -96,7 +99,8 @@ public class WeChatController {
             user.setLastLoginIp(ipAddr);
             user.setLastLoginTime(new Date());
             userService.save(user);
-            jsonObject1.put("data", user);
+            UserEntity userEntity1 = userDao.selectById(user.getId());
+            jsonObject1.put("data", userEntity1);
             return jsonObject1;
         }
         log.info("not first login");

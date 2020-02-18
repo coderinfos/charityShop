@@ -46,7 +46,7 @@ public class ExcelController  {
     public void userExport(HttpServletResponse response)  throws IOException {
 
         List<UserEntity> list = userDao.selectList(null);
-        ExcelUtils.writeExcel(response, list, UserEntity.class);
+        ExcelUtils.writeExcel(response, list, UserEntity.class,"志愿者账号");
 //        long t1 = System.currentTimeMillis();
 //        long t2 = System.currentTimeMillis();
 //        System.out.println(String.format("write over! cost:%sms", (t2 - t1)));
@@ -55,19 +55,19 @@ public class ExcelController  {
     @ApiOperation(value = "导出")
     public void bossExport(HttpServletResponse response)  throws IOException {
         List<BossEntity> list = bossDao.selectList(null);
-        ExcelUtils.writeExcel(response, list, BossEntity.class);
+        ExcelUtils.writeExcel(response, list, BossEntity.class,"排班表");
     }
     @GetMapping("/shopExport")
     @ApiOperation(value = "导出")
     public void shopExport(HttpServletResponse response)  throws IOException {
         List<ShopEntity> list = shopDao.selectList(null);
-        ExcelUtils.writeExcel(response, list, ShopEntity.class);
+        ExcelUtils.writeExcel(response, list, ShopEntity.class,"分店表");
     }
     @GetMapping("/donateExport")
     @ApiOperation(value = "导出")
     public void donateExport(HttpServletResponse response)  throws IOException {
         List<DonateEntity> list = donateDao.selectList(null);
-        ExcelUtils.writeExcel(response, list, DonateEntity.class);
+        ExcelUtils.writeExcel(response, list, DonateEntity.class,"捐物表");
     }
 
 //    @RequestMapping(value = "/readExcel", method = RequestMethod.POST)

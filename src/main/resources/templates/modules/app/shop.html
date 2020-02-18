@@ -8,16 +8,17 @@
 <div id="rrapp" v-cloak>
     <div v-show="showList">
         <div class="grid-btn">
+            <!--如果需要开启按钮权限那么移到对应的if中-->
 			<#if shiro.hasPermission("sys:shop:save")>
-            <a class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
 			</#if>
 			<#if shiro.hasPermission("sys:shop:update")>
-            <a class="btn btn-primary" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;修改</a>
 			</#if>
 			<#if shiro.hasPermission("sys:shop:delete")>
-            <a class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
 			</#if>
-            <a class="btn btn-primary" href="http://shop.bbalt.org/charityShop/admin/excel/shopExport">导出</a>
+            <a class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
+            <a class="btn btn-primary" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;修改</a>
+            <a class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+            <a class="btn btn-primary" href="http://localhost:8083/charityShop/admin/excel/shopExport">导出</a>
         </div>
         <table id="jqGrid"></table>
         <div id="jqGridPager"></div>

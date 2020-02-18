@@ -29,6 +29,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import static org.greencode.common.constant.ClientConstants.*;
+
 /**
  * 系统用户
  *
@@ -105,8 +107,14 @@ public class SysUserController extends AbstractController {
 	@RequestMapping("/save")
 	@RequiresPermissions("sys:user:save")
 	public R save(@RequestBody SysUserEntity user){
-		ValidatorUtils.validateEntity(user, AddGroup.class);
-		
+		//检查是否为空的
+//		ValidatorUtils.validateEntity(user, AddGroup.class);
+		if(user.getUsername()==null||user.getUsername().trim()==""){
+			return R.error(PARAM_ERROR_CODE,PARAM_ERROR_MSG);
+		}
+		if(user.getPassword()==null||user.getPassword().trim()==""){
+			return R.error(PARAM_ERROR_CODE,PARAM_ERROR_MSG);
+		}
 		sysUserService.saveUser(user);
 		
 		return R.ok();

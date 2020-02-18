@@ -31,7 +31,7 @@ public class OperationlLogEntity implements Serializable {
 	/**
 	 * 
 	 */
-	private Integer operationType;
+	private String operationType;
 	/**
 	 * 
 	 */

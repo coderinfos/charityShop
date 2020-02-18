@@ -7,15 +7,14 @@ import org.apache.commons.lang.StringUtils;
 import org.greencode.common.utils.IPUtils;
 import org.greencode.common.utils.PageUtils;
 import org.greencode.common.utils.R;
-import org.greencode.modules.app.entity.BossEntity;
-import org.greencode.modules.app.entity.DonateEntity;
-import org.greencode.modules.app.entity.ShopEntity;
-import org.greencode.modules.app.entity.UserEntity;
-import org.greencode.modules.app.service.BossService;
-import org.greencode.modules.app.service.DonateService;
-import org.greencode.modules.app.service.ShopService;
-import org.greencode.modules.app.service.UserService;
+import org.greencode.modules.app.dao.BossDao;
+import org.greencode.modules.app.dao.DonateDao;
+import org.greencode.modules.app.dao.ShopDao;
+import org.greencode.modules.app.dao.UserDao;
+import org.greencode.modules.app.entity.*;
+import org.greencode.modules.app.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,11 +33,21 @@ public class AdminController {
     @Autowired
     private ShopService shopService;
     @Autowired
+    private ShopDao shopDao;
+    @Autowired
     private UserService userService;
+    @Autowired
+    private UserDao userDao;
     @Autowired
     private DonateService donateService;
     @Autowired
+    private DonateDao donateDao;
+    @Autowired
     private BossService bossService;
+    @Autowired
+    private BossDao bossDao;
+    @Autowired
+    private OperationlLogService operationlLogService;
     /**
      * 列表
      */
@@ -88,7 +97,21 @@ public class AdminController {
      */
     @PostMapping("shop/delete")
     @ApiOperation("后台专用接口，删除")
-    public R shopDelete(@RequestBody Long[] ids){
+    @Transactional(rollbackFor = Exception.class)
+    public R shopDelete(@RequestBody Long[] ids,HttpServletRequest request){
+
+        OperationlLogEntity operationlLogEntity= new OperationlLogEntity();
+        //操作时间和ip
+        operationlLogEntity.setOperationTime(new Date());
+        String ipAddr = IPUtils.getIpAddr(request);
+        operationlLogEntity.setOperatorIp(ipAddr);
+        for(int i=0;i<ids.length;i++){
+            ShopEntity shop = shopDao.selectById(ids[i]);
+            operationlLogEntity.setOperationType("分店管理");
+            operationlLogEntity.setContent(shop.toString());
+            operationlLogService.save(operationlLogEntity);
+        }
+
         shopService.removeByIds(Arrays.asList(ids));
 
         return R.ok();
@@ -185,11 +208,21 @@ public class AdminController {
      */
     @PostMapping("user/delete")
     @ApiOperation("后台专用接口，删除")
-    public R userDelete(@RequestBody Long[] ids){
-        if(ids==null){
-            return R.error(PARAM_ERROR_CODE,PARAM_ERROR_MSG);
-
+    @Transactional(rollbackFor = Exception.class)
+    public R userDelete(@RequestBody Long[] ids,HttpServletRequest request){
+        OperationlLogEntity operationlLogEntity= new OperationlLogEntity();
+        //操作时间和ip
+        operationlLogEntity.setOperationTime(new Date());
+        String ipAddr = IPUtils.getIpAddr(request);
+        operationlLogEntity.setOperatorIp(ipAddr);
+        for(int i=0;i<ids.length;i++){
+            UserEntity user = userDao.selectById(ids[i]);
+            operationlLogEntity.setOperationType("用户管理");
+            operationlLogEntity.setContent(user.toString());
+            operationlLogEntity.setUserId(user.getId());
+            operationlLogService.save(operationlLogEntity);
         }
+
         userService.removeByIds(Arrays.asList(ids));
 
         return R.ok();
@@ -249,7 +282,22 @@ public class AdminController {
      */
     @PostMapping("boss/delete")
     @ApiOperation("后台专用接口,删除")
-    public R bossDelete(@RequestBody Long[] ids){
+    @Transactional(rollbackFor = Exception.class)
+    public R bossDelete(@RequestBody Long[] ids,HttpServletRequest request){
+
+        OperationlLogEntity operationlLogEntity= new OperationlLogEntity();
+        //操作时间和ip
+        operationlLogEntity.setOperationTime(new Date());
+        String ipAddr = IPUtils.getIpAddr(request);
+        operationlLogEntity.setOperatorIp(ipAddr);
+        for(int i=0;i<ids.length;i++){
+            BossEntity boss = bossDao.selectById(ids[i]);
+            operationlLogEntity.setOperationType("排班管理");
+            operationlLogEntity.setUserId(boss.getUserId());
+            operationlLogEntity.setContent(boss.toString());
+            operationlLogService.save(operationlLogEntity);
+        }
+
         bossService.removeByIds(Arrays.asList(ids));
 
         return R.ok();
@@ -321,7 +369,21 @@ public class AdminController {
      */
     @PostMapping("donate/delete")
     @ApiOperation("删除")
-    public R donateDelete(@RequestBody Long[] ids){
+    @Transactional(rollbackFor = Exception.class)
+    public R donateDelete(@RequestBody Long[] ids,HttpServletRequest request){
+
+        OperationlLogEntity operationlLogEntity= new OperationlLogEntity();
+        //操作时间和ip
+        operationlLogEntity.setOperationTime(new Date());
+        String ipAddr = IPUtils.getIpAddr(request);
+        operationlLogEntity.setOperatorIp(ipAddr);
+        for(int i=0;i<ids.length;i++){
+            DonateEntity donate = donateDao.selectById(ids[i]);
+            operationlLogEntity.setOperationType("捐物管理");
+            operationlLogEntity.setUserId(donate.getUserId());
+            operationlLogEntity.setContent(donate.toString());
+            operationlLogService.save(operationlLogEntity);
+        }
         donateService.removeByIds(Arrays.asList(ids));
 
         return R.ok();

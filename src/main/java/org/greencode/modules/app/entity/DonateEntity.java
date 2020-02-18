@@ -74,17 +74,19 @@ public class DonateEntity implements Serializable {
 	/**
 	 *
 	 */
-	@ExcelColumn(value = "操作时间", col = 11)
+	@ExcelColumn(value = "操作员", col = 11)
+	private String operator;
+	@ExcelColumn(value = "操作时间", col = 12)
 	private Date operationTime;
 	/**
 	 *
 	 */
-	@ExcelColumn(value = "操作IP", col = 12)
+	@ExcelColumn(value = "操作IP", col = 13)
 	private String operatorIp;
 	/**
 	 *
 	 */
-	@ExcelColumn(value = "备注", col = 13)
+	@ExcelColumn(value = "备注", col = 14)
 	private String memo;
 
 }

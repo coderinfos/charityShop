@@ -70,7 +70,9 @@ public class WxServiceImpl implements WxService{
         }else if(type==3){
             //公众号模板id
             mpTemplateMsgVo.setTemplate_id("xbTBgWGnGNP3nh2oz0fxm8TDfjlVzO-oFSqgYL-QAPE");
-            data.put("keyword1", new TemplateData("慈善商店"));
+            data.put("keyword1", new TemplateData("一日店长"));
+            data.put("keyword2", new TemplateData("宝贝爱蓝天"));
+            data.put("keyword3", new TemplateData("慈善商店"));
             data.put("keyword4", new TemplateData("尊敬的志愿者店长，您已报名明天的慈善商店店长值守，请按照当班时间提前5分钟到达慈善商店。到达慈善商店后请先阅读我们为您准备的店长手册。感谢您的志愿服务，期待您在慈善商店志愿值守中付出善意、发挥特长、收获美好。"));
         }else if(type==4) {
             //公众号模板id

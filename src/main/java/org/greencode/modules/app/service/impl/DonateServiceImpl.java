@@ -54,7 +54,7 @@ public class DonateServiceImpl extends ServiceImpl<DonateDao, DonateEntity> impl
         if(params.get("pageNum")!=null){
              pageNum = Integer.parseInt(params.get("pageNum").toString());
         }
-        if(params.get("pageNum")!=null){
+        if(params.get("pageSize")!=null){
             pageSize = Integer.parseInt(params.get("pageSize").toString());
         }
         //type用来判断查询type=1所有，type=2已售

@@ -8,6 +8,7 @@
         <result property="id" column="id"/>
         <result property="shopName" column="shop_name"/>
         <result property="address" column="address"/>
+        <result property="deviceId" column="device_id"/>
         <result property="operator" column="operator"/>
         <result property="operationTime" column="operation_time"/>
         <result property="operatorIp" column="operator_ip"/>

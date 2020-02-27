@@ -6,6 +6,7 @@ $(function () {
 			{ label: 'id', name: 'id', index: 'id', width: 50, key: true },
 			{ label: '店名', name: 'shopName', index: 'shop_name', width: 80 },
 			{ label: '地址', name: 'address', index: 'address', width: 80 },
+            { label: '打印机终端号码', name: 'deviceId', index: 'address', width: 80 },
 			{ label: '操作员', name: 'operator', index: 'operator', width: 80 },
 			{ label: '操作时间', name: 'operationTime', index: 'operation_time', width: 80 },
 			{ label: '操作IP', name: 'operatorIp', index: 'operator_ip', width: 80 },

@@ -39,22 +39,27 @@ public class ShopEntity implements Serializable {
 	/**
 	 *
 	 */
-	@ExcelColumn(value = "操作员", col = 3)
+	@ExcelColumn(value = "打印机的终端id", col = 3)
+	private String deviceId;
+	/**
+	 *
+	 */
+	@ExcelColumn(value = "操作员", col = 4)
 	private String operator;
 	/**
 	 *
 	 */
-	@ExcelColumn(value = "操作时间", col = 4)
+	@ExcelColumn(value = "操作时间", col = 5)
 	private Date operationTime;
 	/**
 	 *
 	 */
-	@ExcelColumn(value = "操作IP", col = 5)
+	@ExcelColumn(value = "操作IP", col = 6)
 	private String operatorIp;
 	/**
 	 *
 	 */
-	@ExcelColumn(value = "备注", col = 6)
+	@ExcelColumn(value = "备注", col = 7)
 	private String memo;
 
 }

@@ -1,35 +1,44 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html>
 <head>
     <meta charset="UTF-8">
-    <title>item</title>
+    <title>捐物爱心人士资料</title>
 </head>
 <body>
 <!--<table th:each="user:${user}">-->
-    <img src="${user.face!""}">
-    <div >
-        <td>姓名</td>
-        <td>${user.realName!"匿名"}</td>
+<div >
+    <div style="padding-left: 200px">
+    <img src="${user.face}" height="400" width="400" >
     </div>
-    <div >
-        <td>昵称</td>
-        <td>${user.nickName!"匿名"}</td>
+<ul>
+    <div style="font-size: 70px" >
+        <td >姓名:</td>
+        <td>${user.realName!"已隐藏"}</td>
     </div>
-    <div >
-        <td>性别</td>
-        <if ${user.sex}="0">未知</if>
-        <if ${user.sex}="1">男</if>
-        <if ${user.sex}="2">女</if>
+    <div style="font-size: 70px">
+        <td>昵称:</td>
+        <td>${user.nickName!"已隐藏"}</td>
     </div>
-<div>
-    <#if ${user.sex} gte 90>
-    优秀！
-    <#elseif ${user.sex} gte 80>
-    良好！
-    <#else>
-    一般！
-    </#if>
+    <div style="font-size: 70px">
+        <td>性别:</td>
+        <td>${sexx!"已隐藏"}</td>
+    </div>
+    <div style="font-size: 70px">
+        <td >年龄:</td>
+        <td>${user.age!"已隐藏"}</td>
+    </div>
+    <div style="font-size: 70px">
+        <td >联系方式:</td>
+        <td>${user.mobilePhone!"已隐藏"}</td>
+    </div>
+    <div style="font-size: 70px">
+        <td >签名:</td>
+        <td>${user.signatureLine!"已隐藏"}</td>
+    </div>
+
+</ul>
 </div>
+
 </table>
 </body>
 </html>

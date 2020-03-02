@@ -47,6 +47,8 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
         UserEntity user = new UserEntity();
         if(userEntity.getFaceOpen()==1){
             user.setFace(userEntity.getFace());
+        }else if(userEntity.getFaceOpen()==0){
+            user.setFace("https://shop.bbalt.org/charityShop/img/default.jpg");
         }
         if(userEntity.getNickNameOpen()==1){
             user.setNickName(userEntity.getNickName());

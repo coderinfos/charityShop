@@ -25,8 +25,19 @@ public class ItemDetailsController {
         DonateEntity donateEntity = donateService.getById(id);
         UserEntity userEntity = userService.getById(donateEntity.getUserId());
         UserEntity user = userService.openUser(userEntity);
-
-
+        Integer sex = user.getSex();
+        String sexx="";
+        if(sex!=null){
+            //性别0未知1男2女
+            if(sex==1){
+                sexx="男";
+            }else if(sex==2){
+                sexx="女";
+            }else{
+                sexx="未知";
+            }
+        }
+        model.addAttribute("sexx",sexx);
         model.addAttribute("user",user);
         return "item";
     }

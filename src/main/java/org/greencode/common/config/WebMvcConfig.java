@@ -20,6 +20,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
@@ -77,5 +78,11 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter implements WebMvcConfi
 
         jackson2HttpMessageConverter.setObjectMapper(objectMapper);
         converters.add(0, jackson2HttpMessageConverter);
+    }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/img/**").addResourceLocations("file:///opt/service/charityshop/img/");
+
     }
 }
